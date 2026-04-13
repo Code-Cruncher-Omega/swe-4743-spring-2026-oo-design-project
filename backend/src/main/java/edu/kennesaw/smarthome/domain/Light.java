@@ -1,3 +1,5 @@
+package edu.kennesaw.smarthome.domain;
+
 public class Light implements Device {
     // Metadata
     private final String UUID;

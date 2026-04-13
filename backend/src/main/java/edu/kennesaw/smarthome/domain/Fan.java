@@ -1,3 +1,5 @@
+package edu.kennesaw.smarthome.domain;
+
 public class Fan implements Device {
     // Metadata
     private final String UUID;

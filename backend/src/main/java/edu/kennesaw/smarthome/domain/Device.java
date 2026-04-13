@@ -1,22 +1,34 @@
-interface Device {
-    // Common Metadata for all devices
-    private final String UUID;
-    private String name;
-    private String location;
+package edu.kennesaw.smarthome.domain;
+
+import java.util.UUID;
+
+public abstract class Device {
+    // Common Device Metadata
+    private final UUID ID;
+    private final String NAME;
+    private final String LOCATION;
     public enum Type {DOOR_LOCK, FAN, LIGHT, THERMOSTAT};
     private final Type TYPE;
 
-    // Metadata Getters
-    public String getUUID() {
-        return UUID;
+    // Constructor
+    public Device(String name, String location, Type type) {
+        this.ID = UUID.randomUUID();
+        this.NAME = name;
+        this.LOCATION = location;
+        this.TYPE = type;
+    }
+
+    // Getters
+    public UUID getID() {
+        return ID;
     }
 
     public String getName() {
-        return name;
+        return NAME;
     }
 
     public String getLocation() {
-        return location;
+        return LOCATION;
     }
 
     public Type getType() {

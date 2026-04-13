@@ -1,3 +1,5 @@
+package edu.kennesaw.smarthome.domain;
+
 interface LightState {
     private final String name;
     public enum Transitions {OFF, ON};
