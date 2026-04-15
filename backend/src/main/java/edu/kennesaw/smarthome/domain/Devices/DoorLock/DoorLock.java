@@ -21,16 +21,26 @@ public class DoorLock extends Device {
     // Methods //
 
     // Pass action onto the state object to handle and return the result
-    public ActionResult execute(DoorLockAction action) {
+    private ActionResult execute(DoorLockAction action) {
         return state.execute(action, this);
-    }
-
-    public String getStateName() {
-        return state.getName();
     }
 
     // Allow state objects to transition the context's state object to another
     protected void setState(DoorLockState newState) {
         this.state = newState;
     }
+
+    // Simplify state changing methods for external callers by directly exposing the actions as methods
+    public ActionResult lock() {
+        return execute(DoorLockAction.LOCK);
+    }
+
+    public ActionResult unlock() {
+        return execute(DoorLockAction.UNLOCK);
+    }
+
+    public String getStateName() {
+        return state.getName();
+    }
+
 }

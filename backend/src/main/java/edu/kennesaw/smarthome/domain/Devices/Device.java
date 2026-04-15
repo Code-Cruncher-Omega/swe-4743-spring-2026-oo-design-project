@@ -36,4 +36,9 @@ public abstract class Device {
     public Type getType() {
         return TYPE;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s (ID: %s) - Type: %s, Location: %s", NAME, ID, TYPE, LOCATION);
+    }
 }
