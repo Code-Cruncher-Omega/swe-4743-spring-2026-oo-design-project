@@ -1,4 +1,6 @@
-package edu.kennesaw.smarthome.domain;
+package edu.kennesaw.smarthome.domain.Devices.Thermostat;
+
+import edu.kennesaw.smarthome.domain.Devices.Device;
 
 public class Thermostat implements Device {
     // Metadata

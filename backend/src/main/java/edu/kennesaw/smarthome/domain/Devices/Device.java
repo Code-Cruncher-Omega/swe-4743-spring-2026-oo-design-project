@@ -1,9 +1,10 @@
-package edu.kennesaw.smarthome.domain;
+package edu.kennesaw.smarthome.domain.Devices;
 
 import java.util.UUID;
 
 public abstract class Device {
-    // Common Device Metadata
+    // Common Device Metadata //
+
     private final UUID ID;
     private final String NAME;
     private final String LOCATION;
@@ -18,7 +19,8 @@ public abstract class Device {
         this.TYPE = type;
     }
 
-    // Getters
+    // Getters //
+    
     public UUID getID() {
         return ID;
     }
