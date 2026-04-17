@@ -10,10 +10,10 @@ public class On implements LightState {
     }
 
     @Override
-    public ActionResult execute(LightAction action, Light context, int[] params) {
+    public ActionResult execute(LightAction action, Light deviceContext, int[] params) {
         switch (action) {
             case TURN_OFF:  // params is ignored
-                context.setState(new Off());
+                deviceContext.setState(new Off());
                 return new ActionResult(true, "TURN_OFF", "Light turned off successfully.");
             case TURN_ON:   // params is ignored
                 return new ActionResult(false, "TURN_ON", "Light is already on.");
@@ -25,7 +25,7 @@ public class On implements LightState {
                 if (brightness < 10 || brightness > 100) {
                     return new ActionResult(false, "SET_BRIGHTNESS", "Brightness must be between 0 and 100.");
                 }
-                context.setBrightness(brightness);
+                deviceContext.setBrightness(brightness);
                 return new ActionResult(true, "SET_BRIGHTNESS", String.format("Brightness set to %d%% successfully.", brightness));
             case SET_COLOR:
                 if (params.length != 3) {
@@ -37,7 +37,7 @@ public class On implements LightState {
                         return new ActionResult(false, "SET_COLOR", "Each RGB value must be between 0 and 255.");
                     }
                 }
-                context.setColor(rgb);
+                deviceContext.setColor(rgb);
                 return new ActionResult(true, "SET_COLOR", String.format("Color set to RGB(%d, %d, %d) successfully.", rgb[0], rgb[1], rgb[2]));
             default:
                 return new ActionResult(false, action.name(), "Invalid action for Light in On state.");

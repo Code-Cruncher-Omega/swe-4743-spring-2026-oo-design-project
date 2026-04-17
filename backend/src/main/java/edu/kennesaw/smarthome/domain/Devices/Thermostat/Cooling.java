@@ -10,15 +10,15 @@ public class Cooling implements ThermostatState {
     }
     
     @Override
-    public ActionResult execute(ThermostatAction action, Thermostat context) {
+    public ActionResult execute(ThermostatAction action, Thermostat deviceContext) {
         switch (action) {
             case TURN_OFF:
-                context.setState(new Off());
+                deviceContext.setState(new Off());
                 return new ActionResult(true, "TURN_OFF", "Thermostat turned off successfully.");
             case TURN_ON:
                 return new ActionResult(false, "TURN_ON", "Thermostat is already on.");
             case SET_IDLE:
-                context.setState(new Idle());
+                deviceContext.setState(new Idle());
                 return new ActionResult(true, "SET_IDLE", "Thermostat set to Idle mode.");
             case SET_COOLING:
                 return new ActionResult(false, "SET_COOLING", "Thermostat is already in Cooling mode.");

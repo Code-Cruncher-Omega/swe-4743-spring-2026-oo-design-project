@@ -10,10 +10,10 @@ public class Off implements ThermostatState {
     }
 
     @Override
-    public ActionResult execute(ThermostatAction action, Thermostat context) {
+    public ActionResult execute(ThermostatAction action, Thermostat deviceContext) {
         switch (action) {
             case TURN_ON:
-                context.setState(new Idle());   // Idle is essentially the On state for the thermostat
+                deviceContext.setState(new Idle());   // Idle is essentially the On state for the thermostat
                 return new ActionResult(true, "TURN_ON", "Thermostat turned on. Now in Idle mode.");
             case TURN_OFF:
                 return new ActionResult(false, "TURN_OFF", "Thermostat is already off.");

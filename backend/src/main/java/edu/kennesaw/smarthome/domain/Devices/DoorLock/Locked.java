@@ -10,10 +10,10 @@ public class Locked implements DoorLockState {
     }
 
     @Override
-    public ActionResult execute(DoorLockAction action, DoorLock context) {
+    public ActionResult execute(DoorLockAction action, DoorLock deviceContext) {
         switch (action) {
             case UNLOCK:
-                context.setState(new Unlocked());
+                deviceContext.setState(new Unlocked());
                 return new ActionResult(true, "UNLOCK", "Door unlocked successfully.");
             case LOCK:
                 return new ActionResult(false, "LOCK", "Door is already locked.");

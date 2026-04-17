@@ -9,13 +9,13 @@ public class Heating implements ThermostatState {
     }
 
     @Override
-    public ActionResult execute(Thermostat.ThermostatAction action, Thermostat context) {
+    public ActionResult execute(Thermostat.ThermostatAction action, Thermostat deviceContext) {
         switch (action) {
             case TURN_OFF:
-                context.setState(new Off());
+                deviceContext.setState(new Off());
                 return new ActionResult(true, "TURN_OFF", "Thermostat turned off.");
             case SET_IDLE:
-                context.setState(new Idle());
+                deviceContext.setState(new Idle());
                 return new ActionResult(true, "SET_IDLE", "Thermostat set to idle.");
             case SET_HEATING:
                 return new ActionResult(false, "SET_HEATING", "Thermostat is already in heating mode.");

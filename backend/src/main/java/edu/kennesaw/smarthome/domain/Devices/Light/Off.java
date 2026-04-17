@@ -10,10 +10,10 @@ public class Off implements LightState {
     }
 
     @Override
-    public ActionResult execute(LightAction action, Light context, int[] params) {
+    public ActionResult execute(LightAction action, Light deviceContext, int[] params) {
         switch (action) {
             case TURN_ON:   // params is ignored
-                context.setState(new On());
+                deviceContext.setState(new On());
                 return new ActionResult(true, "TURN_ON", "Light turned on successfully.");
             case TURN_OFF:  // params is ignored
                 return new ActionResult(false, "TURN_OFF", "Light is already off.");
