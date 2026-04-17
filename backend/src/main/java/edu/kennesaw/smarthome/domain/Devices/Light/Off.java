@@ -1,21 +1,24 @@
 package edu.kennesaw.smarthome.domain.Devices.Light;
 
 import edu.kennesaw.smarthome.domain.Devices.ActionResult;
+import edu.kennesaw.smarthome.domain.Devices.Light.Light.LightAction;
 
 public class Off implements LightState {
     @Override
     public String getName() {
-        return "OFF";
+        return "Off";
     }
 
     @Override
-    public ActionResult execute(Light.LightAction action, Light context, byte... params) {
+    public ActionResult execute(LightAction action, Light context, int[] params) {
         switch (action) {
-            case TURN_ON:
+            case TURN_ON:   // params is ignored
                 context.setState(new On());
                 return new ActionResult(true, "TURN_ON", "Light turned on successfully.");
+            case TURN_OFF:  // params is ignored
+                return new ActionResult(false, "TURN_OFF", "Light is already off.");
             default:
-                return new ActionResult(false, "TURN_ON", "Invalid action for OFF state.");
+                return new ActionResult(false, action.name(), "Invalid action for Off state.");
         }
     }
     

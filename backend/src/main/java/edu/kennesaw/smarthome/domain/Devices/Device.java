@@ -19,6 +19,11 @@ public abstract class Device {
         this.TYPE = type;
     }
 
+    // Common Device Methods //
+
+    // Reset the device to its default settings (e.g. turn off, set to lowest speed/brightness, etc.)
+    public abstract ActionResult reset();
+
     // Getters //
     
     public UUID getID() {

@@ -10,7 +10,7 @@ public class DoorLock extends Device {
     // DoorLock-specific variables //
 
     private DoorLockState state;
-    public enum DoorLockAction {LOCK, UNLOCK};  // All actions that can be performed
+    public enum DoorLockAction {LOCK, UNLOCK};  // All state transition actions
 
     // Constructor
     public DoorLock(String name, String location, Type type, DoorLockState initialState) {
@@ -30,7 +30,7 @@ public class DoorLock extends Device {
         this.state = newState;
     }
 
-    // Simplify state changing methods for external callers by directly exposing the actions as methods
+    // Simplify attribute changing methods for external callers by directly exposing the actions as methods
     public ActionResult lock() {
         return execute(DoorLockAction.LOCK);
     }
@@ -43,4 +43,8 @@ public class DoorLock extends Device {
         return state.getName();
     }
 
+    @Override
+    public ActionResult reset() {
+        
+    }
 }

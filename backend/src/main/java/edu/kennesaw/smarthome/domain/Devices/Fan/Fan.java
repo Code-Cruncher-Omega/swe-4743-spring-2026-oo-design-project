@@ -9,9 +9,9 @@ import edu.kennesaw.smarthome.domain.Devices.Device;
 public class Fan extends Device {
     // Fan-specific variables //
 
-    private String speed; // Values: "LOW", "MEDIUM", "HIGH" only
+    private String speed; // Values: "Low", "Medium", "High" only
     private FanState state;
-    public enum FanAction {TURN_ON, TURN_OFF, SET_SPEED_LOW, SET_SPEED_MEDIUM, SET_SPEED_HIGH};  // All actions that can be performed
+    public enum FanAction {TURN_ON, TURN_OFF, SET_SPEED};  // All state transition actions
 
     // Constructor
     public Fan(String name, String location, FanState initialState, String initialSpeed) {
@@ -23,13 +23,8 @@ public class Fan extends Device {
     // Methods //
 
     // Pass action onto the state object to handle and return the result
-    private ActionResult execute(FanAction action) {
-        return state.execute(action, this);
-    }
-
-    // Allow state objects to transition the context's state object to another
-    protected void setState(FanState newState) {
-        this.state = newState;
+    private ActionResult execute(FanAction action, String... params) {
+        return state.execute(action, this, params);
     }
 
     // Allow state objects to change the context's speed variable
@@ -37,18 +32,14 @@ public class Fan extends Device {
         this.speed = newSpeed;
     }
 
-    // Simplify state changing methods for external callers by directly exposing the actions as methods
+    // Allow state objects to transition the context's state object to another
+    protected void setState(FanState newState) {
+        this.state = newState;
+    }
+
+    // Simplify attribute changing methods for external callers by directly exposing the actions as methods
     public ActionResult changeSpeed(String input) {
-        switch (input.toUpperCase()) {
-            case "LOW":
-                return execute(FanAction.SET_SPEED_LOW);
-            case "MEDIUM":
-                return execute(FanAction.SET_SPEED_MEDIUM);
-            case "HIGH":
-                return execute(FanAction.SET_SPEED_HIGH);
-            default:
-                return new ActionResult(false, "CHANGE_SPEED", "Invalid speed input. Use LOW, MEDIUM, or HIGH.");
-        }
+        return execute(FanAction.SET_SPEED, input);
     }
 
     public ActionResult turnOn() {

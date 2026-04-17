@@ -2,7 +2,8 @@ package edu.kennesaw.smarthome.domain.Devices.Light;
 
 import edu.kennesaw.smarthome.domain.Devices.ActionResult;
 import edu.kennesaw.smarthome.domain.Devices.State;
+import edu.kennesaw.smarthome.domain.Devices.Light.Light.LightAction;
 
 interface LightState extends State {
-    public ActionResult execute(Light.LightAction action, Light context, byte... params);
+    public ActionResult execute(LightAction action, Light context, int[] params);
 }

@@ -1,6 +1,7 @@
 package edu.kennesaw.smarthome.domain.Devices.DoorLock;
 
 import edu.kennesaw.smarthome.domain.Devices.ActionResult;
+import edu.kennesaw.smarthome.domain.Devices.DoorLock.DoorLock.DoorLockAction;
 
 public class Locked implements DoorLockState {
     @Override
@@ -9,7 +10,7 @@ public class Locked implements DoorLockState {
     }
 
     @Override
-    public ActionResult execute(DoorLock.DoorLockAction action, DoorLock context) {
+    public ActionResult execute(DoorLockAction action, DoorLock context) {
         switch (action) {
             case UNLOCK:
                 context.setState(new Unlocked());

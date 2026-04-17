@@ -9,13 +9,13 @@ import edu.kennesaw.smarthome.domain.Devices.Device;
 public class Light extends Device {
     // Light-specific variables //
 
-    private byte brightness; // Values 10-100 only
-    private byte[] color;  // Size 3 array of RGB values, each 0-255 only
+    private int brightness; // Values 10-100 only
+    private int[] color;  // Size 3 array of RGB values, each 0-255 only
     private LightState state;
-    public enum LightAction {TURN_ON, TURN_OFF, SET_BRIGHTNESS, SET_COLOR};  // All actions that can be performed
+    public enum LightAction {TURN_ON, TURN_OFF, SET_BRIGHTNESS, SET_COLOR};  // All state transition actions
 
     // Constructor
-    public Light(String name, String location, LightState initialState, byte initialBrightness, byte[] initialColor) {
+    public Light(String name, String location, LightState initialState, int initialBrightness, int[] initialColor) {
         super(name, location, Type.LIGHT);
         this.state = initialState;
         this.brightness = initialBrightness;
@@ -25,8 +25,18 @@ public class Light extends Device {
     // Methods //
 
     // Pass action onto the state object to handle and return the result
-    private ActionResult execute(LightAction action, byte... params) {
+    private ActionResult execute(LightAction action, int... params) {
         return state.execute(action, this, params);
+    }
+
+    // Allow state objects to change the context's brightness variable
+    protected void setBrightness(int newBrightness) {
+        this.brightness = newBrightness;
+    }
+
+    // Allow state objects to change the context's color variable
+    protected void setColor(int[] newColor) {
+        this.color = newColor;
     }
 
     // Allow state objects to transition the context's state object to another
@@ -34,38 +44,9 @@ public class Light extends Device {
         this.state = newState;
     }
 
-    // Allow state objects to change the context's brightness variable
-    protected void setBrightness(byte newBrightness) {
-        this.brightness = newBrightness;
-    }
-
-    // Allow state objects to change the context's color variable
-    protected void setColor(byte[] newColor) {
-        this.color = newColor;
-    }
-
-    // Simplify state changing methods for external callers by directly exposing the actions as methods
-    public ActionResult changeBrightness(byte newBrightness) {
-        if(newBrightness < 10 || newBrightness > 100) {
-            return new ActionResult(false, "CHANGE_BRIGHTNESS", "Invalid brightness input. Use a value between 10 and 100.");
-        }
+    // Simplify attribute changing methods for external callers by directly exposing the actions as methods
+    public ActionResult changeBrightness(int newBrightness) {
         return execute(LightAction.SET_BRIGHTNESS, newBrightness);
-    }
-
-    public ActionResult changeColor(byte[] newColor) {
-        if(newColor.length != 3) {
-            return new ActionResult(false, "CHANGE_COLOR", "Invalid color input. Use an array of 3 bytes (RGB).");
-        }
-        for(byte colorComponent : newColor) {
-            if(colorComponent < 0 || colorComponent > 255) {
-                return new ActionResult(false, "CHANGE_COLOR", "Invalid color input. Each RGB value must be between 0 and 255.");
-            }
-        }
-        return execute(LightAction.SET_COLOR, newColor);
-    }
-
-    public ActionResult changeColor(byte r, byte g, byte b) {
-        return changeColor(new byte[] {r, g, b});
     }
 
     public ActionResult turnOn() {
@@ -80,11 +61,11 @@ public class Light extends Device {
         return state.getName();
     }
 
-    public byte getBrightness() {
+    public int getBrightness() {
         return brightness;
     }
 
-    public byte[] getColor() {
+    public int[] getColor() {
         return color;
     }
 }
