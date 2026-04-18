@@ -13,17 +13,12 @@ public abstract class Device<
     private final String LOCATION;
     // DeviceType is not stored as a field, but is retrieved via the getType() method, which is implemented by each concrete device class.
 
-    private S state;
+    protected S state;
 
     public Device(String name, String location, S state) {
         this.ID = UUID.randomUUID();
         this.NAME = name;
         this.LOCATION = location;
-        this.state = state;
-    }
-
-    // Should not be used by the device itself, but rather by the state implementations to change the device's current state.
-    protected void setState(S state) {
         this.state = state;
     }
 
@@ -47,10 +42,18 @@ public abstract class Device<
     // Device-specific actions and states should be the input for these methods, allowing for flexible and extensible device behavior.
 
     // The execute method will delegate the action execution to the current state of the device, allowing for state-specific behavior.
-    public abstract ActionResult execute(A action);
+    protected abstract ActionResult execute(A action);
 
+    protected abstract void setState(S newState);
+
+    // Each concrete device class will implement this method to return its specific DeviceType, which can be used for categorization and handling of different device types in the system.
     public abstract DeviceType getType();
 
     // The reset method will be implemented by each concrete device class to define how the device should reset itself to a default state.
     public abstract ActionResult reset();
+
+    @Override
+    public String toString() {
+        return String.format("%s (ID: %s, Location: %s, State: %s)", NAME, ID, LOCATION, state.getClass().getSimpleName());
+    }
 }

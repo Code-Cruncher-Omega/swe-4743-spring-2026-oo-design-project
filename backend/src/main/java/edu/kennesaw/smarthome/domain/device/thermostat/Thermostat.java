@@ -1,5 +1,7 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
-public class Thermostat {
+import edu.kennesaw.smarthome.domain.device.Device;
+
+public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAction> {
     
 }
