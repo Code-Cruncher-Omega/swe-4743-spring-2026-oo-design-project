@@ -15,16 +15,21 @@ public class OnState implements FanState {
             case TURN_ON:
                 return new ActionResult(true, "TURN_ON_FAN", "Fan is already on.");
             case SET_SPEED_LOW:
-                context.setSpeed(Speed.LOW);
+                context.setSpeed(FanSpeed.LOW);
                 return new ActionResult(true, "SET_FAN_SPEED_LOW", "Fan speed set to low.");
             case SET_SPEED_MEDIUM:
-                context.setSpeed(Speed.MEDIUM);
+                context.setSpeed(FanSpeed.MEDIUM);
                 return new ActionResult(true, "SET_FAN_SPEED_MEDIUM", "Fan speed set to medium.");
             case SET_SPEED_HIGH:
-                context.setSpeed(Speed.HIGH);
+                context.setSpeed(FanSpeed.HIGH);
                 return new ActionResult(true, "SET_FAN_SPEED_HIGH", "Fan speed set to high.");
             default:
                 return new ActionResult(false, action.name(), "Action not valid for fan in ON state.");
         }
+    }
+
+    @Override
+    public String getStateName() {
+        return "On";
     }
 }

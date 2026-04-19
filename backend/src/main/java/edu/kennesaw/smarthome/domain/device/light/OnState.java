@@ -48,4 +48,8 @@ public class OnState implements LightState {
         }
     }
     
+    @Override
+    public String getStateName() {
+        return "On";
+    }
 }

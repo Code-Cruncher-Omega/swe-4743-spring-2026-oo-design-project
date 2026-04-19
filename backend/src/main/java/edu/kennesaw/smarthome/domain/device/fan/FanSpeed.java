@@ -1,6 +1,6 @@
 package edu.kennesaw.smarthome.domain.device.fan;
 
-public enum Speed {
+public enum FanSpeed {
     LOW,
     MEDIUM,
     HIGH

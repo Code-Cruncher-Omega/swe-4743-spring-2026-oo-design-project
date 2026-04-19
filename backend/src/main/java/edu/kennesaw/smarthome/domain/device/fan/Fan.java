@@ -7,13 +7,18 @@ import edu.kennesaw.smarthome.domain.device.DeviceType;
 public class Fan extends Device<Fan, FanState, FanAction> {
 
     private final FanState INITIAL_STATE;
-    private final Speed INITIAL_SPEED;
+    private final FanSpeed INITIAL_SPEED;
     private final FanState ON_STATE;
     private final FanState OFF_STATE;
 
-    private Speed speed; // Speed enum values only.
+    private FanSpeed speed; // Speed enum values only.
 
-    public Fan(String name, String location, FanState initialState, Speed initialSpeed, FanState onState, FanState offState) {
+    public Fan( String name, 
+                String location, 
+                FanState initialState, 
+                FanSpeed initialSpeed, 
+                FanState onState, 
+                FanState offState) {
         super(name, location, initialState);
         this.INITIAL_STATE = initialState;
         this.INITIAL_SPEED = initialSpeed;
@@ -38,11 +43,11 @@ public class Fan extends Device<Fan, FanState, FanAction> {
     
     @Override
     protected void setState(FanState newState) {
-        this.state = newState;
+        state = newState;
     }
 
-    protected void setSpeed(Speed newSpeed) {
-        this.speed = newSpeed;
+    protected void setSpeed(FanSpeed newSpeed) {
+        speed = newSpeed;
     }
 
     @Override
@@ -50,14 +55,14 @@ public class Fan extends Device<Fan, FanState, FanAction> {
         return DeviceType.FAN;
     }
 
-    public Speed getSpeed() {
+    public FanSpeed getSpeed() {
         return speed;
     }
 
     @Override
     public ActionResult reset() {
-        this.state = INITIAL_STATE; // Reset to the initial state
-        this.speed = INITIAL_SPEED; // Reset speed to the initial speed
+        state = INITIAL_STATE; // Reset to the initial state
+        speed = INITIAL_SPEED; // Reset speed to the initial speed
         return new ActionResult(true, "RESET_FAN", "Fan reset to initial state.");
     }
 

@@ -15,7 +15,13 @@ public class Light extends Device<Light, LightState, LightAction> {
     private int brightness; // Brightness level (10-100)
     private int[] color; // RGB color values (0-255)
 
-    public Light(String name, String location, LightState initialState, int initialBrightness, int[] initialColor, LightState onState, LightState offState) {
+    public Light(   String name, 
+                    String location, 
+                    LightState initialState, 
+                    int initialBrightness, 
+                    int[] initialColor, 
+                    LightState onState, 
+                    LightState offState) {
         super(name, location, initialState);
         this.INITIAL_STATE = initialState;
         this.INITIAL_BRIGHTNESS = initialBrightness;
@@ -49,15 +55,15 @@ public class Light extends Device<Light, LightState, LightAction> {
 
     @Override
     protected void setState(LightState newState) {
-        this.state = newState;
+        state = newState;
     }
 
     protected void setBrightness(int newBrightness) {
-        this.brightness = newBrightness;
+        brightness = newBrightness;
     }
 
     protected void setColor(int[] newColor) {
-        this.color = newColor;
+        color = newColor;
     }
 
     public int getBrightness() {
@@ -75,9 +81,9 @@ public class Light extends Device<Light, LightState, LightAction> {
 
     @Override
     public ActionResult reset() {
-        this.brightness = INITIAL_BRIGHTNESS; // Reset brightness to the initial level
-        this.color = INITIAL_COLOR; // Reset color to the initial RGB values
-        this.state = INITIAL_STATE; // Reset to the initial state
+        brightness = INITIAL_BRIGHTNESS; // Reset brightness to the initial level
+        color = INITIAL_COLOR; // Reset color to the initial RGB values
+        state = INITIAL_STATE; // Reset to the initial state
         return new ActionResult(true, "RESET_LIGHT", "Light reset to initial state, brightness, and color.");
     }
 

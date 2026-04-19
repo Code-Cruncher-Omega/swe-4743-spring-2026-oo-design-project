@@ -10,7 +10,11 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction> {
     private final DoorLockState LOCKED_STATE;
     private final DoorLockState UNLOCKED_STATE;
 
-    public DoorLock(String name, String location, DoorLockState initialState, DoorLockState lockedState, DoorLockState unlockedState) {
+    public DoorLock(String name, 
+                    String location, 
+                    DoorLockState initialState, 
+                    DoorLockState lockedState, 
+                    DoorLockState unlockedState) {
         super(name, location, initialState);
         this.INITIAL_STATE = initialState;
         this.LOCKED_STATE = lockedState;
@@ -48,11 +52,7 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction> {
     }
 
     // Convenience methods for common actions, which internally call the execute method with the appropriate action.
-    public ActionResult lock() {
-        return execute(DoorLockAction.LOCK);
-    }
-
-    public ActionResult unlock() {
-        return execute(DoorLockAction.UNLOCK);
+    public ActionResult toggleLock() {
+        return execute(DoorLockAction.TOGGLE_LOCK);
     }
 }
