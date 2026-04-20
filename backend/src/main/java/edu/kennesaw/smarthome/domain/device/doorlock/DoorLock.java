@@ -1,25 +1,26 @@
 package edu.kennesaw.smarthome.domain.device.doorlock;
 
+import java.util.Map;
+
 import edu.kennesaw.smarthome.domain.device.ActionResult;
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 
-public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction> {
+public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, DoorLockStateType> {
 
     private final DoorLockState INITIAL_STATE;  // Stores the initial state, used for resetting the device to its default state.
-    private final DoorLockState LOCKED_STATE;
-    private final DoorLockState UNLOCKED_STATE;
+    
+    private final Map<DoorLockStateType, DoorLockState> STATES;
 
     public DoorLock(String name, 
                     String location, 
+
                     DoorLockState initialState, 
-                    DoorLockState lockedState, 
-                    DoorLockState unlockedState) {
+                    Map<DoorLockStateType, DoorLockState> states) {
         super(name, location, initialState);
         
         this.INITIAL_STATE = initialState;
-        this.LOCKED_STATE = lockedState;
-        this.UNLOCKED_STATE = unlockedState;
+        this.STATES = states;
     }
 
     @Override
@@ -29,11 +30,11 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction> {
     }
 
     protected DoorLockState getLockedState() {
-        return LOCKED_STATE;
+        return STATES.get(DoorLockStateType.LOCKED);
     }
 
     protected DoorLockState getUnlockedState() {
-        return UNLOCKED_STATE;
+        return STATES.get(DoorLockStateType.UNLOCKED);
     }
 
     @Override

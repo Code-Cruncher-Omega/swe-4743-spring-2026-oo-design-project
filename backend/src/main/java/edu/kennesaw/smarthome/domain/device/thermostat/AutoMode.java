@@ -2,7 +2,7 @@ package edu.kennesaw.smarthome.domain.device.thermostat;
 
 import org.springframework.stereotype.Component;
 
-@Component("thermostatAutoMode")
+@Component
 public class AutoMode implements ThermostatMode {
     @Override
     public ThermostatState updateAmbientTemperature(Thermostat context) {
@@ -15,5 +15,9 @@ public class AutoMode implements ThermostatMode {
             return context.getCoolingState();
         }
         return context.getIdleState();  // ambient == desired, so return IDLE state.
+    }
+    @Override
+    public ThermostatModeType getModeType() {
+        return ThermostatModeType.AUTO;
     }
 }

@@ -3,9 +3,10 @@ package edu.kennesaw.smarthome.domain.device;
 import java.util.UUID;
 
 public abstract class Device<
-    D extends Device<D, S, A>, 
-    S extends DeviceState<D, A>, 
-    A extends Action> {
+    D extends Device<D, S, A, T>, 
+    S extends DeviceState<D, A, T>, 
+    A extends DeviceAction,
+    T extends DeviceStateType> {
     // Common Metadata and methods for all devices //
 
     private final UUID ID;

@@ -1,8 +1,8 @@
 package edu.kennesaw.smarthome.domain.device.fan;
 
-import edu.kennesaw.smarthome.domain.device.Action;
+import edu.kennesaw.smarthome.domain.device.DeviceAction;
 
-public enum FanAction implements Action {
+public enum FanAction implements DeviceAction {
     TOGGLE_POWER,
     SET_SPEED_LOW,
     SET_SPEED_MEDIUM,

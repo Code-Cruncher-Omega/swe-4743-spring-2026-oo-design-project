@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import edu.kennesaw.smarthome.domain.device.ActionResult;
 
-@Component("thermostatCoolingState")
+@Component
 public class CoolingState implements ThermostatState {
     @Override
     public ActionResult execute(Thermostat context, ThermostatAction action) {
@@ -18,11 +18,11 @@ public class CoolingState implements ThermostatState {
             case UPDATE_AMBIENCE:
                 ThermostatMode currentMode = context.getCurrentMode();
                 ThermostatState transitionState = currentMode.updateAmbientTemperature(context);
-                String verb = transitionState.getStateName();
-                if(verb.equals(getStateName())) {
+                ThermostatStateType newStateType = transitionState.getStateType();
+                if(newStateType.equals(getStateType())) {
                     return new ActionResult(true, "THERMOSTAT_STILL_COOLING", "Thermostat continues cooling.");
                 } else {
-                    return new ActionResult(true, "SET_THERMOSTAT_" + verb.toUpperCase(), "Thermostat is now " + verb.toLowerCase() + ".");
+                    return new ActionResult(true, "SET_THERMOSTAT_" + newStateType.name().toUpperCase(), "Thermostat is now " + newStateType.name().toLowerCase() + ".");
                 }
             default:
                 return new ActionResult(false, action.name(), "Action not valid for thermostat in idle state.");
@@ -30,7 +30,7 @@ public class CoolingState implements ThermostatState {
     }
 
     @Override
-    public String getStateName() {
-        return "Cooling";
+    public ThermostatStateType getStateType() {
+        return ThermostatStateType.COOLING;
     }
 }

@@ -1,33 +1,31 @@
 package edu.kennesaw.smarthome.domain.device.fan;
 
+import java.util.Map;
+
 import edu.kennesaw.smarthome.domain.device.ActionResult;
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
-import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatAction;
 
-public class Fan extends Device<Fan, FanState, FanAction> {
+public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
 
     private final FanState INITIAL_STATE;
     private final FanSpeed INITIAL_SPEED;
-
-    private final FanState ON_STATE;
-    private final FanState OFF_STATE;
+    
+    private final Map<FanStateType, FanState> STATES;
 
     private FanSpeed speed; // Speed enum values only.
 
     public Fan( String name, 
                 String location, 
+
                 FanState initialState, 
                 FanSpeed initialSpeed, 
-                FanState onState, 
-                FanState offState) {
+                Map<FanStateType, FanState> states) {
         super(name, location, initialState);
 
         this.INITIAL_STATE = initialState;
         this.INITIAL_SPEED = initialSpeed;
-
-        this.ON_STATE = onState;
-        this.OFF_STATE = offState;
+        this.STATES = states;
         
         this.speed = initialSpeed;
     }
@@ -39,11 +37,11 @@ public class Fan extends Device<Fan, FanState, FanAction> {
     }
 
     protected FanState getOnState() {
-        return ON_STATE;
+        return STATES.get(FanStateType.ON);
     }
 
     protected FanState getOffState() {
-        return OFF_STATE;
+        return STATES.get(FanStateType.OFF);
     }
     
     @Override

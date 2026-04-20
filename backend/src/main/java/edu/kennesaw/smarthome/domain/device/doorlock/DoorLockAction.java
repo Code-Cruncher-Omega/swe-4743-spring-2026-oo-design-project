@@ -1,7 +1,7 @@
 package edu.kennesaw.smarthome.domain.device.doorlock;
 
-import edu.kennesaw.smarthome.domain.device.Action;
+import edu.kennesaw.smarthome.domain.device.DeviceAction;
 
-public enum DoorLockAction implements Action {
+public enum DoorLockAction implements DeviceAction {
     TOGGLE_LOCK
 }

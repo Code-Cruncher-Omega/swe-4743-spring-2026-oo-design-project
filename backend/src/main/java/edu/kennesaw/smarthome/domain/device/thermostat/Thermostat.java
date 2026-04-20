@@ -1,13 +1,15 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 
 import edu.kennesaw.smarthome.domain.device.ActionResult;
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 
-@Component("thermostat")
-public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAction> {
+@Component
+public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAction, ThermostatStateType> {
     
     private final ThermostatState INITIAL_STATE;
     private final ThermostatMode INITIAL_MODE;
@@ -16,30 +18,28 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     private final int INITIAL_DESIRED_TEMPERATURE_VALUE;
     // AMBIENT_TEMPERATURE does not get reset, so no initial values need to be stored for the object.
 
-    private final ThermostatState OFF_STATE;
-    private final ThermostatState IDLE_STATE;
-    private final ThermostatState HEATING_STATE;
-    private final ThermostatState COOLING_STATE;
+    private final Map<ThermostatStateType, ThermostatState> STATES;
 
-    // ThermostatMode change AMBIENT_TEMPERATURE in their own unique way.
-    private final ThermostatMode HEAT_MODE;
-    private final ThermostatMode COOL_MODE;
-    private final ThermostatMode AUTO_MODE;
+    // Concrete ThermostatMode class objects change AMBIENT_TEMPERATURE in their own unique way.
+    private final Map<ThermostatModeType, ThermostatMode> MODES;
 
     private ThermostatMode currentMode; // HEAT, COOL, AUTO.
+    // Only the values of desired and ambient temperatures ever change, not the address (aka location) of the temperatures.
     private final Temperature DESIRED_TEMPERATURE; // Between 60 and 80 degrees Farenheit.
-    private final Temperature AMBIENT_TEMPERATURE;  // The environment a thermostat is in does not change, so it's final.
+    private final Temperature AMBIENT_TEMPERATURE;  // The temperature of the environment the thermostat is in.
 
     public Thermostat(  String name, 
                         String location, 
+
                         ThermostatState initialState, 
                         ThermostatMode initialMode, 
                         Temperature initialDesiredTemperature,
                         Temperature ambientTemperature, 
-                        ThermostatState offState, 
-                        ThermostatState idleState, 
-                        ThermostatState heatingState, 
-                        ThermostatState coolingState,
+
+                        Map<ThermostatStateType, ThermostatState> states,
+
+                        Map<ThermostatModeType, ThermostatMode> modes,
+
                         ThermostatMode heatMode,
                         ThermostatMode coolMode,
                         ThermostatMode autoMode) {
@@ -50,14 +50,9 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
         this.INITIAL_DESIRED_TEMPERATURE_UNIT = initialDesiredTemperature.getUnit();
         this.INITIAL_DESIRED_TEMPERATURE_VALUE = initialDesiredTemperature.getValue();
 
-        this.OFF_STATE = offState;
-        this.IDLE_STATE = idleState;
-        this.HEATING_STATE = heatingState;
-        this.COOLING_STATE = coolingState;
+        this.STATES = states;
 
-        this.HEAT_MODE = heatMode;
-        this.COOL_MODE = coolMode;
-        this.AUTO_MODE = autoMode;
+        this.MODES = modes;
 
         this.currentMode = initialMode;
         this.DESIRED_TEMPERATURE = initialDesiredTemperature;
@@ -70,19 +65,19 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     }
 
     protected ThermostatState getOffState() {
-        return OFF_STATE;
+        return STATES.get(ThermostatStateType.OFF);
     }
 
     protected ThermostatState getIdleState() {
-        return IDLE_STATE;
+        return STATES.get(ThermostatStateType.IDLE);
     }
 
     protected ThermostatState getHeatingState() {
-        return HEATING_STATE;
+        return STATES.get(ThermostatStateType.HEATING);
     }
 
     protected ThermostatState getCoolingState() {
-        return COOLING_STATE;
+        return STATES.get(ThermostatStateType.COOLING);
     }
 
     protected ThermostatMode getCurrentMode() {
@@ -125,17 +120,17 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     }
 
     public ActionResult setModeHeat() {
-        currentMode = HEAT_MODE;
+        currentMode = MODES.get(ThermostatModeType.HEAT);
         return new ActionResult(true, "SET_MODE_HEAT", "Thermostat mode set to HEAT.");
     }
 
     public ActionResult setModeCool() {
-        currentMode = COOL_MODE;
+        currentMode = MODES.get(ThermostatModeType.COOL);
         return new ActionResult(true, "SET_MODE_COOL", "Thermostat mode set to COOL.");
     }
 
     public ActionResult setModeAuto() {
-        currentMode = AUTO_MODE;
+        currentMode = MODES.get(ThermostatModeType.AUTO);
         return new ActionResult(true, "SET_MODE_AUTO", "Thermostat mode set to AUTO.");
     }
     

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import edu.kennesaw.smarthome.domain.device.ActionResult;
 
-@Component("fanOffState")
+@Component
 public class OffState implements FanState {
     @Override
     public ActionResult execute(Fan context, FanAction action) {
@@ -18,7 +18,7 @@ public class OffState implements FanState {
     }
 
     @Override
-    public String getStateName() {
-        return "Off";
+    public FanStateType getStateType() {
+        return FanStateType.OFF;
     }
 }

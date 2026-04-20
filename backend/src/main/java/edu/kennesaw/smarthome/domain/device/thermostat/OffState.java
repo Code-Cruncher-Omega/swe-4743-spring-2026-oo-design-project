@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import edu.kennesaw.smarthome.domain.device.ActionResult;
 
-@Component("thermostatOffState")
+@Component
 public class OffState implements ThermostatState {
     @Override
     public ActionResult execute(Thermostat context, ThermostatAction action) {
@@ -18,7 +18,7 @@ public class OffState implements ThermostatState {
     }
 
     @Override
-    public String getStateName() {
-        return "Off";
+    public ThermostatStateType getStateType() {
+        return ThermostatStateType.OFF;
     }
 }

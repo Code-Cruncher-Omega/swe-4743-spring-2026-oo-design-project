@@ -1,36 +1,36 @@
 package edu.kennesaw.smarthome.domain.device.light;
 
+import java.util.Map;
+
 import edu.kennesaw.smarthome.domain.device.ActionResult;
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 
-public class Light extends Device<Light, LightState, LightAction> {
+public class Light extends Device<Light, LightState, LightAction, LightStateType> {
 
     private final LightState INITIAL_STATE;
     private final int INITIAL_BRIGHTNESS;
     private final int[] INITIAL_COLOR;
-
-    private final LightState ON_STATE;
-    private final LightState OFF_STATE;
+    
+    private final Map<LightStateType, LightState> STATES;
 
     private int brightness; // Brightness level (10-100)
     private int[] color; // RGB color values (0-255)
 
     public Light(   String name, 
                     String location, 
+
                     LightState initialState, 
                     int initialBrightness, 
                     int[] initialColor, 
-                    LightState onState, 
-                    LightState offState) {
+
+                    Map<LightStateType, LightState> states) {
         super(name, location, initialState);
 
         this.INITIAL_STATE = initialState;
         this.INITIAL_BRIGHTNESS = initialBrightness;
         this.INITIAL_COLOR = initialColor;
-
-        this.ON_STATE = onState;
-        this.OFF_STATE = offState;
+        this.STATES = states;
         
         this.brightness = initialBrightness;
         this.color = initialColor;
@@ -50,11 +50,11 @@ public class Light extends Device<Light, LightState, LightAction> {
     }
 
     protected LightState getOnState() {
-        return ON_STATE;
+        return STATES.get(LightStateType.ON);
     }
 
     protected LightState getOffState() {
-        return OFF_STATE;
+        return STATES.get(LightStateType.OFF);
     }
 
     @Override

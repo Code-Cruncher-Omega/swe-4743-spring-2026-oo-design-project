@@ -28,7 +28,7 @@ public class OffState implements LightState {
     }
     
     @Override
-    public String getStateName() {
-        return "Off";
+    public LightStateType getStateType() {
+        return LightStateType.OFF;
     }
 }
