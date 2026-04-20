@@ -9,11 +9,9 @@ public class OnState implements FanState {
     @Override
     public ActionResult execute(Fan context, FanAction action) {
         switch (action) {
-            case TURN_OFF:
+            case TOGGLE_POWER:
                 context.setState(context.getOffState());
-                return new ActionResult(true, "TURN_OFF_FAN", "Fan turned off.");
-            case TURN_ON:
-                return new ActionResult(true, "TURN_ON_FAN", "Fan is already on.");
+                return new ActionResult(true, "TOGGLE_FAN_POWER", "Fan turned off.");
             case SET_SPEED_LOW:
                 context.setSpeed(FanSpeed.LOW);
                 return new ActionResult(true, "SET_FAN_SPEED_LOW", "Fan speed set to low.");
@@ -24,7 +22,7 @@ public class OnState implements FanState {
                 context.setSpeed(FanSpeed.HIGH);
                 return new ActionResult(true, "SET_FAN_SPEED_HIGH", "Fan speed set to high.");
             default:
-                return new ActionResult(false, action.name(), "Action not valid for fan in ON state.");
+                return new ActionResult(false, action.name(), "Action not valid for fan in on state.");
         }
     }
 

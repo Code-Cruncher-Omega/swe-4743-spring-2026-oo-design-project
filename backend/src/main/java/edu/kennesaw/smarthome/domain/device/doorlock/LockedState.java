@@ -11,9 +11,9 @@ public class LockedState implements DoorLockState {
         switch (action) {
             case TOGGLE_LOCK:
                 context.setState(context.getUnlockedState());
-                return new ActionResult(true, "TOGGLE_DOOR_LOCK", "Door lock toggled to UNLOCKED state.");
+                return new ActionResult(true, "TOGGLE_DOOR_LOCK", "Door lock toggled to unlocked state.");
             default:
-                return new ActionResult(false, action.name(), "Action not valid for door lock in LOCKED state.");
+                return new ActionResult(false, action.name(), "Action not valid for door lock in locked state.");
         }
     }
 

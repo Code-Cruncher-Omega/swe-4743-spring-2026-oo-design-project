@@ -3,11 +3,13 @@ package edu.kennesaw.smarthome.domain.device.fan;
 import edu.kennesaw.smarthome.domain.device.ActionResult;
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
+import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatAction;
 
 public class Fan extends Device<Fan, FanState, FanAction> {
 
     private final FanState INITIAL_STATE;
     private final FanSpeed INITIAL_SPEED;
+
     private final FanState ON_STATE;
     private final FanState OFF_STATE;
 
@@ -20,10 +22,13 @@ public class Fan extends Device<Fan, FanState, FanAction> {
                 FanState onState, 
                 FanState offState) {
         super(name, location, initialState);
+
         this.INITIAL_STATE = initialState;
         this.INITIAL_SPEED = initialSpeed;
+
         this.ON_STATE = onState;
         this.OFF_STATE = offState;
+        
         this.speed = initialSpeed;
     }
 
@@ -66,12 +71,8 @@ public class Fan extends Device<Fan, FanState, FanAction> {
         return new ActionResult(true, "RESET_FAN", "Fan reset to initial state.");
     }
 
-    public ActionResult turnOn() {
-        return execute(FanAction.TURN_ON);
-    }
-
-    public ActionResult turnOff() {
-        return execute(FanAction.TURN_OFF);
+    public ActionResult togglePower() {
+        return state.execute(this, FanAction.TOGGLE_POWER);
     }
 
     public ActionResult changeSpeedLow() {

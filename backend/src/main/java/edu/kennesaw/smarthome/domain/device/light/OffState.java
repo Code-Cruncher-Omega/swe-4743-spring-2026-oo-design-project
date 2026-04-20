@@ -19,13 +19,11 @@ public class OffState implements LightState {
     @Override
     public ActionResult execute(Light context, LightAction action) {
         switch(action) {
-            case TURN_ON:
+            case TOGGLE_POWER:
                 context.setState(context.getOnState()); // Transition to the on state
-                return new ActionResult(true, "TURN_ON_LIGHT", "Light turned on successfully.");
-            case TURN_OFF:
-                return new ActionResult(true, "TURN_OFF_LIGHT", "Light is already off.");
+                return new ActionResult(true, "TOGGLE_LIGHT_POWER", "Light turned on successfully.");
             default:
-                return new ActionResult(false, action.name(), "Action not valid for light in OFF state.");
+                return new ActionResult(false, action.name(), "Action not valid for light in off state.");
         }
     }
     

@@ -1,5 +1,8 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
+import org.springframework.stereotype.Component;
+
+@Component("temperature")
 public class Temperature {
     private String unit;    // Farenheit, Celsius, Kelvin.
     private int value;

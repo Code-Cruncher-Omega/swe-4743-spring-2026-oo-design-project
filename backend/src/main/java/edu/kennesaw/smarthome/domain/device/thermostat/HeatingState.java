@@ -8,51 +8,25 @@ import edu.kennesaw.smarthome.domain.device.ActionResult;
 public class HeatingState implements ThermostatState {
     @Override
     public ActionResult execute(Thermostat context, ThermostatAction action) {
+        context.getAmbientTemperature().increase(); // Ambient temperature increases before entering another state (heating occurs during this state).
+
         switch (action) {
-            case TURN_OFF:
+            case TOGGLE_POWER:
+                context.getAmbientTemperature().decrease(); // State was interrupted, so the thermostat never finished heating.
                 context.setState(context.getOffState());
-                return new ActionResult(true, "TURN_THERMOSTAT_OFF", "Thermostat turned off.");
-            case SET_IDLE:
-                context.setState(context.getIdleState());
-                return new ActionResult(true, "SET_THERMOSTAT_IDLE", "Thermostat is now idling.");
-            case HEATING_UP:
-                context.getAmbientTemperature().increase();
-                return new ActionResult(true, "HEATING_UP_THERMOSTAT_AMBIENT_TEMPERATURE", "Heated up the ambient temperature of thermostat by 1 degree Farenheit.");
+                return new ActionResult(true, "TOGGLE_THERMOSTAT_POWER", "Thermostat turned off.");
+            case UPDATE_AMBIENCE:
+                ThermostatMode currentMode = context.getCurrentMode();
+                ThermostatState transitionState = currentMode.updateAmbientTemperature(context);
+                String verb = transitionState.getStateName();
+                if(verb.equals(getStateName())) {
+                    return new ActionResult(true, "THERMOSTAT_STILL_HEATING", "Thermostat continues heating.");
+                } else {
+                    return new ActionResult(true, "SET_THERMOSTAT_" + verb.toUpperCase(), "Thermostat is now " + verb.toLowerCase() + ".");
+                }
             default:
-                return new ActionResult(false, action.name(), "Action not valid for thermostat in HEATING state.");
+                return new ActionResult(false, action.name(), "Action not valid for thermostat in idle state.");
         }
-    }
-
-    @Override
-    public ActionResult updateAmbientTemperature(Thermostat context) {
-        Temperature ambientTemperature = context.getAmbientTemperature();
-        Temperature desiredTemperature = context.getDesiredTemperature();
-
-        if(ambientTemperature.getUnit() != desiredTemperature.getUnit()) {
-            return new ActionResult(false, "UPDATE_THERMOSTAT_AMBIENT_TEMPERATURE", "Ambient temperature unit does not match thermostat's desired temperature unit.");
-        }
-        if(ambientTemperature.getValue() < desiredTemperature.getValue()) {
-            ThermostatMode currentMode = context.getCurrentMode();
-            if(currentMode == ThermostatMode.HEAT || currentMode == ThermostatMode.AUTO) {
-                return execute(context, ThermostatAction.HEATING_UP);
-            } else {
-                context.setState(context.getIdleState());
-                return new ActionResult(true, "UPDATE_THERMOSTAT_AMBIENT_TEMPERATURE", "Ambient temperature is below desired temperature, but thermostat is not set to heat or auto mode. Ambient temperature is unchanged.");
-            }
-        }
-        else if(ambientTemperature.getValue() > desiredTemperature.getValue()) {
-            ThermostatMode currentMode = context.getCurrentMode();
-            if(currentMode == ThermostatMode.COOL || currentMode == ThermostatMode.AUTO) {
-                ThermostatState newState = context.getCoolingState();
-                context.setState(newState);
-                return newState.execute(context, ThermostatAction.COOLING_DOWN);
-            } else {
-                context.setState(context.getIdleState());
-                return new ActionResult(true, "UPDATE_THERMOSTAT_AMBIENT_TEMPERATURE", "Ambient temperature is above desired temperature, but thermostat is not set to cool or auto mode. Ambient temperature is unchanged.");
-            }
-        }
-        context.setState(context.getIdleState());
-        return new ActionResult(true, "UPDATE_THERMOSTAT_AMBIENT_TEMPERATURE", "Ambient temperature is at desired level. Ambient temperature is unchanged.");
     }
 
     @Override

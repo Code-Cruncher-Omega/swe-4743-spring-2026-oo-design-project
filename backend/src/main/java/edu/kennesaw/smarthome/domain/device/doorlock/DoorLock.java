@@ -16,6 +16,7 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction> {
                     DoorLockState lockedState, 
                     DoorLockState unlockedState) {
         super(name, location, initialState);
+        
         this.INITIAL_STATE = initialState;
         this.LOCKED_STATE = lockedState;
         this.UNLOCKED_STATE = unlockedState;

@@ -3,6 +3,6 @@ package edu.kennesaw.smarthome.domain.device;
 public interface DeviceState<D extends Device<D, ?, A>, A extends Action> {
     // Each state will implement this method to handle the actions that are valid for that state.
     // The device context is passed in so that the state can modify the device's properties if needed.
-    ActionResult execute(D context, A action);
-    String getStateName();
+    public ActionResult execute(D context, A action);
+    public String getStateName();
 }

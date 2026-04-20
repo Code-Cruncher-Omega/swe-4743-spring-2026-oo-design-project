@@ -5,5 +5,5 @@ import edu.kennesaw.smarthome.domain.device.DeviceState;
 
 public interface DoorLockState extends DeviceState<DoorLock, DoorLockAction> {
     @Override
-    ActionResult execute(DoorLock context, DoorLockAction action);
+    public ActionResult execute(DoorLock context, DoorLockAction action);
 }

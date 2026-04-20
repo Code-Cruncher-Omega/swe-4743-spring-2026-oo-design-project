@@ -9,6 +9,7 @@ public class Light extends Device<Light, LightState, LightAction> {
     private final LightState INITIAL_STATE;
     private final int INITIAL_BRIGHTNESS;
     private final int[] INITIAL_COLOR;
+
     private final LightState ON_STATE;
     private final LightState OFF_STATE;
 
@@ -23,11 +24,14 @@ public class Light extends Device<Light, LightState, LightAction> {
                     LightState onState, 
                     LightState offState) {
         super(name, location, initialState);
+
         this.INITIAL_STATE = initialState;
         this.INITIAL_BRIGHTNESS = initialBrightness;
         this.INITIAL_COLOR = initialColor;
+
         this.ON_STATE = onState;
         this.OFF_STATE = offState;
+        
         this.brightness = initialBrightness;
         this.color = initialColor;
     }
@@ -97,5 +101,9 @@ public class Light extends Device<Light, LightState, LightAction> {
 
     public ActionResult changeColor(int r, int g, int b) {
         return changeColor(new int[] {r, g, b});
+    }
+
+    public ActionResult togglePower() {
+        return state.execute(this, LightAction.TOGGLE_POWER);
     }
 }
