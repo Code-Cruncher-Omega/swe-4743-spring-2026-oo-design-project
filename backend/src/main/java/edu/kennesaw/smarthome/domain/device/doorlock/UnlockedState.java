@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import edu.kennesaw.smarthome.domain.device.ActionResult;
 
-@Component
+@Component("doorUnlockedState")
 public class UnlockedState implements DoorLockState {
     @Override
     public ActionResult execute(DoorLock context, DoorLockAction action) {

@@ -1,7 +1,10 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
+import org.springframework.stereotype.Component;
+
 import edu.kennesaw.smarthome.domain.device.ActionResult;
 
+@Component("thermostatCoolingState")
 public class CoolingState implements ThermostatState {
     @Override
     public ActionResult execute(Thermostat context, ThermostatAction action) {
@@ -54,6 +57,6 @@ public class CoolingState implements ThermostatState {
 
     @Override
     public String getStateName() {
-        return "Heating";
+        return "Cooling";
     }
 }
