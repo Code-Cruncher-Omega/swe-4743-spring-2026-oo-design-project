@@ -27,8 +27,9 @@ public class IdleState implements ThermostatState {
         if(ambientTemperature.getValue() < desiredTemperature.getValue()) {
             ThermostatMode currentMode = context.getCurrentMode();
             if(currentMode == ThermostatMode.HEAT || currentMode == ThermostatMode.AUTO) {
-                context.setState(context.getHeatingState());
-                return execute(context, ThermostatAction.HEATING_UP);
+                ThermostatState newState = context.getHeatingState();
+                context.setState(newState);
+                return newState.execute(context, ThermostatAction.HEATING_UP);
             } else {
                 return new ActionResult(true, "UPDATE_THERMOSTAT_AMBIENT_TEMPERATURE", "Ambient temperature is below desired temperature, but thermostat is not set to heat or auto mode. Ambient temperature is unchanged.");
             }
@@ -36,8 +37,9 @@ public class IdleState implements ThermostatState {
         else if(ambientTemperature.getValue() > desiredTemperature.getValue()) {
             ThermostatMode currentMode = context.getCurrentMode();
             if(currentMode == ThermostatMode.COOL || currentMode == ThermostatMode.AUTO) {
-                context.setState(context.getCoolingState());
-                return execute(context, ThermostatAction.COOLING_DOWN);
+                ThermostatState newState = context.getCoolingState();
+                context.setState(newState);
+                return newState.execute(context, ThermostatAction.COOLING_DOWN);
             } else {
                 return new ActionResult(true, "UPDATE_THERMOSTAT_AMBIENT_TEMPERATURE", "Ambient temperature is above desired temperature, but thermostat is not set to cool or auto mode. Ambient temperature is unchanged.");
             }

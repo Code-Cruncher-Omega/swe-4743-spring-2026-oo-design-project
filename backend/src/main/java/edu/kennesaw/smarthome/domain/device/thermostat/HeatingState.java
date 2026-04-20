@@ -40,8 +40,9 @@ public class HeatingState implements ThermostatState {
         else if(ambientTemperature.getValue() > desiredTemperature.getValue()) {
             ThermostatMode currentMode = context.getCurrentMode();
             if(currentMode == ThermostatMode.COOL || currentMode == ThermostatMode.AUTO) {
-                context.setState(context.getCoolingState());
-                return execute(context, ThermostatAction.COOLING_DOWN);
+                ThermostatState newState = context.getCoolingState();
+                context.setState(newState);
+                return newState.execute(context, ThermostatAction.COOLING_DOWN);
             } else {
                 context.setState(context.getIdleState());
                 return new ActionResult(true, "UPDATE_THERMOSTAT_AMBIENT_TEMPERATURE", "Ambient temperature is above desired temperature, but thermostat is not set to cool or auto mode. Ambient temperature is unchanged.");
