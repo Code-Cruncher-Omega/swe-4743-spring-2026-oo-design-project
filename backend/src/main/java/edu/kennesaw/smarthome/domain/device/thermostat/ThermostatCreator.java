@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import edu.kennesaw.smarthome.domain.DeviceCreationRequest;
-import edu.kennesaw.smarthome.domain.DeviceCreator;
 import edu.kennesaw.smarthome.domain.device.Device;
+import edu.kennesaw.smarthome.domain.device.DeviceCreationRequest;
+import edu.kennesaw.smarthome.domain.device.DeviceCreator;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 import edu.kennesaw.smarthome.domain.device.doorlock.DoorLock;
 import edu.kennesaw.smarthome.domain.device.doorlock.DoorLockAction;
@@ -35,7 +35,8 @@ public class ThermostatCreator implements DeviceCreator<Thermostat, ThermostatSt
     @Override
     public Device<Thermostat, ThermostatState, ThermostatAction, ThermostatStateType> createDevice(DeviceCreationRequest request) {
         ThermostatState initialState = STATES.get(ThermostatStateType.OFF);  // Initial state for all Door Locks is set here.
-        ThermostatMode initialMode = 
+        ThermostatMode initialMode = MODES.get(ThermostatModeType.AUTO);
+
         
         return new Thermostat(request.name(), 
                             request.location(), 

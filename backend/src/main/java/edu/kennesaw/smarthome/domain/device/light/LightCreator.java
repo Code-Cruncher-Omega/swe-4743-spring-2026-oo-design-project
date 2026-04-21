@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import edu.kennesaw.smarthome.domain.DeviceCreationRequest;
-import edu.kennesaw.smarthome.domain.DeviceCreator;
 import edu.kennesaw.smarthome.domain.device.Device;
+import edu.kennesaw.smarthome.domain.device.DeviceCreationRequest;
+import edu.kennesaw.smarthome.domain.device.DeviceCreator;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 
 public class LightCreator implements DeviceCreator<Light, LightState, LightAction, LightStateType> {
