@@ -10,22 +10,20 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
 
     private final FanState INITIAL_STATE;
     private final FanSpeed INITIAL_SPEED;
-    
-    private final Map<FanStateType, FanState> STATES;
 
     private FanSpeed speed; // Speed enum values only.
 
     public Fan( String name, 
                 String location, 
-
                 FanState initialState, 
-                FanSpeed initialSpeed, 
-                Map<FanStateType, FanState> states) {
-        super(name, location, initialState);
+                Map<FanStateType, FanState> states,
+
+                FanSpeed initialSpeed
+                ) {
+        super(name, location, initialState, states);
 
         this.INITIAL_STATE = initialState;
         this.INITIAL_SPEED = initialSpeed;
-        this.STATES = states;
         
         this.speed = initialSpeed;
     }

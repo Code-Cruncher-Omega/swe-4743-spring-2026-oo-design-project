@@ -18,8 +18,6 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     private final int INITIAL_DESIRED_TEMPERATURE_VALUE;
     // AMBIENT_TEMPERATURE does not get reset, so no initial values need to be stored for the object.
 
-    private final Map<ThermostatStateType, ThermostatState> STATES;
-
     // Concrete ThermostatMode class objects change AMBIENT_TEMPERATURE in their own unique way.
     private final Map<ThermostatModeType, ThermostatMode> MODES;
 
@@ -30,27 +28,20 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
 
     public Thermostat(  String name, 
                         String location, 
+                        ThermostatState initialState,
+                        Map<ThermostatStateType, ThermostatState> states,
 
-                        ThermostatState initialState, 
                         ThermostatMode initialMode, 
                         Temperature initialDesiredTemperature,
                         Temperature ambientTemperature, 
 
-                        Map<ThermostatStateType, ThermostatState> states,
-
-                        Map<ThermostatModeType, ThermostatMode> modes,
-
-                        ThermostatMode heatMode,
-                        ThermostatMode coolMode,
-                        ThermostatMode autoMode) {
-        super(name, location, initialState);
+                        Map<ThermostatModeType, ThermostatMode> modes) {
+        super(name, location, initialState, states);
 
         this.INITIAL_STATE = initialState;
         this.INITIAL_MODE = initialMode;
         this.INITIAL_DESIRED_TEMPERATURE_UNIT = initialDesiredTemperature.getUnit();
         this.INITIAL_DESIRED_TEMPERATURE_VALUE = initialDesiredTemperature.getValue();
-
-        this.STATES = states;
 
         this.MODES = modes;
 

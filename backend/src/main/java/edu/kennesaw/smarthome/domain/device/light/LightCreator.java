@@ -28,12 +28,12 @@ public class LightCreator implements DeviceCreator<Light, LightState, LightActio
         int initialBrightness = 100;    // Initial brightness (10 - 100) for all Lights is set here.
         int[] initialColor = new int[] {255, 255, 255}; // Initial color (0 - 255 for each r, g, b value) is set here.
         
-        return new Light(request.name(), 
+        return new Light(   request.name(), 
                             request.location(), 
                             initialState,
+                            STATES,
                             initialBrightness,
-                            initialColor, 
-                            STATES);
+                            initialColor);
     }
     
     @Override

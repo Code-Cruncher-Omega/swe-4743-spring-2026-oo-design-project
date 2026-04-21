@@ -9,18 +9,14 @@ import edu.kennesaw.smarthome.domain.device.DeviceType;
 public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, DoorLockStateType> {
 
     private final DoorLockState INITIAL_STATE;  // Stores the initial state, used for resetting the device to its default state.
-    
-    private final Map<DoorLockStateType, DoorLockState> STATES;
 
     public DoorLock(String name, 
                     String location, 
-
                     DoorLockState initialState, 
                     Map<DoorLockStateType, DoorLockState> states) {
-        super(name, location, initialState);
+        super(name, location, initialState, states);
         
         this.INITIAL_STATE = initialState;
-        this.STATES = states;
     }
 
     @Override

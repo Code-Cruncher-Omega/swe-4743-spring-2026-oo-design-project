@@ -31,11 +31,11 @@ public class FanCreator implements DeviceCreator<Fan, FanState, FanAction, FanSt
         FanState initialState = STATES.get(FanStateType.OFF);  // Initial state for all Fans is set here.
         FanSpeed initialSpeed = FanSpeed.MEDIUM;    // Initial speed for all Fans is set here.
         
-        return new Fan(request.name(), 
-                            request.location(), 
-                            initialState,
-                            initialSpeed, 
-                            STATES);
+        return new Fan( request.name(), 
+                        request.location(), 
+                        initialState,
+                        STATES,
+                        initialSpeed);
     }
     
     @Override

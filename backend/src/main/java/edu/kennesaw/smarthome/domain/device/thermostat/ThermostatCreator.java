@@ -36,6 +36,9 @@ public class ThermostatCreator implements DeviceCreator<Thermostat, ThermostatSt
     public Device<Thermostat, ThermostatState, ThermostatAction, ThermostatStateType> createDevice(DeviceCreationRequest request) {
         ThermostatState initialState = STATES.get(ThermostatStateType.OFF);  // Initial state for all Door Locks is set here.
         ThermostatMode initialMode = MODES.get(ThermostatModeType.AUTO);
+        // Create a desired temperature here and pass through the new
+        // Create a ambient temperature here as well?? pass it through and update environment to treat
+        // this ambient temperature like its own????
 
         
         return new Thermostat(request.name(), 

@@ -1,5 +1,6 @@
 package edu.kennesaw.smarthome.domain.device;
 
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class Device<
@@ -16,11 +17,21 @@ public abstract class Device<
 
     protected S state;
 
-    public Device(String name, String location, S state) {
+    protected final Map<T, S> STATES;
+
+    public Device(  String name, 
+                    String location, 
+                    
+                    S state, 
+                    
+                    Map<T, S> states) {
         this.ID = UUID.randomUUID();
         this.NAME = name;
         this.LOCATION = location;
+
         this.state = state;
+
+        this.STATES = states;
     }
 
     public UUID getId() {

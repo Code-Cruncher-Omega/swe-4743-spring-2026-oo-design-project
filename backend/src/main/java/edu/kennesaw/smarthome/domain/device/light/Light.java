@@ -11,26 +11,22 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
     private final LightState INITIAL_STATE;
     private final int INITIAL_BRIGHTNESS;
     private final int[] INITIAL_COLOR;
-    
-    private final Map<LightStateType, LightState> STATES;
 
     private int brightness; // Brightness level (10-100)
     private int[] color; // RGB color values (0-255)
 
     public Light(   String name, 
                     String location, 
-
                     LightState initialState, 
-                    int initialBrightness, 
-                    int[] initialColor, 
+                    Map<LightStateType, LightState> states,
 
-                    Map<LightStateType, LightState> states) {
-        super(name, location, initialState);
+                    int initialBrightness, 
+                    int[] initialColor) {
+        super(name, location, initialState, states);
 
         this.INITIAL_STATE = initialState;
         this.INITIAL_BRIGHTNESS = initialBrightness;
         this.INITIAL_COLOR = initialColor;
-        this.STATES = states;
         
         this.brightness = initialBrightness;
         this.color = initialColor;
