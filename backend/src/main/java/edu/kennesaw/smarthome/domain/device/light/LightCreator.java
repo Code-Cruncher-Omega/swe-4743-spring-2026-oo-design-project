@@ -5,11 +5,14 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceCreationRequest;
 import edu.kennesaw.smarthome.domain.device.DeviceCreator;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 
+@Component
 public class LightCreator implements DeviceCreator<Light, LightState, LightAction, LightStateType> {
     private final Map<LightStateType, LightState> STATES;
 
@@ -26,7 +29,7 @@ public class LightCreator implements DeviceCreator<Light, LightState, LightActio
     public Device<Light, LightState, LightAction, LightStateType> createDevice(DeviceCreationRequest request) {
         LightState initialState = STATES.get(LightStateType.OFF);  // Initial state for all Lights is set here.
         int initialBrightness = 100;    // Initial brightness (10 - 100) for all Lights is set here.
-        int[] initialColor = new int[] {255, 255, 255}; // Initial color (0 - 255 for each r, g, b value) is set here.
+        int[] initialColor = new int[] {255, 255, 255}; // Initial color (0 - 255 for each r, g, b value) for all Lights is set here.
         
         return new Light(   request.name(), 
                             request.location(), 

@@ -16,7 +16,6 @@ public class OffState implements FanState {
                 return new ActionResult(false, action.name(), "Action not valid for fan in off state.");
         }
     }
-
     @Override
     public FanStateType getStateType() {
         return FanStateType.OFF;

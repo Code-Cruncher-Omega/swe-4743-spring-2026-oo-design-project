@@ -32,6 +32,7 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
         this.color = initialColor;
     }
 
+    // Delegate the action execution to the current state of the light, allowing for state-specific behavior.
     protected ActionResult execute(LightAction action, int brightnessLevel) {
         return state.execute(this, action, brightnessLevel);
     }

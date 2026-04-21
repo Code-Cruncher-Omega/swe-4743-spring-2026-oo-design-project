@@ -12,35 +12,40 @@ public class Temperature {
         this.value = value;
     }
 
+    public Temperature(int value) {
+        this.unit = "Farenheit";
+        this.value = value;
+    }
+
+    protected void decrease(int amount) {
+        this.value -= amount;
+    }
+
+    protected void decrease() {
+        this.value--;
+    }
+
+    protected void increase(int amount) {
+        this.value += amount;
+    }
+
+    protected void increase() {
+        this.value++;
+    }
+
+    protected void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    protected void setValue(int value) {
+        this.value = value;
+    }
+
     public int getValue() {
         return value;
     }
 
     public String getUnit() {
         return unit;
-    }
-
-    public void decrease(int amount) {
-        this.value -= amount;
-    }
-
-    public void decrease() {
-        this.value--;
-    }
-
-    public void increase(int amount) {
-        this.value += amount;
-    }
-
-    public void increase() {
-        this.value++;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
     }
 }

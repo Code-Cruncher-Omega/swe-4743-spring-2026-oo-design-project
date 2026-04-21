@@ -28,7 +28,6 @@ public class HeatingState implements ThermostatState {
                 return new ActionResult(false, action.name(), "Action not valid for thermostat in idle state.");
         }
     }
-
     @Override
     public ThermostatStateType getStateType() {
         return ThermostatStateType.HEATING;

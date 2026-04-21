@@ -6,8 +6,6 @@ import edu.kennesaw.smarthome.domain.device.ActionResult;
 
 @Component("lightOnState")
 public class OnState implements LightState {
-
-
     @Override
     public ActionResult execute(Light context, LightAction action, int[] colorValues) {
         if (action == LightAction.SET_COLOR) {
@@ -22,7 +20,6 @@ public class OnState implements LightState {
         }
         return new ActionResult(false, action.name(), "Improper action for setting light color."); // Invalid action for this method
     }
-
     @Override
     public ActionResult execute(Light context, LightAction action, int brightnessLevel) {
         if (action == LightAction.SET_BRIGHTNESS) {
@@ -34,7 +31,6 @@ public class OnState implements LightState {
         }
         return new ActionResult(false, action.name(), "Improper action for setting light brightness."); // Invalid action for this method
     }
-
     @Override
     public ActionResult execute(Light context, LightAction action) {
         switch (action) {
@@ -45,7 +41,6 @@ public class OnState implements LightState {
                 return new ActionResult(false, action.name(), "Action not valid for light in on state.");
         }
     }
-    
     @Override
     public LightStateType getStateType() {
         return LightStateType.ON;

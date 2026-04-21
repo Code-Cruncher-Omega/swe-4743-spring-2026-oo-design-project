@@ -51,6 +51,7 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     }
 
     @Override
+    // Delegate the action execution to the current state of the thermostat, allowing for state-specific behavior.
     protected ActionResult execute(ThermostatAction action) {
         return state.execute(this, action);
     }
@@ -75,14 +76,6 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
         return currentMode;
     }
 
-    protected Temperature getDesiredTemperature() {
-        return DESIRED_TEMPERATURE;
-    }
-
-    protected Temperature getAmbientTemperature() {
-        return AMBIENT_TEMPERATURE;
-    }
-
     @Override
     protected void setState(ThermostatState newState) {
         state = newState;
@@ -91,6 +84,14 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     @Override
     public DeviceType getType() {
         return DeviceType.THERMOSTAT;
+    }
+
+    public Temperature getDesiredTemperature() {
+        return DESIRED_TEMPERATURE;
+    }
+
+    public Temperature getAmbientTemperature() {
+        return AMBIENT_TEMPERATURE;
     }
 
     @Override

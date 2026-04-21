@@ -16,7 +16,6 @@ public class UnlockedState implements DoorLockState {
                 return new ActionResult(false, action.name(), "Action not valid for door lock in unlocked state.");
         }
     }
-
     @Override
     public DoorLockStateType getStateType() {
         return DoorLockStateType.UNLOCKED;
