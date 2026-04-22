@@ -2,18 +2,18 @@ package edu.kennesaw.smarthome.domain.device.fan;
 
 import org.springframework.stereotype.Component;
 
-import edu.kennesaw.smarthome.domain.device.ActionResult;
+import edu.kennesaw.smarthome.domain.device.DeviceResult;
 
 @Component
 public class OffState implements FanState {
     @Override
-    public ActionResult execute(Fan context, FanAction action) {
+    public DeviceResult execute(Fan context, FanAction action) {
         switch(action) {
             case TOGGLE_POWER:
                 context.setState(context.getOnState());
-                return new ActionResult(true, "TOGGLE_FAN_POWER", "Fan turned on.");
+                return new DeviceResult(true, "TOGGLE_FAN_POWER", "Fan turned on.");
             default:
-                return new ActionResult(false, action.name(), "Action not valid for fan in off state.");
+                return new DeviceResult(false, action.name(), "Action not valid for fan in off state.");
         }
     }
     @Override

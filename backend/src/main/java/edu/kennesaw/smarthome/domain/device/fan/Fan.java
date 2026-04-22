@@ -2,7 +2,7 @@ package edu.kennesaw.smarthome.domain.device.fan;
 
 import java.util.Map;
 
-import edu.kennesaw.smarthome.domain.device.ActionResult;
+import edu.kennesaw.smarthome.domain.device.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 
@@ -30,7 +30,7 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
 
     @Override
     // Delegate the action execution to the current state of the fan, allowing for state-specific behavior.
-    protected ActionResult execute(FanAction action) {
+    protected DeviceResult execute(FanAction action) {
         return state.execute(this, action);
     }
 
@@ -61,25 +61,25 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
     }
 
     @Override
-    public ActionResult reset() {
+    public DeviceResult reset() {
         state = INITIAL_STATE; // Reset to the initial state
         speed = INITIAL_SPEED; // Reset speed to the initial speed
-        return new ActionResult(true, "RESET_FAN", "Fan reset to initial state.");
+        return new DeviceResult(true, "RESET_FAN", "Fan reset to initial state.");
     }
 
-    public ActionResult togglePower() {
+    public DeviceResult togglePower() {
         return state.execute(this, FanAction.TOGGLE_POWER);
     }
 
-    public ActionResult changeSpeedLow() {
+    public DeviceResult changeSpeedLow() {
         return execute(FanAction.SET_SPEED_LOW);
     }
 
-    public ActionResult changeSpeedMedium() {
+    public DeviceResult changeSpeedMedium() {
         return execute(FanAction.SET_SPEED_MEDIUM);
     }
 
-    public ActionResult changeSpeedHigh() {
+    public DeviceResult changeSpeedHigh() {
         return execute(FanAction.SET_SPEED_HIGH);
     }
 }

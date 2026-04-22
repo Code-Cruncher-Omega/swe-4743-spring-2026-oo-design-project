@@ -2,7 +2,7 @@ package edu.kennesaw.smarthome.domain.device.doorlock;
 
 import java.util.Map;
 
-import edu.kennesaw.smarthome.domain.device.ActionResult;
+import edu.kennesaw.smarthome.domain.device.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 
@@ -21,7 +21,7 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, Do
 
     @Override
     // Delegate the action execution to the current state of the door lock, allowing for state-specific behavior.
-    protected ActionResult execute(DoorLockAction action) {
+    protected DeviceResult execute(DoorLockAction action) {
         return state.execute(this, action);
     }
 
@@ -44,13 +44,13 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, Do
     }
 
     @Override
-    public ActionResult reset() {
+    public DeviceResult reset() {
         state = INITIAL_STATE; // Reset to the initial state
-        return new ActionResult(true, "RESET_DOOR_LOCK", "Door lock reset to initial state.");
+        return new DeviceResult(true, "RESET_DOOR_LOCK", "Door lock reset to initial state.");
     }
 
     // Convenience methods for common actions, which internally call the execute method with the appropriate action.
-    public ActionResult toggleLock() {
+    public DeviceResult toggleLock() {
         return execute(DoorLockAction.TOGGLE_LOCK);
     }
 }

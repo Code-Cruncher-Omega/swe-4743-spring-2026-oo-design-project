@@ -54,7 +54,7 @@ public abstract class Device<
     // Device-specific actions and states should be the input for these methods, allowing for flexible and extensible device behavior.
 
     // The execute method will delegate the action execution to the current state of the device, allowing for state-specific behavior.
-    protected abstract ActionResult execute(A action);
+    protected abstract DeviceResult execute(A action);
 
     protected abstract void setState(S newState);
 
@@ -62,10 +62,10 @@ public abstract class Device<
     public abstract DeviceType getType();
 
     // The reset method will be implemented by each concrete device class to define how the device should reset itself to a default state.
-    public abstract ActionResult reset();
+    public abstract DeviceResult reset();
 
     @Override
     public String toString() {
-        return String.format("%s (ID: %s, Location: %s, State: %s)", NAME, ID, LOCATION, state.getClass().getSimpleName());
+        return String.format("Device: %s (ID: %s, Location: %s, State: %s)", NAME, ID, LOCATION, (state.getStateType()).toString());
     }
 }

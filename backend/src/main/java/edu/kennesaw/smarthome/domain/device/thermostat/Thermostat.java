@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import edu.kennesaw.smarthome.domain.device.ActionResult;
+import edu.kennesaw.smarthome.domain.device.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 
@@ -52,7 +52,7 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
 
     @Override
     // Delegate the action execution to the current state of the thermostat, allowing for state-specific behavior.
-    protected ActionResult execute(ThermostatAction action) {
+    protected DeviceResult execute(ThermostatAction action) {
         return state.execute(this, action);
     }
 
@@ -95,42 +95,47 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     }
 
     @Override
-    public ActionResult reset() {
+    public DeviceResult reset() {
         state = INITIAL_STATE; // Reset to the initial state.
         currentMode = INITIAL_MODE; // Reset mode to the initial mode.
         DESIRED_TEMPERATURE.setUnit(INITIAL_DESIRED_TEMPERATURE_UNIT);   // Reset desired temperature unit to the initial unit.
         DESIRED_TEMPERATURE.setValue(INITIAL_DESIRED_TEMPERATURE_VALUE); // Reset desired temperature to the initial value.
-        return new ActionResult(true, "RESET_THERMOSTAT", "Thermostat reset to initial state, mode, and desired temperature.");
+        return new DeviceResult(true, "RESET_THERMOSTAT", "Thermostat reset to initial state, mode, and desired temperature.");
     }
 
-    public ActionResult updateAmbientTemperature() {
+    public DeviceResult updateAmbientTemperature() {
         return state.execute(this, ThermostatAction.UPDATE_AMBIENCE);
     }
 
-    public ActionResult togglePower() {
+    public DeviceResult togglePower() {
         return state.execute(this, ThermostatAction.TOGGLE_POWER);
     }
 
-    public ActionResult setModeHeat() {
+    public DeviceResult setModeHeat() {
         currentMode = MODES.get(ThermostatModeType.HEAT);
-        return new ActionResult(true, "SET_MODE_HEAT", "Thermostat mode set to HEAT.");
+        return new DeviceResult(true, "SET_MODE_HEAT", "Thermostat mode set to HEAT.");
     }
 
-    public ActionResult setModeCool() {
+    public DeviceResult setModeCool() {
         currentMode = MODES.get(ThermostatModeType.COOL);
-        return new ActionResult(true, "SET_MODE_COOL", "Thermostat mode set to COOL.");
+        return new DeviceResult(true, "SET_MODE_COOL", "Thermostat mode set to COOL.");
     }
 
-    public ActionResult setModeAuto() {
+    public DeviceResult setModeAuto() {
         currentMode = MODES.get(ThermostatModeType.AUTO);
-        return new ActionResult(true, "SET_MODE_AUTO", "Thermostat mode set to AUTO.");
+        return new DeviceResult(true, "SET_MODE_AUTO", "Thermostat mode set to AUTO.");
     }
     
-    public ActionResult setDesiredTemperature(int newTemperature) {
+    public DeviceResult setDesiredTemperature(int newTemperature) {
         if (newTemperature < 60 || newTemperature > 80) {
-            return new ActionResult(false, "SET_DESIRED_TEMPERATURE", "Desired temperature must be between 60 and 80 degrees Farenheit.");
+            return new DeviceResult(false, "SET_DESIRED_TEMPERATURE", "Desired temperature must be between 60 and 80 degrees Farenheit.");
         }
         DESIRED_TEMPERATURE.setValue(newTemperature);
-        return new ActionResult(true, "SET_DESIRED_TEMPERATURE", "Desired temperature set to " + newTemperature + " degrees Farenheit.");
+        return new DeviceResult(true, "SET_DESIRED_TEMPERATURE", "Desired temperature set to " + newTemperature + " degrees Farenheit.");
+    }
+
+    public DeviceResult setAmbientTemperature(int newTemperature) {
+        AMBIENT_TEMPERATURE.setValue(newTemperature);
+        return new DeviceResult(true, "SET_AMBIENT_TEMPERATURE", "Ambient temperature set to " + newTemperature + " degrees Farenheit.");
     }
 }

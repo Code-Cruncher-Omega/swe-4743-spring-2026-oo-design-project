@@ -2,7 +2,7 @@ package edu.kennesaw.smarthome.domain.device.light;
 
 import java.util.Map;
 
-import edu.kennesaw.smarthome.domain.device.ActionResult;
+import edu.kennesaw.smarthome.domain.device.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 
@@ -33,16 +33,16 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
     }
 
     // Delegate the action execution to the current state of the light, allowing for state-specific behavior.
-    protected ActionResult execute(LightAction action, int brightnessLevel) {
+    protected DeviceResult execute(LightAction action, int brightnessLevel) {
         return state.execute(this, action, brightnessLevel);
     }
 
-    protected ActionResult execute(LightAction action, int[] colorValues) {
+    protected DeviceResult execute(LightAction action, int[] colorValues) {
         return state.execute(this, action, colorValues);
     }
 
     @Override
-    protected ActionResult execute(LightAction action) {
+    protected DeviceResult execute(LightAction action) {
         return state.execute(this, action);
     }
 
@@ -81,26 +81,26 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
     }
 
     @Override
-    public ActionResult reset() {
+    public DeviceResult reset() {
         brightness = INITIAL_BRIGHTNESS; // Reset brightness to the initial level
         color = INITIAL_COLOR; // Reset color to the initial RGB values
         state = INITIAL_STATE; // Reset to the initial state
-        return new ActionResult(true, "RESET_LIGHT", "Light reset to initial state, brightness, and color.");
+        return new DeviceResult(true, "RESET_LIGHT", "Light reset to initial state, brightness, and color.");
     }
 
-    public ActionResult changeBrightness(int newBrightness) {
+    public DeviceResult changeBrightness(int newBrightness) {
         return state.execute(this, LightAction.SET_BRIGHTNESS, newBrightness);
     }
 
-    public ActionResult changeColor(int[] newColor) {
+    public DeviceResult changeColor(int[] newColor) {
         return state.execute(this, LightAction.SET_COLOR, newColor);
     }
 
-    public ActionResult changeColor(int r, int g, int b) {
+    public DeviceResult changeColor(int r, int g, int b) {
         return changeColor(new int[] {r, g, b});
     }
 
-    public ActionResult togglePower() {
+    public DeviceResult togglePower() {
         return state.execute(this, LightAction.TOGGLE_POWER);
     }
 }
