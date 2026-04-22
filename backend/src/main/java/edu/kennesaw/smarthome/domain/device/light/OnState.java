@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import edu.kennesaw.smarthome.domain.device.DeviceResult;
 
-@Component("lightOnState")
+@Component
 public class OnState implements LightState {
     @Override
     public DeviceResult execute(Light context, LightAction action, int[] colorValues) {
@@ -16,7 +16,7 @@ public class OnState implements LightState {
                 return new DeviceResult(false, action.name(), "Invalid light color values. RGB values must be between 0 and 255.");
             }
             context.setColor(colorValues);
-            return new DeviceResult(true, "SET_LIGHT_COLOR", "Light color updated successfully.");
+            return new DeviceResult(true, "SET_LIGHT_COLOR", "Light color set to [" + colorValues[0] + ", " + colorValues[1] + ", " + colorValues[2] + "].");
         }
         return new DeviceResult(false, action.name(), "Improper action for setting light color."); // Invalid action for this method
     }
@@ -27,7 +27,7 @@ public class OnState implements LightState {
                 return new DeviceResult(false, action.name(), "Invalid light brightness level. Must be between 10 and 100.");
             }
             context.setBrightness(brightnessLevel);
-            return new DeviceResult(true, "SET_LIGHT_BRIGHTNESS", "Light brightness updated successfully.");
+            return new DeviceResult(true, "SET_LIGHT_BRIGHTNESS", "Light brightness set to " + brightnessLevel + "%.");
         }
         return new DeviceResult(false, action.name(), "Improper action for setting light brightness."); // Invalid action for this method
     }

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import edu.kennesaw.smarthome.domain.device.DeviceResult;
 
-@Component("lightOffState")
+@Component
 public class OffState implements LightState {
     @Override
     public DeviceResult execute(Light context, LightAction action, int brightnessLevel) {

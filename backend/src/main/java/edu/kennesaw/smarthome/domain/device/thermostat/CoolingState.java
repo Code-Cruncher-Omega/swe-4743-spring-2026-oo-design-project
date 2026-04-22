@@ -22,7 +22,9 @@ public class CoolingState implements ThermostatState {
                 if(newStateType.equals(getStateType())) {
                     return new DeviceResult(true, "THERMOSTAT_STILL_COOLING", "Thermostat continues cooling.");
                 } else {
-                    return new DeviceResult(true, "SET_THERMOSTAT_" + newStateType.name().toUpperCase(), "Thermostat is now " + newStateType.name().toLowerCase() + ".");
+                    return new DeviceResult(true, "SET_THERMOSTAT_" + newStateType.name().toUpperCase(), 
+                    "Thermostat is now " + newStateType.name().toLowerCase() + " (ambient is " + context.getAmbientTemperature().getValue() + 
+                    " Farenheit, target is " + context.getDesiredTemperature().getValue() + " Farenheit)");
                 }
             default:
                 return new DeviceResult(false, action.name(), "Action not valid for thermostat in idle state.");

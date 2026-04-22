@@ -2,13 +2,10 @@ package edu.kennesaw.smarthome.domain.device.thermostat;
 
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
 import edu.kennesaw.smarthome.domain.device.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.Device;
 import edu.kennesaw.smarthome.domain.device.DeviceType;
 
-@Component
 public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAction, ThermostatStateType> {
     
     private final ThermostatState INITIAL_STATE;

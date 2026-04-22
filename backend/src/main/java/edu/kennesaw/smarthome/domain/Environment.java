@@ -35,13 +35,17 @@ public class Environment {
         this.thermostat = null;
     }
 
-    public Device<?, ?, ?, ?> getDevice(String deviceName) {
-        return devices.get(deviceName);
+    protected Map<String, Device<?, ?, ?, ?>> getDevices() {
+        return devices;
     }
 
     // Used for controlling ambient temperature per environment (aka location).
-    public Thermostat getThermostat() {
+    protected Thermostat getThermostat() {
         return thermostat;
+    }
+
+    public Device<?, ?, ?, ?> getDevice(String deviceName) {
+        return devices.get(deviceName);
     }
 
     public String getName() {

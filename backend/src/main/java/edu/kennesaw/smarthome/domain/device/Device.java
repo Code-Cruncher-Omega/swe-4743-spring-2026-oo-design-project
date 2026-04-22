@@ -18,6 +18,22 @@ public abstract class Device<
     protected S state;
 
     protected final Map<T, S> STATES;
+    
+    public Device(  UUID id,
+                    String name, 
+                    String location, 
+                    
+                    S state, 
+                    
+                    Map<T, S> states) {
+        this.ID = id;
+        this.NAME = name;
+        this.LOCATION = location;
+
+        this.state = state;
+
+        this.STATES = states;
+    }
 
     public Device(  String name, 
                     String location, 
