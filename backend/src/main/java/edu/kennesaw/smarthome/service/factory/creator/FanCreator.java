@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.domain.device.fan;
+package edu.kennesaw.smarthome.service.factory.creator;
 
 import java.util.List;
 import java.util.Map;
@@ -7,10 +7,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import edu.kennesaw.smarthome.domain.device.Device;
-import edu.kennesaw.smarthome.domain.device.DeviceCreationRequest;
-import edu.kennesaw.smarthome.domain.device.DeviceCreator;
-import edu.kennesaw.smarthome.domain.device.DeviceType;
+import edu.kennesaw.smarthome.domain.device.abstraction.Device;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceCreationRequest;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceCreator;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
+import edu.kennesaw.smarthome.domain.device.fan.Fan;
+import edu.kennesaw.smarthome.domain.device.fan.FanAction;
+import edu.kennesaw.smarthome.domain.device.fan.FanSpeed;
+import edu.kennesaw.smarthome.domain.device.fan.FanState;
+import edu.kennesaw.smarthome.domain.device.fan.FanStateType;
 
 @Component
 public class FanCreator implements DeviceCreator<Fan, FanState, FanAction, FanStateType> {

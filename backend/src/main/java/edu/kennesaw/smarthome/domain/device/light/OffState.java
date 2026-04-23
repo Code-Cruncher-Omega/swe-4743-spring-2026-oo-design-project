@@ -2,7 +2,8 @@ package edu.kennesaw.smarthome.domain.device.light;
 
 import org.springframework.stereotype.Component;
 
-import edu.kennesaw.smarthome.domain.device.DeviceResult;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
+import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
 
 @Component
 public class OffState implements LightState {
@@ -26,5 +27,9 @@ public class OffState implements LightState {
     @Override
     public LightStateType getStateType() {
         return LightStateType.OFF;
+    }
+    @Override
+    public StateActivity getStateActivity() {
+        return StateActivity.OFF;
     }
 }

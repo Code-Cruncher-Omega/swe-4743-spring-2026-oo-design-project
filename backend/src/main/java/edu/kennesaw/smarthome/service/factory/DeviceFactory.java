@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.domain.device;
+package edu.kennesaw.smarthome.service.factory;
 
 import java.util.List;
 import java.util.Map;
@@ -7,11 +7,17 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import edu.kennesaw.smarthome.domain.device.abstraction.Device;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceCreationRequest;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceCreator;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
+
 @Component
 public class DeviceFactory {
     
     private final Map<DeviceType, DeviceCreator<?, ?, ?, ?>> CREATORS;
 
+    // Spring provides a List containing an instance from each concrete DeviceCreator.
     public DeviceFactory(List<DeviceCreator<?, ?, ?, ?>> creatorsList) {
         this.CREATORS = creatorsList.stream()
                 .collect(Collectors.toMap(

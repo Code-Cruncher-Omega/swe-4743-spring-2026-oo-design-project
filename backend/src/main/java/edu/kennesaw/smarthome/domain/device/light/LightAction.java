@@ -1,6 +1,6 @@
 package edu.kennesaw.smarthome.domain.device.light;
 
-import edu.kennesaw.smarthome.domain.device.DeviceAction;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceAction;
 
 public enum LightAction implements DeviceAction {
     TOGGLE_POWER,

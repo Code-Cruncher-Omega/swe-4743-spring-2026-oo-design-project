@@ -1,8 +1,9 @@
-package edu.kennesaw.smarthome.domain.device;
+package edu.kennesaw.smarthome.domain.device.abstraction;
 
 import java.util.Map;
 import java.util.UUID;
 
+// All concrete Devices store all these methods and variables, while also needing to implement the mentioned abstract methods.
 public abstract class Device<
     D extends Device<D, S, A, T>, 
     S extends DeviceState<D, A, T>, 

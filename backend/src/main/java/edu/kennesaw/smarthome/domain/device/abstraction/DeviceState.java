@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.domain.device;
+package edu.kennesaw.smarthome.domain.device.abstraction;
 
 // All devices have some kind of state, so each device needs a base-interface that their state-interface will
 // derived from.
@@ -9,4 +9,5 @@ public interface DeviceState<D extends Device<D, ?, A, T>, A extends DeviceActio
     public DeviceResult execute(D context, A action);
     // Used for passing as a key in a device's STATES map.
     public T getStateType();
+    public StateActivity getStateActivity();
 }

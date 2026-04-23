@@ -1,6 +1,6 @@
 package edu.kennesaw.smarthome.domain.device.fan;
 
-import edu.kennesaw.smarthome.domain.device.DeviceAction;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceAction;
 
 public enum FanAction implements DeviceAction {
     TOGGLE_POWER,

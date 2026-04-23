@@ -2,9 +2,9 @@ package edu.kennesaw.smarthome.domain.device.fan;
 
 import java.util.Map;
 
-import edu.kennesaw.smarthome.domain.device.DeviceResult;
-import edu.kennesaw.smarthome.domain.device.Device;
-import edu.kennesaw.smarthome.domain.device.DeviceType;
+import edu.kennesaw.smarthome.domain.device.abstraction.Device;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 
 public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
 

@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.domain.device.thermostat;
+package edu.kennesaw.smarthome.service.factory.creator;
 
 import java.util.List;
 import java.util.Map;
@@ -7,13 +7,21 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import edu.kennesaw.smarthome.domain.device.Device;
-import edu.kennesaw.smarthome.domain.device.DeviceCreationRequest;
-import edu.kennesaw.smarthome.domain.device.DeviceCreator;
-import edu.kennesaw.smarthome.domain.device.DeviceType;
+import edu.kennesaw.smarthome.domain.device.abstraction.Device;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceCreationRequest;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceCreator;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
+import edu.kennesaw.smarthome.domain.device.thermostat.Temperature;
+import edu.kennesaw.smarthome.domain.device.thermostat.Thermostat;
+import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatAction;
+import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatMode;
+import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatModeType;
+import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatState;
+import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatStateType;
 
 @Component
 public class ThermostatCreator implements DeviceCreator<Thermostat, ThermostatState, ThermostatAction, ThermostatStateType> {
+        
     private final Map<ThermostatStateType, ThermostatState> STATES;
     private final Map<ThermostatModeType, ThermostatMode> MODES;
 

@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.domain.device;
+package edu.kennesaw.smarthome.domain.device.abstraction;
 
 // Enum of available devices that can be made.
 public enum DeviceType {

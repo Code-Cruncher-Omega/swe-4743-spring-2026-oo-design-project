@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.domain.device.light;
+package edu.kennesaw.smarthome.service.factory.creator;
 
 import java.util.List;
 import java.util.Map;
@@ -7,10 +7,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import edu.kennesaw.smarthome.domain.device.Device;
-import edu.kennesaw.smarthome.domain.device.DeviceCreationRequest;
-import edu.kennesaw.smarthome.domain.device.DeviceCreator;
-import edu.kennesaw.smarthome.domain.device.DeviceType;
+import edu.kennesaw.smarthome.domain.device.abstraction.Device;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceCreationRequest;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceCreator;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
+import edu.kennesaw.smarthome.domain.device.light.Light;
+import edu.kennesaw.smarthome.domain.device.light.LightAction;
+import edu.kennesaw.smarthome.domain.device.light.LightState;
+import edu.kennesaw.smarthome.domain.device.light.LightStateType;
 
 @Component
 public class LightCreator implements DeviceCreator<Light, LightState, LightAction, LightStateType> {

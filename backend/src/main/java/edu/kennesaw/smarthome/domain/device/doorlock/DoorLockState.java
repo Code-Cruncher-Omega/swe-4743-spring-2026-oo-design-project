@@ -1,7 +1,7 @@
 package edu.kennesaw.smarthome.domain.device.doorlock;
 
-import edu.kennesaw.smarthome.domain.device.DeviceResult;
-import edu.kennesaw.smarthome.domain.device.DeviceState;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceState;
 
 public interface DoorLockState extends DeviceState<DoorLock, DoorLockAction, DoorLockStateType> {
     @Override
