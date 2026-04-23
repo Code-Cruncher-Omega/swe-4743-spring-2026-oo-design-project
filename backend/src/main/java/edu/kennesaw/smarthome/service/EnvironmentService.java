@@ -12,8 +12,8 @@ import edu.kennesaw.smarthome.service.factory.DeviceFactory;
 @Service
 public class EnvironmentService {
     
-    private final DeviceFactory deviceFactory;  // Device creation is delegated to this.
-    private final EnvironmentDeviceQueryService ENVIRONMENT_DEVICE_QUERY_SERVICE;   // Querying/Filtering is delegated to this.
+    private final DeviceFactory DEVICE_FACTORY;  // Device creation is delegated to this.
+    private final EnvironmentDeviceQueryService ENVIRONMENT_DEVICE_QUERY_SERVICE;   // Querying/filtering is delegated to this.
 
     private final Map<String, Environment> REAL_ENVIRONMENTS;  // Stores all environments that will have their contents change. (interacts with its contents)
 
@@ -21,7 +21,7 @@ public class EnvironmentService {
 
     // Spring provides a DeviceFactory and DeviceQueryService.
     public EnvironmentService(DeviceFactory deviceFactory, EnvironmentDeviceQueryService environmentDeviceQueryService) {
-        this.deviceFactory = deviceFactory;
+        this.DEVICE_FACTORY = deviceFactory;
         this.ENVIRONMENT_DEVICE_QUERY_SERVICE = environmentDeviceQueryService;
         this.REAL_ENVIRONMENTS = new HashMap<>();
         this.filteredEnvironments = null;
@@ -37,5 +37,5 @@ public class EnvironmentService {
         return new EnvironmentResult(true, "RESET_ALL_DEVICES", "Successfully resetted all devices in every environment.");
     }
 
-
+    
 }
