@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome;
+package edu.kennesaw.smarthome.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

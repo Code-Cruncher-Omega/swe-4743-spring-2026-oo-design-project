@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import edu.kennesaw.smarthome.application.dto.DeviceCreationRequest;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
-import edu.kennesaw.smarthome.domain.device.abstraction.DeviceCreationRequest;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceCreator;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 
