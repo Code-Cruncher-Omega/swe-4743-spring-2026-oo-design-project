@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.service.factory.creator;
+package edu.kennesaw.smarthome.service.creator;
 
 import java.util.List;
 import java.util.Map;
@@ -33,18 +33,25 @@ public class FanCreator implements DeviceCreator<Fan, FanState, FanAction, FanSt
     
     @Override
     public Device<Fan, FanState, FanAction, FanStateType> createDevice(DeviceCreationRequest request) {
-        FanState initialState = STATES.get(FanStateType.OFF);  // Initial state for all Fans is set here.
-        FanSpeed initialSpeed = FanSpeed.MEDIUM;    // Initial speed for all Fans is set here.
-        
         return new Fan( request.name(), 
                         request.location(), 
-                        initialState,
+                        initialState(),
                         STATES,
-                        initialSpeed);
+                        initialFanSpeed());
     }
     
     @Override
     public DeviceType getDeviceType() {
         return DeviceType.FAN;
+    }
+
+    @Override
+    public FanState initialState() {
+        return STATES.get(FanStateType.OFF);
+    }
+
+    // Initial speed for all Fan instances is defined here.
+    public FanSpeed initialFanSpeed() {
+        return FanSpeed.MEDIUM;
     }
 }

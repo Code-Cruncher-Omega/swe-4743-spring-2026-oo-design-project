@@ -1,8 +1,6 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
-import org.springframework.stereotype.Component;
-
-@Component
+// Temperature acts mainly as a values class. It does not perform much logic.
 public class Temperature {
     private String unit;    // Farenheit, Celsius, Kelvin.
     private int value;

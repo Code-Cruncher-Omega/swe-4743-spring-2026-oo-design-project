@@ -1,5 +1,7 @@
 package edu.kennesaw.smarthome.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -20,20 +22,20 @@ public class EnvironmentDeviceQueryService {
     // All filters/queries should be able to handle null cases (specifically for what is being filtered).
 
 
-    // Goes through the given Map to find an Environment whose name matches the provided location (case-insensitive) and 
-    // returns a Map containing only that Environment. If none are found, then return an empty Map.
-    // Environments cannot share the same name.
-    public Map<String, Environment> filterByLocation(Map<String, Environment> environments, String location) {
+    // Goes through the given Collection and adds any Environment whose name matches the location to a new
+    // Collection, then returns said Collection. Environments each have a unique name, so break if this location is found.
+    // Returns an empty Collection if no environment with matching location is found.
+    public Collection<Environment> filterByLocation(Collection<Environment> environments, String location) {
 
         if(location == null || location.isEmpty()) {
             return environments;
         }
 
-        Map<String, Environment> filteredEnvironments = new HashMap<>();
+        Collection<Environment> filteredEnvironments = new ArrayList<>();
 
-        for(Environment environment : environments.values()) {
-            if(environment.getName().toLowerCase().equals(location)) {
-                filteredEnvironments.put(environment.getName(), environment);
+        for(Environment environment : environments) {
+            if(environment.getName().equals(location)) {
+                filteredEnvironments.add(environment);
                 break;
             }
         }
@@ -41,22 +43,19 @@ public class EnvironmentDeviceQueryService {
         return filteredEnvironments;
     }
 
-    // A new Map containing filtered Environments is created, named filteredEnvironments.
-    // For every Environment in the provided Map, create a new Map containing Devices.
-    // Each Device in a Environment whose state activity matches the provided activity, that Device is added to their
-    // respective Map of Devices. If the filtered Map of Devices for an Environment is empty, then do not bother
-    // adding a filtered variation of that Environemnt to filteredEnvironments. Otherwise, add it using the old
-    // Environment's name and make a new Environment object using said name and the filtered Map of Devices.
-    // filteredEnvironments is returned in the end.
-    public Map<String, Environment> filterByActivity(Map<String, Environment> environments, StateActivity activity) {
+    // Checks every device inside each Environment. If a device's state activity matches activity, then it is
+    // added to a new Map of Devices for the Environment being evaluated. Once all Devices in the old Environment
+    // has been checked, make a new Environment using the new Map and add it to the filteredEnvironments Collection
+    // only if the Map is not empty. Repeat for every Environment in the provided Collection, then return filteredEnvironments.
+    public Collection<Environment> filterByActivity(Collection<Environment> environments, StateActivity activity) {
 
         if(activity == null) {
             return environments;
         }
 
-        Map<String, Environment> filteredEnvironments = new HashMap<>();
+        Collection<Environment> filteredEnvironments = new ArrayList<>();
 
-        for(Environment environment : environments.values()) {
+        for(Environment environment : environments) {
             
             Map<UUID, Device<?, ?, ?, ?>> filteredDevices = new HashMap<>();
             for(Device<?, ?, ?, ?> device : environment.getDevices().values()) {
@@ -67,7 +66,7 @@ public class EnvironmentDeviceQueryService {
             }
 
             if(!filteredDevices.isEmpty()) {
-                filteredEnvironments.put(environment.getName(), new Environment(environment.getName(), filteredDevices));
+                filteredEnvironments.add(new Environment(environment.getName(), filteredDevices));
             }
         }
 
@@ -75,15 +74,15 @@ public class EnvironmentDeviceQueryService {
     }
 
     // Same gist as filterByActivity, but instead comparing each Device's DeviceType with the one provided.
-    public Map<String, Environment> filterByType(Map<String, Environment> environments, DeviceType deviceType) {
+    public Collection<Environment> filterByType(Collection<Environment> environments, DeviceType deviceType) {
 
         if(deviceType == null) {
             return environments;
         }
 
-        Map<String, Environment> filteredEnvironments = new HashMap<>();
+        Collection<Environment> filteredEnvironments = new ArrayList<>();
 
-        for(Environment environment : environments.values()) {
+        for(Environment environment : environments) {
             
             Map<UUID, Device<?, ?, ?, ?>> filteredDevices = new HashMap<>();
             for(Device<?, ?, ?, ?> device : environment.getDevices().values()) {
@@ -94,7 +93,7 @@ public class EnvironmentDeviceQueryService {
             }
 
             if(!filteredDevices.isEmpty()) {
-                filteredEnvironments.put(environment.getName(), new Environment(environment.getName(), filteredDevices));
+                filteredEnvironments.add(new Environment(environment.getName(), filteredDevices));
             }
         }
 

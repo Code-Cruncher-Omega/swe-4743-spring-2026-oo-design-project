@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.service.factory;
+package edu.kennesaw.smarthome.service;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +26,7 @@ public class DeviceFactory {
                 ));
     }
 
+    // Views the request given, chooses the correct creator if available, and creates the device.
     public Device<?, ?, ?, ?> create(DeviceCreationRequest request) {
         DeviceCreator<?, ?, ?, ?> creator = CREATORS.get(request.deviceType());
         if (creator == null) {

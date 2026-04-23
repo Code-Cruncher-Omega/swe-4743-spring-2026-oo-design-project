@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.service.factory.creator;
+package edu.kennesaw.smarthome.service.creator;
 
 import java.util.List;
 import java.util.Map;
@@ -32,16 +32,19 @@ public class DoorLockCreator implements DeviceCreator<DoorLock, DoorLockState, D
     
     @Override
     public Device<DoorLock, DoorLockState, DoorLockAction, DoorLockStateType> createDevice(DeviceCreationRequest request) {
-        DoorLockState initialState = STATES.get(DoorLockStateType.LOCKED);  // Initial state for all Door Locks is set here.
-        
         return new DoorLock(request.name(), 
                             request.location(), 
-                            initialState, 
+                            initialState(), 
                             STATES);
     }
     
     @Override
     public DeviceType getDeviceType() {
         return DeviceType.DOOR_LOCK;
+    }
+
+    @Override
+    public DoorLockState initialState() {
+        return STATES.get(DoorLockStateType.LOCKED);
     }
 }

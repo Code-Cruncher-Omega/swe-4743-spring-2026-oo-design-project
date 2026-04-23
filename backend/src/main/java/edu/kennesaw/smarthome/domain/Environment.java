@@ -1,5 +1,7 @@
 package edu.kennesaw.smarthome.domain;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -41,19 +43,7 @@ public class Environment {
         return thermostat;
     }
 
-    public Map<UUID, Device<?, ?, ?, ?>> getDevices() {
-        return devices;
-    }
-
-    public Device<?, ?, ?, ?> getDevice(UUID deviceName) {
-        return devices.get(deviceName);
-    }
-
-    public String getName() {
-        return NAME;
-    }
-
-    // Devices are not allowed to have the same name.
+    // Devices are not allowed to have the same UUID.
     // No more than 1 Thermostat can exist in each environment.
     public EnvironmentResult addDevice(Device<?, ?, ?, ?> newDevice) {
         if(devices.containsKey(newDevice.getId())) {
@@ -98,6 +88,33 @@ public class Environment {
         }
         thermostat.setAmbientTemperature(newTemperature);
         return new EnvironmentResult(true, "SET_AMBIENT_TEMPERATURE_IN_" + NAME.toUpperCase(), "Ambient temperature in " + NAME + " has been set to " + newTemperature);
+    }
+
+    public boolean hasThermostat() {
+        return thermostat != null;
+    }
+
+    // Updates any devices that run on ticks, in this case it is Thermostat, if there is one.
+    public void update() {
+        if(thermostat != null) {
+            thermostat.updateAmbientTemperature();
+        }
+    }
+
+    public Map<UUID, Device<?, ?, ?, ?>> getDevices() {
+        return Collections.unmodifiableMap(devices);
+    }
+
+    public Collection<Device<?, ?, ?, ?>> getDevicesCollection() {
+        return Collections.unmodifiableCollection(devices.values());
+    }
+
+    public Device<?, ?, ?, ?> getDevice(UUID deviceName) {
+        return devices.get(deviceName);
+    }
+
+    public String getName() {
+        return NAME;
     }
 
     @Override

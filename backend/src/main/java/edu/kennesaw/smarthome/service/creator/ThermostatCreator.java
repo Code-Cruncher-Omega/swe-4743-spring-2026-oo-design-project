@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.service.factory.creator;
+package edu.kennesaw.smarthome.service.creator;
 
 import java.util.List;
 import java.util.Map;
@@ -42,24 +42,41 @@ public class ThermostatCreator implements DeviceCreator<Thermostat, ThermostatSt
     
     @Override
     public Device<Thermostat, ThermostatState, ThermostatAction, ThermostatStateType> createDevice(DeviceCreationRequest request) {
-        ThermostatState initialState = STATES.get(ThermostatStateType.OFF); // Initial state for all Thermostats is set here.
-        ThermostatMode initialMode = MODES.get(ThermostatModeType.AUTO);    // Initial mode fora all Thermostats is set here.
-        Temperature initialDesiredTemperature = new Temperature(72);    // Inital temperature for all Thermostats is set here. 
-        Temperature ambientTemperature = new Temperature(60);   // Associated ambient temperatures are also created here with default values.
-        // Temperature serves as a value object, so using a DI container to set up these objects seems like added complexity.
-        
         return new Thermostat(request.name(), 
                             request.location(), 
-                            initialState, 
+                            initialState(), 
                             STATES,
-                            initialMode,
-                            initialDesiredTemperature,
-                            ambientTemperature,
+                            initialMode(),
+                            initialDesiredTemperature(),
+                            initialAmbientTemperature(),
                             MODES);
     }
     
     @Override
     public DeviceType getDeviceType() {
         return DeviceType.DOOR_LOCK;
+    }
+
+    @Override
+    public ThermostatState initialState() {
+        return STATES.get(ThermostatStateType.OFF);
+    }
+
+    // Initial mode for all Thermostat instances is defined here.
+    public ThermostatMode initialMode() {
+        return MODES.get(ThermostatModeType.AUTO);
+    }
+
+    // Temperature mainly serves as a values class, so managing it through Spring
+    // would only add more complexity. Hence, instances are created manually here.
+
+    // Initial desired temperature for all Thermostat instances is defined here.
+    public Temperature initialDesiredTemperature() {
+        return new Temperature(72);
+    }
+
+    // Initial ambient temperature for all Thermostat instances is defined here.
+    public Temperature initialAmbientTemperature() {
+        return new Temperature(60);
     }
 }

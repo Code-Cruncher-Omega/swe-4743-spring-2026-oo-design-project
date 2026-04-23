@@ -7,4 +7,6 @@ public interface DeviceCreator<D extends Device<D, S, A, T>, S extends DeviceSta
     public Device<D, S, A, T> createDevice(DeviceCreationRequest request);
     // Used by DeviceFactory as a key to find the proper creator for the device being created.
     public DeviceType getDeviceType();
+    // Returns the initial state that every Device starts off with in a DeviceCreator.
+    public S initialState();
 }

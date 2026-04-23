@@ -1,41 +1,53 @@
 package edu.kennesaw.smarthome.service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import edu.kennesaw.smarthome.domain.Environment;
-import edu.kennesaw.smarthome.domain.EnvironmentResult;
-import edu.kennesaw.smarthome.service.factory.DeviceFactory;
+import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 
 @Service
 public class EnvironmentService {
-    
-    private final DeviceFactory DEVICE_FACTORY;  // Device creation is delegated to this.
-    private final EnvironmentDeviceQueryService ENVIRONMENT_DEVICE_QUERY_SERVICE;   // Querying/filtering is delegated to this.
-
     private final Map<String, Environment> REAL_ENVIRONMENTS;  // Stores all environments that will have their contents change. (interacts with its contents)
-
-    private Map<String, Environment> filteredEnvironments;  // Stores all environments to present. (only displays contents)
 
     // Spring provides a DeviceFactory and DeviceQueryService.
     public EnvironmentService(DeviceFactory deviceFactory, EnvironmentDeviceQueryService environmentDeviceQueryService) {
-        this.DEVICE_FACTORY = deviceFactory;
-        this.ENVIRONMENT_DEVICE_QUERY_SERVICE = environmentDeviceQueryService;
         this.REAL_ENVIRONMENTS = new HashMap<>();
-        this.filteredEnvironments = null;
     }
 
-    public EnvironmentResult reset() {
+    public void updateAllEnvironments() {
         for(Environment environment : REAL_ENVIRONMENTS.values()) {
-            EnvironmentResult result = environment.resetAllDevices();
-            if(!result.success()) {
-                return result;
-            }
+            environment.update();
         }
-        return new EnvironmentResult(true, "RESET_ALL_DEVICES", "Successfully resetted all devices in every environment.");
     }
 
-    
+    public void addDevice(Device<?, ?, ?, ?> device) {
+        Environment environment = getOrCreateEnvironment(device.getLocation());
+        environment.addDevice(device);
+    }
+
+    public void removeDevice(Device<?, ?, ?, ?> device) {
+        Environment environment = REAL_ENVIRONMENTS.get(device.getLocation());
+        if(environment == null) {
+            return;     // No device with such location exists.
+        }
+        environment.removeDevice(device.getId());
+    }
+
+    public Environment getOrCreateEnvironment(String location) {
+        return REAL_ENVIRONMENTS.computeIfAbsent(location, (Environment::new));
+    }
+
+    public Map<String, Environment> getAllRealEnvironments() {
+        return Collections.unmodifiableMap(REAL_ENVIRONMENTS);
+    }
+
+    public void reset() {
+        for(Environment environment : REAL_ENVIRONMENTS.values()) {
+            environment.resetAllDevices();
+        }
+    }
 }

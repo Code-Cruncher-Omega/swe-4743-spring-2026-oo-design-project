@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.service.factory.creator;
+package edu.kennesaw.smarthome.service.creator;
 
 import java.util.List;
 import java.util.Map;
@@ -31,20 +31,31 @@ public class LightCreator implements DeviceCreator<Light, LightState, LightActio
     
     @Override
     public Device<Light, LightState, LightAction, LightStateType> createDevice(DeviceCreationRequest request) {
-        LightState initialState = STATES.get(LightStateType.OFF);  // Initial state for all Lights is set here.
-        int initialBrightness = 100;    // Initial brightness (10 - 100) for all Lights is set here.
-        int[] initialColor = new int[] {255, 255, 255}; // Initial color (0 - 255 for each r, g, b value) for all Lights is set here.
-        
         return new Light(   request.name(), 
                             request.location(), 
-                            initialState,
+                            initialState(),
                             STATES,
-                            initialBrightness,
-                            initialColor);
+                            initialBrightness(),
+                            initialColor());
     }
     
     @Override
     public DeviceType getDeviceType() {
         return DeviceType.FAN;
+    }
+
+    @Override
+    public LightState initialState() {
+        return STATES.get(LightStateType.OFF);
+    }
+
+    // Initial brightness for all Light instances is defined here.
+    public int initialBrightness() {
+        return 100;
+    }
+
+    // Initial speed for all Light instances is defined here.
+    public int[] initialColor() {
+        return new int[] {255, 255, 255};
     }
 }
