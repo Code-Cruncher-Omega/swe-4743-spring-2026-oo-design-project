@@ -1,8 +1,5 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class HeatMode implements ThermostatMode {
     @Override
     public ThermostatState updateAmbientTemperature(Thermostat context) {

@@ -1,11 +1,8 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
-import org.springframework.stereotype.Component;
-
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
 
-@Component
 public class HeatingState implements ThermostatState {
     @Override
     public DeviceResult execute(Thermostat context, ThermostatAction action) {

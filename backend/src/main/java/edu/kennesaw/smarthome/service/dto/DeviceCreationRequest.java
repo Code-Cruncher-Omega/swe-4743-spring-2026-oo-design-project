@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.application.dto;
+package edu.kennesaw.smarthome.service.dto;
 
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 

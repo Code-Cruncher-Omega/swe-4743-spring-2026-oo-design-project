@@ -1,7 +1,9 @@
 package edu.kennesaw.smarthome.domain.device.fan;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
@@ -52,8 +54,31 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
     }
 
     @Override
+    public DeviceResult performAction(DeviceActionRequest action) {
+        switch(action.action()) {
+            case "TOGGLE_POWER":    // FanAction.TOGGLE_POWER
+                return togglePower();
+            case "SET_SPEED_LOW":    // FanAction.SET_SPEED_LOW
+                return changeSpeedLow();
+            case "SET_SPEED_MEDIUM":    // FanAction.SET_SPEED_MEDIUM
+                return changeSpeedMedium();
+            case "SET_SPEED_HIGH":  // FanAction.SET_SPEED_HIGH
+                return changeSpeedHigh();
+            default:
+                return new DeviceResult(false, action.action().toString(), "Action unavailable for " + getType().name());
+        }
+    }
+
+    @Override
     public DeviceType getType() {
         return DeviceType.FAN;
+    }
+
+    @Override
+    public Map<String, String> getAttributes() {
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("speed", speed.name());
+        return attributes;
     }
 
     public FanSpeed getSpeed() {

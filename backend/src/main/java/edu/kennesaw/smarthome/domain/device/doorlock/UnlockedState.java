@@ -1,11 +1,8 @@
 package edu.kennesaw.smarthome.domain.device.doorlock;
 
-import org.springframework.stereotype.Component;
-
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
 
-@Component
 public class UnlockedState implements DoorLockState {
     @Override
     public DeviceResult execute(DoorLock context, DoorLockAction action) {

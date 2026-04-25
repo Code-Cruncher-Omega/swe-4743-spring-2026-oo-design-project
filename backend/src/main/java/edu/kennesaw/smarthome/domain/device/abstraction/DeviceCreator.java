@@ -1,6 +1,6 @@
 package edu.kennesaw.smarthome.domain.device.abstraction;
 
-import edu.kennesaw.smarthome.application.dto.DeviceCreationRequest;
+import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
 
 // Each device creator will need to implement this interface so that a DeviceFactory can create that kind of device.
 // Device creators are passed through as parameters for DeviceFactory.

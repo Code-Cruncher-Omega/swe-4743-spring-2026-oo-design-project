@@ -1,7 +1,9 @@
 package edu.kennesaw.smarthome.domain.device.light;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
@@ -67,6 +69,22 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
         color = newColor;
     }
 
+    @Override
+    public DeviceResult performAction(DeviceActionRequest action) {
+        switch(action.action()) {
+            case "TOGGLE_POWER":    // LightAction.TOGGLE_POWER
+                return togglePower();
+            case "SET_BRIGHTNESS":  // LightAction.SET_BRIGHTNESS
+                return changeBrightness((int) action.parameters()[0]);
+            case "SET_COLOR":   // LightAction.SET_COLOR
+                return changeColor( (int) action.parameters()[0],
+                                    (int) action.parameters()[1],
+                                    (int) action.parameters()[2]);
+            default:
+                return new DeviceResult(false, action.action().toString(), "Action unavailable for " + getType().name());
+        }
+    }
+
     public int getBrightness() {
         return brightness;
     }
@@ -78,6 +96,14 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
     @Override
     public DeviceType getType() {
         return DeviceType.LIGHT;
+    }
+
+    @Override
+    public Map<String, String> getAttributes() {
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("brightness", brightness + "");
+        attributes.put("color", color.toString());
+        return attributes;
     }
 
     @Override

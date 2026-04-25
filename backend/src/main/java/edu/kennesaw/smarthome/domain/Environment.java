@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import edu.kennesaw.smarthome.service.dto.EnvironmentStatus;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
+import edu.kennesaw.smarthome.domain.device.abstraction.UpdateableDevice;
 import edu.kennesaw.smarthome.domain.device.thermostat.Thermostat;
 
 public class Environment {
@@ -96,8 +98,13 @@ public class Environment {
 
     // Updates any devices that run on ticks, in this case it is Thermostat, if there is one.
     public void update() {
-        if(thermostat != null) {
-            thermostat.updateAmbientTemperature();
+        for(Device<?, ?, ?, ?> device : devices.values()) {
+            switch(device.getType()) {
+                case DeviceType.THERMOSTAT: // All UpdateableDevices share the same case.
+                    ((UpdateableDevice) device).update();
+                default:
+                    return; // Do nothing.
+            }
         }
     }
 
@@ -115,6 +122,10 @@ public class Environment {
 
     public String getName() {
         return NAME;
+    }
+
+    public EnvironmentStatus getStatus() {
+        return EnvironmentStatus.from(this);
     }
 
     @Override

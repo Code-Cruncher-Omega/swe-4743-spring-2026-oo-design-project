@@ -4,5 +4,5 @@ import edu.kennesaw.smarthome.domain.device.abstraction.DeviceAction;
 
 public enum ThermostatAction implements DeviceAction {
     TOGGLE_POWER,
-    UPDATE_AMBIENCE // Using a mode object.
+    UPDATE_AMBIENCE
 }

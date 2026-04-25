@@ -1,12 +1,16 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
+import edu.kennesaw.smarthome.domain.device.abstraction.UpdateableDevice;
 
-public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAction, ThermostatStateType> {
+public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAction, ThermostatStateType> 
+                        implements UpdateableDevice {
     
     private final ThermostatState INITIAL_STATE;
     private final ThermostatMode INITIAL_MODE;
@@ -79,8 +83,31 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     }
 
     @Override
+    public DeviceResult performAction(DeviceActionRequest action) {
+        switch(action.action()) {
+            case "TOGGLE_POWER":    // ThermostatAction.TOGGLE_POWER
+                return togglePower();
+            case "SET_AMBIENCE":
+                return setAmbientTemperature((int) action.parameters()[0]);
+            case "SET_DESIRED":
+                return setDesiredTemperature((int) action.parameters()[0]);
+            default:
+                return new DeviceResult(false, action.action().toString(), "Action unavailable for " + getType().name());
+        }
+    }
+
+    @Override
     public DeviceType getType() {
         return DeviceType.THERMOSTAT;
+    }
+
+    @Override
+    public Map<String, String> getAttributes() {
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("mode", currentMode.getModeType().name());
+        attributes.put("desired", DESIRED_TEMPERATURE.getValue() + "");
+        attributes.put("ambient", AMBIENT_TEMPERATURE.getValue() + "");
+        return attributes;
     }
 
     public Temperature getDesiredTemperature() {
@@ -100,7 +127,8 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
         return new DeviceResult(true, "RESET_THERMOSTAT", "Thermostat reset to initial state, mode, and desired temperature.");
     }
 
-    public DeviceResult updateAmbientTemperature() {
+    @Override
+    public DeviceResult update() {
         return state.execute(this, ThermostatAction.UPDATE_AMBIENCE);
     }
 
