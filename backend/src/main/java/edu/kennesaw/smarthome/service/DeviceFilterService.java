@@ -23,7 +23,9 @@ public class DeviceFilterService {
     public Collection<Environment> filterDevicesInEnvironments(Collection<Environment> environments, DeviceFilterRequest request) {
         return environments.stream()
                 .map(environment -> {
-                        Collection<Device<?, ?, ?, ?>> filteredDevices = environment.getDevices().values();
+                        Collection<Device<?, ?, ?, ?>> filteredDevices = environment.getDevices();
+
+                        // Not ideal, but this works for now...
 
                         filteredDevices = filterByLocation(filteredDevices, request.location());
                         filteredDevices = filterByActivity(filteredDevices, request.activity());
@@ -33,8 +35,8 @@ public class DeviceFilterService {
                         
                         return new Environment(environment.getName(), devices);
                     })
-                            .filter(environment -> !environment.getDevices().isEmpty())
-                                    .toList(); // Removes empty Environments from the Collection.
+                            .filter(environment -> !environment.getDevices().isEmpty()) // Removes empty Environments from the Collection.
+                                    .toList();
     }
 
     private Collection<Device<?, ?, ?, ?>> filterByLocation(Collection<Device<?, ?, ?, ?>> devices, String location) {

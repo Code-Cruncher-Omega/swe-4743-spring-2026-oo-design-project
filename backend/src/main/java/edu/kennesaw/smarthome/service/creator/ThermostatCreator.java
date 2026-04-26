@@ -29,15 +29,9 @@ public class ThermostatCreator implements DeviceCreator<Thermostat, ThermostatSt
     // Spring also provides a List containing an instance from each concrete ThermostatMode.
     public ThermostatCreator(List<ThermostatState> stateList, List<ThermostatMode> modeList) {
         this.STATES = stateList.stream()
-                .collect(Collectors.toMap(
-                        ThermostatState::getStateType,
-                        Function.identity()
-                ));
+                .collect(Collectors.toMap(ThermostatState::getStateType, Function.identity()));
         this.MODES = modeList.stream()
-                .collect(Collectors.toMap(
-                        ThermostatMode::getModeType,
-                        Function.identity()
-                ));
+                .collect(Collectors.toMap(ThermostatMode::getModeType, Function.identity()));
     }
     
     @Override

@@ -40,11 +40,6 @@ public class Environment {
         this.thermostat = null;
     }
 
-    // Used for controlling ambient temperature per environment (aka location).
-    protected Thermostat getThermostat() {
-        return thermostat;
-    }
-
     // Devices are not allowed to have the same UUID.
     // No more than 1 Thermostat can exist in each environment.
     public EnvironmentResult addDevice(Device<?, ?, ?, ?> newDevice) {
@@ -84,35 +79,16 @@ public class Environment {
         return new EnvironmentResult(true, "RESET_ALL_DEVICES_IN_" + NAME.toUpperCase(), "Successfully resetted all devices in " + NAME);
     }
 
-    public EnvironmentResult setAmbientTemperature(int newTemperature) {
-        if(thermostat == null) {
-            return new EnvironmentResult(false, "SET_AMBIENT_TEMPERATURE_IN_" + NAME.toUpperCase(), NAME + " has no thermostat.");
-        }
-        thermostat.setAmbientTemperature(newTemperature);
-        return new EnvironmentResult(true, "SET_AMBIENT_TEMPERATURE_IN_" + NAME.toUpperCase(), "Ambient temperature in " + NAME + " has been set to " + newTemperature);
-    }
-
-    public boolean hasThermostat() {
-        return thermostat != null;
-    }
-
     // Updates any devices that run on ticks, in this case it is Thermostat, if there is one.
     public void update() {
         for(Device<?, ?, ?, ?> device : devices.values()) {
-            switch(device.getType()) {
-                case DeviceType.THERMOSTAT: // All UpdateableDevices share the same case.
-                    ((UpdateableDevice) device).update();
-                default:
-                    return; // Do nothing.
+            if(device instanceof UpdateableDevice) {    // I feel icky about this, but this just seems better than adding a switch-case.
+                ((UpdateableDevice) device).update();
             }
         }
     }
 
-    public Map<UUID, Device<?, ?, ?, ?>> getDevices() {
-        return Collections.unmodifiableMap(devices);
-    }
-
-    public Collection<Device<?, ?, ?, ?>> getDevicesCollection() {
+    public Collection<Device<?, ?, ?, ?>> getDevices() {
         return Collections.unmodifiableCollection(devices.values());
     }
 

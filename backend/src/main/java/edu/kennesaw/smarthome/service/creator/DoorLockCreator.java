@@ -24,10 +24,7 @@ public class DoorLockCreator implements DeviceCreator<DoorLock, DoorLockState, D
     // Spring provides a List containing an instance from each concrete DoorLockState.
     public DoorLockCreator(List<DoorLockState> stateList) {
         this.STATES = stateList.stream()
-                .collect(Collectors.toMap(
-                        DoorLockState::getStateType,
-                        Function.identity()
-                ));
+                .collect(Collectors.toMap(DoorLockState::getStateType, Function.identity()));
     }
     
     @Override

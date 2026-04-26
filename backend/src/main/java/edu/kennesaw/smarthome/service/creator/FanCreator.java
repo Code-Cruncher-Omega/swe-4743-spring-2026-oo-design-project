@@ -25,10 +25,7 @@ public class FanCreator implements DeviceCreator<Fan, FanState, FanAction, FanSt
     // Spring provides a List containing an instance from each concrete FanState.
     public FanCreator(List<FanState> stateList) {
         this.STATES = stateList.stream()
-                .collect(Collectors.toMap(
-                        FanState::getStateType,
-                        Function.identity()
-                ));
+                .collect(Collectors.toMap(FanState::getStateType, Function.identity()));
     }
     
     @Override

@@ -1,5 +1,6 @@
 package edu.kennesaw.smarthome.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -8,10 +9,12 @@ import org.springframework.stereotype.Service;
 import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
 import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
 import edu.kennesaw.smarthome.service.dto.DeviceFilterRequest;
+import edu.kennesaw.smarthome.service.dto.DeviceStatus;
 import edu.kennesaw.smarthome.service.dto.EnvironmentStatus;
 import edu.kennesaw.smarthome.domain.Environment;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
+import edu.kennesaw.smarthome.domain.device.abstraction.UpdateableDevice;
 
 @Service
 public class SmartHomeService {
@@ -53,6 +56,24 @@ public class SmartHomeService {
 
     public Collection<EnvironmentStatus> queryEnvironmentStatus(DeviceFilterRequest request) {
         return ENVIRONMENT_DEVICE_QUERY_SERVICE.filterDevicesInEnvironments(ENVIRONMENT_SERVICE.getAllEnvironments(), request)
-            .stream().map(Environment::getStatus).toList();
+                .stream()
+                        .map(Environment::getStatus)
+                                .toList();
+    }
+
+    // UpdateableDevices are likely to receive special treatment when it comes to dispalying their status. Thermostats are one of
+    // these kinds of Devices that will receive such treatment.
+    public Collection<DeviceStatus> getUpdateableDeviceStatus() {
+        Collection<DeviceStatus> updateableDeviceStatuses = new ArrayList<>();
+
+        for(Environment environment : ENVIRONMENT_SERVICE.getAllEnvironments()) {
+            for(Device<?, ?, ?, ?> device : environment.getDevices()) {
+                if(device instanceof UpdateableDevice) {    // I feel icky about this, but this just seems better than adding a switch-case.
+                    updateableDeviceStatuses.add(device.getStatus());
+                }
+            }
+        }
+
+        return updateableDeviceStatuses;
     }
 }

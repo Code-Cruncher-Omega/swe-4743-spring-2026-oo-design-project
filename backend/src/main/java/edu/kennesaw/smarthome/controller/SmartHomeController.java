@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
 import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
 import edu.kennesaw.smarthome.service.dto.DeviceFilterRequest;
+import edu.kennesaw.smarthome.service.dto.DeviceStatus;
 import edu.kennesaw.smarthome.service.dto.EnvironmentStatus;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.service.SmartHomeService;
@@ -43,7 +45,7 @@ public class SmartHomeController {
     public ResponseEntity<DeviceResult> performDeviceAction(@PathVariable UUID id, @RequestBody DeviceActionRequest request) {
         DeviceResult result = SMART_HOME_SERVICE.performDeviceAction(id, request);
 
-        if (!result.success()) {    // For now, but needs to be updated...
+        if(!result.success()) {    // For now, but needs to be updated...
             return ResponseEntity
                     .notFound()
                             .build();
@@ -71,5 +73,10 @@ public class SmartHomeController {
     @PostMapping("/environments/status")
     public ResponseEntity<Collection<EnvironmentStatus>> queryEnvironments(@RequestBody DeviceFilterRequest request) {
         return ResponseEntity.ok(SMART_HOME_SERVICE.queryEnvironmentStatus(request));
+    }
+
+    @GetMapping("/devices/updateable")
+    public ResponseEntity<Collection<DeviceStatus>> getUpdateableDevices() {
+        return ResponseEntity.ok(SMART_HOME_SERVICE.getUpdateableDeviceStatus());
     }
 }

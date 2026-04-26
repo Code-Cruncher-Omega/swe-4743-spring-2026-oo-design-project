@@ -23,10 +23,7 @@ public class LightCreator implements DeviceCreator<Light, LightState, LightActio
     // Spring provides a List containing an instance from each concrete LightState.
     public LightCreator(List<LightState> stateList) {
         this.STATES = stateList.stream()
-                .collect(Collectors.toMap(
-                        LightState::getStateType,
-                        Function.identity()
-                ));
+                .collect(Collectors.toMap(LightState::getStateType, Function.identity()));
     }
     
     @Override

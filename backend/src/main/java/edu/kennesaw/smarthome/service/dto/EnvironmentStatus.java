@@ -11,7 +11,6 @@ public record EnvironmentStatus (
 ) {
     public static EnvironmentStatus from(Environment environment) {
         List<DeviceStatus> deviceResponses = environment.getDevices()
-            .values()
             .stream()
             .map(DeviceStatus::from)
             .toList();

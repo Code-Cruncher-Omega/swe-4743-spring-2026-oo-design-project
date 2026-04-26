@@ -20,16 +20,13 @@ public class DeviceFactory {
     // Spring provides a List containing an instance from each concrete DeviceCreator.
     public DeviceFactory(List<DeviceCreator<?, ?, ?, ?>> creatorsList) {
         this.CREATORS = creatorsList.stream()
-                .collect(Collectors.toMap(
-                    DeviceCreator::getDeviceType,
-                    Function.identity()
-                ));
+                .collect(Collectors.toMap(DeviceCreator::getDeviceType, Function.identity()));
     }
 
     // Views the request given, chooses the correct creator if available, and creates the device.
     public Device<?, ?, ?, ?> create(DeviceCreationRequest request) {
         DeviceCreator<?, ?, ?, ?> creator = CREATORS.get(request.deviceType());
-        if (creator == null) {
+        if(creator == null) {
             throw new IllegalArgumentException("Unsupported device type: " + request.deviceType().name());
         }
         return creator.createDevice(request);
