@@ -1,9 +1,13 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
-import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
+import edu.kennesaw.smarthome.service.dto.DeviceResult;
 
 public class OffState implements ThermostatState {
+    @Override
+    public DeviceResult execute(Thermostat context, ThermostatAction action, int tickRate) {
+        return new DeviceResult(false, action.name(), "Cannot update ambient temperature while thermostat is off. Please turn on the thermostat first.");
+    }
     @Override
     public DeviceResult execute(Thermostat context, ThermostatAction action) {
         switch (action) {

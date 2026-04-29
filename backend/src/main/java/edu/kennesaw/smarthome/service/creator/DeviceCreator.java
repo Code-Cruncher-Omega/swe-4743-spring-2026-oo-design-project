@@ -1,5 +1,10 @@
-package edu.kennesaw.smarthome.domain.device.abstraction;
+package edu.kennesaw.smarthome.service.creator;
 
+import edu.kennesaw.smarthome.domain.device.abstraction.Device;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceAction;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceState;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceStateType;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
 
 // Each device creator will need to implement this interface so that a DeviceFactory can create that kind of device.

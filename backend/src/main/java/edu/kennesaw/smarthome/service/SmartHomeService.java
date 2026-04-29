@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
 import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
 import edu.kennesaw.smarthome.service.dto.DeviceFilterRequest;
+import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.service.dto.DeviceStatus;
 import edu.kennesaw.smarthome.service.dto.EnvironmentStatus;
 import edu.kennesaw.smarthome.domain.Environment;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
-import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.UpdateableDevice;
 
 @Service
@@ -32,26 +32,28 @@ public class SmartHomeService {
         this.ENVIRONMENT_DEVICE_QUERY_SERVICE = environmentDeviceQueryService;
     }
 
-    public DeviceResult performDeviceAction(UUID id, DeviceActionRequest request) {
-        Device<?, ?, ?, ?> device = ENVIRONMENT_SERVICE.getDevice(id);
+    public DeviceResult performDeviceAction(String id, DeviceActionRequest request) {
+        UUID parsedId = UUID.fromString(id);
+        Device<?, ?, ?, ?> device = ENVIRONMENT_SERVICE.getDevice(parsedId);
         if(device != null) {
             return device.performAction(request);
         }
         return new DeviceResult(false, request.action().toString(), "Could not find device with ID " + id);
     }
 
-    public UUID createAndAddDevice(DeviceCreationRequest request) {
+    public String createAndAddDevice(DeviceCreationRequest request) {
         Device<?, ?, ?, ?> device = DEVICE_FACTORY.create(request);
         ENVIRONMENT_SERVICE.addDevice(device);
-        return device.getId();
+        return device.getId().toString();
     }
 
-    public void removeDevice(UUID id) {
-        ENVIRONMENT_SERVICE.removeDevice(id);
+    public void removeDevice(String id) {
+        UUID parsedId = UUID.fromString(id);
+        ENVIRONMENT_SERVICE.removeDevice(parsedId);
     }
 
-    public void update() {
-        ENVIRONMENT_SERVICE.updateAllEnvironments();
+    public void update(int tickRate) {
+        ENVIRONMENT_SERVICE.updateAllEnvironments(tickRate);
     }
 
     public Collection<EnvironmentStatus> queryEnvironmentStatus(DeviceFilterRequest request) {

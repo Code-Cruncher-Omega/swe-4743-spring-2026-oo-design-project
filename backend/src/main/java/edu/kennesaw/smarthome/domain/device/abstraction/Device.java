@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.service.dto.DeviceStatus;
 
 // All concrete Devices store all these methods and variables, while also needing to implement the mentioned abstract methods.
@@ -85,7 +86,7 @@ public abstract class Device<
 
     protected abstract void setState(S newState);
 
-    // Each concrete device needs to set this up so that their methods can be called via API.
+    // Each concrete device needs to set this up so that their methods can be called by users via API.
     public abstract DeviceResult performAction(DeviceActionRequest action);
 
     // Each concrete device class will implement this method to return its specific DeviceType, which can be used for categorization and handling of different device types in the system.

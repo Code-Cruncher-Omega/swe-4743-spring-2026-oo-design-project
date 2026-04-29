@@ -2,7 +2,6 @@ package edu.kennesaw.smarthome.controller;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
 import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
 import edu.kennesaw.smarthome.service.dto.DeviceFilterRequest;
+import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.service.dto.DeviceStatus;
 import edu.kennesaw.smarthome.service.dto.EnvironmentStatus;
-import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.service.SmartHomeService;
 
 @RestController
@@ -34,7 +33,7 @@ public class SmartHomeController {
 
     @PostMapping("/devices")
     public ResponseEntity<Void> createDevice(@RequestBody DeviceCreationRequest request) {
-        UUID id = SMART_HOME_SERVICE.createAndAddDevice(request);
+        String id = SMART_HOME_SERVICE.createAndAddDevice(request);
 
         return ResponseEntity
                 .created(URI.create("/api/devices/" + id))
@@ -42,7 +41,7 @@ public class SmartHomeController {
     }
 
     @PostMapping("/devices/{id}/actions")
-    public ResponseEntity<DeviceResult> performDeviceAction(@PathVariable UUID id, @RequestBody DeviceActionRequest request) {
+    public ResponseEntity<DeviceResult> performDeviceAction(@PathVariable String id, @RequestBody DeviceActionRequest request) {
         DeviceResult result = SMART_HOME_SERVICE.performDeviceAction(id, request);
 
         if(!result.success()) {    // For now, but needs to be updated...
@@ -55,7 +54,7 @@ public class SmartHomeController {
     }
 
     @DeleteMapping("/devices/{id}")
-    public ResponseEntity<Void> removeDevice(@PathVariable UUID id) {
+    public ResponseEntity<Void> removeDevice(@PathVariable String id) {
         SMART_HOME_SERVICE.removeDevice(id);
         return ResponseEntity
                 .noContent()
@@ -63,8 +62,8 @@ public class SmartHomeController {
     }
 
     @PostMapping("/simulation/update")
-    public ResponseEntity<Void> updateSimulation() {
-        SMART_HOME_SERVICE.update();
+    public ResponseEntity<Collection<EnvironmentStatus>> updateSimulation(@RequestBody int tickRate) {
+        SMART_HOME_SERVICE.update(tickRate);
         return ResponseEntity
                 .ok()
                         .build();

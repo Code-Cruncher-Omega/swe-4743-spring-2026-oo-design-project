@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
-import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 
 public class Light extends Device<Light, LightState, LightAction, LightStateType> {
@@ -102,7 +102,9 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
     public Map<String, String> getAttributes() {
         Map<String, String> attributes = new HashMap<>();
         attributes.put("brightness", brightness + "");
-        attributes.put("color", color.toString());
+        attributes.put("red", color[0] + "");
+        attributes.put("green", color[1] + "");
+        attributes.put("blue", color[2] + "");
         return attributes;
     }
 

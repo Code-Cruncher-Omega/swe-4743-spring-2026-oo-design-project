@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
-import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 import edu.kennesaw.smarthome.domain.device.abstraction.UpdateableDevice;
 
@@ -91,6 +91,12 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
                 return setAmbientTemperature((int) action.parameters()[0]);
             case "SET_DESIRED":
                 return setDesiredTemperature((int) action.parameters()[0]);
+            case "SET_MODE_HEAT":
+                return setModeHeat();
+            case "SET_MODE_COOL":
+                return setModeCool();
+            case "SET_MODE_AUTO":
+                return setModeAuto();
             default:
                 return new DeviceResult(false, action.action().toString(), "Action unavailable for " + getType().name());
         }
@@ -128,8 +134,13 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     }
 
     @Override
-    public DeviceResult update() {
-        return state.execute(this, ThermostatAction.UPDATE_AMBIENCE);
+    public DeviceResult update(int tickRate) {
+        DeviceResult result = state.execute(this, ThermostatAction.UPDATE_STATE);
+        // Checking for STILL prevents warming or cooling in the same update where thermostat changes state.
+        if(result.success() && result.action().contains("STILL")) {
+            return state.execute(this, ThermostatAction.UPDATE_AMBIENCE, tickRate);
+        }
+        return result;
     }
 
     public DeviceResult togglePower() {

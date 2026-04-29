@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
-import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 
 public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, DoorLockStateType> {

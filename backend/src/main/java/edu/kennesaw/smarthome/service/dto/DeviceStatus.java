@@ -1,12 +1,11 @@
 package edu.kennesaw.smarthome.service.dto;
 
 import java.util.Map;
-import java.util.UUID;
 
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 
 public record DeviceStatus (
-    UUID id,
+    String id,
     String name,
     String location,
     String state,
@@ -15,7 +14,7 @@ public record DeviceStatus (
 ) {
     public static DeviceStatus from(Device<?, ?, ?, ?> device) {
         return new DeviceStatus(
-            device.getId(),
+            device.getId().toString(),
             device.getName(),
             device.getLocation(),
             device.getState().getStateType().toString(),

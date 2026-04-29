@@ -1,7 +1,7 @@
 package edu.kennesaw.smarthome.domain.device.doorlock;
 
-import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
+import edu.kennesaw.smarthome.service.dto.DeviceResult;
 
 public class LockedState implements DoorLockState {
     @Override

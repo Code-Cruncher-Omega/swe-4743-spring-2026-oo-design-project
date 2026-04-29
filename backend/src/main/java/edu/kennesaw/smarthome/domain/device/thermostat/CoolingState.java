@@ -1,19 +1,31 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
-import edu.kennesaw.smarthome.domain.device.abstraction.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
+import edu.kennesaw.smarthome.service.dto.DeviceResult;
 
 public class CoolingState implements ThermostatState {
     @Override
+    public DeviceResult execute(Thermostat context, ThermostatAction action, int tickRate) {
+        if(action.equals(ThermostatAction.UPDATE_AMBIENCE)) {
+            int previousTemp = context.getAmbientTemperature().getValue();
+            int desiredTemp = context.getDesiredTemperature().getValue();
+            if(previousTemp - desiredTemp < tickRate) {
+                context.getAmbientTemperature().decrease(previousTemp - desiredTemp);   // Avoids overcooling past desired.
+            }   else {
+                context.getAmbientTemperature().decrease(tickRate);
+            }
+            return new DeviceResult(true, "COOL_DOWN_AMBIENCE", "Ambient temperature has cooled down from "
+                    + previousTemp + " to " + context.getAmbientTemperature().getValue() + " Farenheit.");
+        }
+        return new DeviceResult(false, action.name(), "Improper action for cooling ambience."); // Invalid action for this method
+    }
+    @Override
     public DeviceResult execute(Thermostat context, ThermostatAction action) {
-        context.getAmbientTemperature().decrease(); // Ambient temperature increases before entering another state (cooling occurs during this state).
-
         switch (action) {
             case TOGGLE_POWER:
-                context.getAmbientTemperature().increase(); // State was interrupted, so the thermostat never finished cooling.
                 context.setState(context.getOffState());
                 return new DeviceResult(true, "TOGGLE_THERMOSTAT_POWER", "Thermostat turned off.");
-            case UPDATE_AMBIENCE:
+            case UPDATE_STATE:
                 ThermostatMode currentMode = context.getCurrentMode();
                 ThermostatState transitionState = currentMode.updateAmbientTemperature(context);
                 ThermostatStateType newStateType = transitionState.getStateType();

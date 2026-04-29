@@ -80,10 +80,10 @@ public class Environment {
     }
 
     // Updates any devices that run on ticks, in this case it is Thermostat, if there is one.
-    public void update() {
+    public void update(int tickRate) {
         for(Device<?, ?, ?, ?> device : devices.values()) {
             if(device instanceof UpdateableDevice) {    // I feel icky about this, but this just seems better than adding a switch-case.
-                ((UpdateableDevice) device).update();
+                ((UpdateableDevice) device).update(tickRate);
             }
         }
     }

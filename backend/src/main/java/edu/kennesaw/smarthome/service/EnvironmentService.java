@@ -21,9 +21,9 @@ public class EnvironmentService {
         this.ENVIRONMENTS = new HashMap<>();
     }
 
-    public void updateAllEnvironments() {
+    public void updateAllEnvironments(int tickRate) {
         for(Environment environment : ENVIRONMENTS.values()) {
-            environment.update();
+            environment.update(tickRate);
         }
     }
 
