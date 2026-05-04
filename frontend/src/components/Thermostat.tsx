@@ -1,7 +1,9 @@
-import { DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
-import { refreshDevices } from "./Simulation";
+import { deleteDevice, DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
+import { useRefresh } from './RefreshContext';
 
 export function Thermostat({ device }: { device: DeviceStatus }) {
+  const refreshDevices = useRefresh();
+  
   const { mode, desired, ambient } = device.attributes;
     
   const togglePower = async () => {
@@ -11,7 +13,7 @@ export function Thermostat({ device }: { device: DeviceStatus }) {
 
   const setDesired = async (value: number) => {
     try {
-      await performDeviceAction(device.id, {action: 'SET_BRIGHTNESS', parameters: [value]});
+      await performDeviceAction(device.id, {action: 'SET_DESIRED', parameters: [value]});
       await refreshDevices();
     } catch (error) {
       console.error(error);
@@ -25,6 +27,9 @@ export function Thermostat({ device }: { device: DeviceStatus }) {
 
   return (
     <div>
+      <button onClick={() => deleteDevice(device.id)} style={{ marginLeft: '10px' }}>
+        X
+      </button>
       <h3>{device.name} - { device.state === 'OFF' ? 'Off' 
                             : device.state === 'IDLE' ? 'Idle'
                             : device.state === 'HEATING' ? 'Heating' 

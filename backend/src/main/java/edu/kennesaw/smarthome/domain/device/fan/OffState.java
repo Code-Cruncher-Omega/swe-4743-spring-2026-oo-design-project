@@ -1,8 +1,11 @@
 package edu.kennesaw.smarthome.domain.device.fan;
 
+import org.springframework.stereotype.Component;
+
 import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
 import edu.kennesaw.smarthome.service.dto.DeviceResult;
 
+@Component("fanOffState")
 public class OffState implements FanState {
     @Override
     public DeviceResult execute(Fan context, FanAction action) {

@@ -1,7 +1,9 @@
-import { DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
-import { refreshDevices } from "./Simulation";
+import { deleteDevice, DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
+import { useRefresh } from './RefreshContext';
 
 export function Fan({ device }: { device: DeviceStatus }) {
+  const refreshDevices = useRefresh();
+
   const { speed } = device.attributes;
   const isOn = device.state === 'ON';
 
@@ -17,6 +19,9 @@ export function Fan({ device }: { device: DeviceStatus }) {
 
   return (
     <div>
+      <button onClick={() => deleteDevice(device.id)} style={{ marginLeft: '10px' }}>
+        X
+      </button>
       <h3>{device.name} - {isOn ? 'On' : 'Off'}</h3>
       <p>Fan</p>
       <p>Power: <button onClick={togglePower}>{isOn ? 'Turn Off' : 'Turn On'}</button></p>

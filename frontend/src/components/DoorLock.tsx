@@ -1,7 +1,9 @@
-import { DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
-import { refreshDevices } from "./Simulation";
+import { DeviceStatus, deleteDevice, performDeviceAction } from "../api/SmartHomeAPI";
+import { useRefresh } from './RefreshContext';
 
 export function DoorLock({ device }: { device: DeviceStatus }) {
+  const refreshDevices = useRefresh();
+
   const isLocked = device.state === 'LOCKED';
 
   const handleClick = async () => {
@@ -11,10 +13,17 @@ export function DoorLock({ device }: { device: DeviceStatus }) {
 
   return (
     <div>
+      <button onClick={() => deleteDevice(device.id)} style={{ marginLeft: '10px' }}>
+        X
+      </button>
       <h3>{device.name} - {isLocked ? 'Locked' : 'Unlocked'}</h3>
       <p>Door Lock</p>
 
-      <p>Lock<button onClick={handleClick}>{isLocked ? 'Unlock' : 'Lock'}</button></p>
+      <p>Lock
+      <button onClick={handleClick}>
+        {isLocked ? 'Unlock' : 'Lock'}
+      </button>
+      </p>
       <p>ID: {device.id}</p>
     </div>
   );

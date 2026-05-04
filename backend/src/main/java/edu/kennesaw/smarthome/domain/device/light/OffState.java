@@ -1,8 +1,11 @@
 package edu.kennesaw.smarthome.domain.device.light;
 
+import org.springframework.stereotype.Component;
+
 import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
 import edu.kennesaw.smarthome.service.dto.DeviceResult;
 
+@Component("lightOffState")
 public class OffState implements LightState {
     @Override
     public DeviceResult execute(Light context, LightAction action, int brightnessLevel) {

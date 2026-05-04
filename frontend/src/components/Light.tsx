@@ -1,7 +1,9 @@
-import { DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
-import { refreshDevices } from "./Simulation";
+import { deleteDevice, DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
+import { useRefresh } from './RefreshContext';
 
 export function Light({ device }: { device: DeviceStatus }) {
+  const refreshDevices = useRefresh();
+
   const { brightness, red, green, blue } = device.attributes;
 
   const isOn = device.state === 'ON';
@@ -31,6 +33,9 @@ export function Light({ device }: { device: DeviceStatus }) {
 
   return (
     <div>
+      <button onClick={() => deleteDevice(device.id)} style={{ marginLeft: '10px' }}>
+        X
+      </button>
       <h3>{device.name} - {isOn ? 'On' : 'Off'}</h3>
       <p>Light</p>
       <p>Power: <button onClick={togglePower}>{isOn ? 'Turn Off' : 'Turn On'}</button></p>
@@ -51,7 +56,7 @@ export function Light({ device }: { device: DeviceStatus }) {
         min={0}
         max={255}
         value={Number(red)}
-        onChange={(event) => setColor(Number(event.target.value), Number(blue), Number(green))}
+        onChange={(event) => setColor(Number(event.target.value), Number(green), Number(blue))}
         disabled={!isOn}
         placeholder="R"
       />
@@ -71,7 +76,7 @@ export function Light({ device }: { device: DeviceStatus }) {
         min={0}
         max={255}
         value={Number(blue)}
-        onChange={(event) => setColor(Number(red), Number(blue), Number(event.target.value))}
+        onChange={(event) => setColor(Number(red), Number(green), Number(event.target.value))}
         disabled={!isOn}
         placeholder="B"
       />

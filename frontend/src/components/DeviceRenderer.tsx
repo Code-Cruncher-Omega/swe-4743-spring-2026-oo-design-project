@@ -18,5 +18,9 @@ export function DeviceRenderer({ device }: { device: DeviceStatus }) {
     return <div>Unknown device type: {device.type}</div>;
   }
 
-  return <Component device={device} />;
+  return (
+  <div>
+    <Component device={device} />
+  </div>
+  );
 }

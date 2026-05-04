@@ -1,52 +1,47 @@
 import { useEffect, useState } from 'react';
-import { EnvironmentStatus, queryEnvironments, updateSimulation } from '../api/SmartHomeAPI';
+import { DeviceFilterRequest, EnvironmentStatus, queryEnvironments, updateSimulation } from '../api/SmartHomeAPI';
 import { EnvironmentList } from './Environment';
+import RefreshContext from './RefreshContext';
 
-const [filter, setFilter] = useState({
-    location: '',
-    activity: '',
-    type: ''
-});
+type Parameters = {
+  timeMultiplier: number;
+  filter: DeviceFilterRequest;
+};
 
-{/* MIGHT CAUSE ISSUES */}
-const [environmentStatuses, setEnvironmentStatuses] = useState<EnvironmentStatus[]>(await queryEnvironments(filter));
-const tickRate = useState(5000);    // Update simulation every 5 seconds.
-const [timeMultiplier, setMultiplier] = useState<number>(1);
+export function Simulation({timeMultiplier, filter}: Parameters) {
 
-export function Simulation() {
+const [environmentStatuses, setEnvironmentStatuses] = useState<EnvironmentStatus[]>([]);
 
-useEffect(() => {
-  const interval = setInterval(async () => {
+  const refreshEnvironments = async () => {
     try {
-      await updateSimulation(timeMultiplier);
-
       const data = await queryEnvironments(filter);
-      setEnvironmentStatuses(data);
+      if (Array.isArray(data)) {
+        setEnvironmentStatuses(data);
+      } else {
+        console.error("Unexpected response:", data);
+      }
     } catch (error) {
       console.error(error);
     }
-  }, timeMultiplier);
+  };
 
-  return () => clearInterval(interval);
-}, [filter, timeMultiplier]);
+  useEffect(() => {
+    refreshEnvironments();
+
+    const interval = setInterval(async () => {
+      try {
+          await updateSimulation(timeMultiplier);
+          await refreshEnvironments();
+        } catch (error) {
+          console.error(error);
+      }
+    }, 5000); {/* Update every 5 seconds */}
+    return () => clearInterval(interval);
+  }, [filter, timeMultiplier]);
 
   return (
-    <EnvironmentList environmentStatuses={environmentStatuses} />
+    <RefreshContext.Provider value={refreshEnvironments}>
+      <EnvironmentList environmentStatuses={environmentStatuses} />
+    </RefreshContext.Provider>
   );
-}
-
-export async function refreshDevices() {
-    setEnvironmentStatuses(await queryEnvironments(filter))
-}
-
-export function getTickRate() {
-    return tickRate;
-}
-
-export function getTimeMultiplier() {
-    return timeMultiplier;
-}
-
-export function setTimeMultiplier(multiplier: number) {
-    setMultiplier(multiplier);
 }

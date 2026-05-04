@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 function apiPath(path: string) {
-  return `${API_URL}${path}`;
+  return `${API_URL}/api${path}`;
 }
 
 export async function createDevice(request: DeviceCreationRequest) {
@@ -49,7 +49,7 @@ export async function updateSimulation(tickRate: number) {
 }
 
 export async function queryEnvironments(request: DeviceFilterRequest): Promise<EnvironmentStatus[]> {
-  const response = await fetch(apiPath('/smarthome/environments/query'), {
+  const response = await fetch(apiPath('/smarthome/environments/status'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -101,5 +101,5 @@ export interface DeviceFilterRequest {
 export interface DeviceCreationRequest {
     name: string;
     location: string;
-    type: string;
+    deviceType: string;
 }

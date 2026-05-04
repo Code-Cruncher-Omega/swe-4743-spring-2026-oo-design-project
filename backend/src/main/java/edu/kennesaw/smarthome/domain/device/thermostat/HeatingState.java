@@ -1,8 +1,11 @@
 package edu.kennesaw.smarthome.domain.device.thermostat;
 
+import org.springframework.stereotype.Component;
+
 import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
 import edu.kennesaw.smarthome.service.dto.DeviceResult;
 
+@Component("thermostatHeatingState")
 public class HeatingState implements ThermostatState {
     @Override
     public DeviceResult execute(Thermostat context, ThermostatAction action, int tickRate) {
@@ -27,7 +30,7 @@ public class HeatingState implements ThermostatState {
                 return new DeviceResult(true, "TOGGLE_THERMOSTAT_POWER", "Thermostat turned off.");
             case UPDATE_STATE:
                 ThermostatMode currentMode = context.getCurrentMode();
-                ThermostatState transitionState = currentMode.updateAmbientTemperature(context);
+                ThermostatState transitionState = currentMode.determineNextState(context);
                 ThermostatStateType newStateType = transitionState.getStateType();
                 if(newStateType.equals(getStateType())) {
                     return new DeviceResult(true, "THERMOSTAT_STILL_HEATING", "Thermostat continues heating.");

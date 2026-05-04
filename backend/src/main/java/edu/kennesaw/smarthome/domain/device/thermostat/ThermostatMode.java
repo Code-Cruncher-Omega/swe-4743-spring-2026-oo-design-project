@@ -5,7 +5,7 @@ public interface ThermostatMode {
     
     // Returns the ThermostatState that needs to be changed to for updating the ambient temperature.
     // Does not set ThermostatState to off.
-    public ThermostatState updateAmbientTemperature(Thermostat context);
+    public ThermostatState determineNextState(Thermostat context);
     // Similar concept with DeviceStateType, but for Thermostat's specific modes.
     public ThermostatModeType getModeType();
 }

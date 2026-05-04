@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react';
 import { createDevice, DeviceStatus, getUpdateableDevices, performDeviceAction } from '../api/SmartHomeAPI';
-import { getTimeMultiplier, setTimeMultiplier } from './Simulation';
+import { useRefresh } from './RefreshContext';
 
-export function SimulationSettings() {
+type Multipliers = {
+  timeMultiplier: number,
+  setTimeMultiplier: (parameter: number) => void;
+}
+
+export function SimulationSettings({
+  timeMultiplier,
+  setTimeMultiplier
+}: Multipliers) {
+  const refreshDevices = useRefresh();
+
   const [showControls, setShowControls] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [deviceStatuses, setDeviceStatuses] = useState<DeviceStatus[]>([]);
@@ -11,15 +21,16 @@ export function SimulationSettings() {
   const [deviceType, setDeviceType] = useState('LIGHT');
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
+
+  const fetchDevices = async () => {
+        const statuses = await getUpdateableDevices();
+        setDeviceStatuses(statuses);
+  };
   
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
-    const fetchDevices = async () => {
-        const statuses = await getUpdateableDevices();
-        setDeviceStatuses(statuses);
-    };
     fetchDevices();
 
     return () => clearInterval(interval);
@@ -85,7 +96,8 @@ export function SimulationSettings() {
             <button     
                 style={{ width: '100%' }}
                 onClick={() => {
-                    createDevice({name: name, location: location, type: deviceType})
+                    createDevice({name: name, location: location, deviceType: deviceType})
+                    fetchDevices();
                 }}
             >
                 Create
@@ -98,7 +110,7 @@ export function SimulationSettings() {
         </div>
 
         <div>
-          <strong>Speed:</strong> {getTimeMultiplier + ''}x
+          <strong>Speed:</strong> {timeMultiplier + ''}x
         </div>
 
         <button onClick={() => setShowControls(prev => !prev)}>
@@ -117,22 +129,23 @@ export function SimulationSettings() {
             </label>
             <ul>
                 {deviceStatuses.map((status) => (
-                    <li key={status.id}>
-                    {status.name}
+                  <div key={status.id}>
+                    <label htmlFor={status.id}>{status.name}</label>
                     <input
-                        type="range"
-                        min={0}
-                        max={140}
-                        value={Number(status.attributes["ambient"])}
-                        onChange={(event) =>
-                        performDeviceAction(status.id, {
-                            action: 'SET_AMBIENCE',
-                            parameters: [Number(event.target.value)],
-                        })
-                        }
-                        style={{ width: '100%' }}
-                    />
-                    </li>
+                    id={status.id}
+                    type="range"
+                    min={0}
+                    max={140}
+                    value={Number(status.attributes["ambient"])}
+                    onChange={(event) =>
+                    performDeviceAction(status.id, {
+                      action: 'SET_AMBIENCE',
+                      parameters: [Number(event.target.value)],
+                    })
+                    }
+                    style={{ width: '100%' }}
+                  />
+                  </div>
                 ))}
             </ul>
           </div>
