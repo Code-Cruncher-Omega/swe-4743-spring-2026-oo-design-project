@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import edu.kennesaw.smarthome.service.dto.EnvironmentResult;
 import edu.kennesaw.smarthome.service.dto.EnvironmentStatus;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
@@ -55,7 +56,7 @@ public class Environment {
             return new EnvironmentResult(true, "ADD_THERMOSTAT_TO_" + NAME.toUpperCase(), "Successfully added " + newDevice.getName() + " to " + NAME);
         }
         devices.put(newDevice.getId(), newDevice);
-        return new EnvironmentResult(true, "ADD_" + newDevice.getType().name() + "_TO_" + NAME.toUpperCase(), "Successfully added " + newDevice.getName() + " to " + NAME);
+        return new EnvironmentResult(true, "ADD_" + newDevice.getType().toString() + "_TO_" + NAME.toUpperCase(), "Successfully added " + newDevice.getName() + " to " + NAME);
     }
 
     // If a device is a Thermostat, then reset ambientTemperature back to null.
@@ -67,7 +68,7 @@ public class Environment {
         if(removedDevice.getType().equals(DeviceType.THERMOSTAT)) {
                 thermostat = null;
         }
-        return new EnvironmentResult(true, "REMOVE_" + removedDevice.getType().name() + "_FROM_" + NAME.toUpperCase(), "Successfully removed device with ID " + id + " from " + NAME);
+        return new EnvironmentResult(true, "REMOVE_" + removedDevice.getType().toString() + "_FROM_" + NAME.toUpperCase(), "Successfully removed device with ID " + id + " from " + NAME);
     }
 
     public EnvironmentResult resetAllDevices() {
@@ -101,7 +102,15 @@ public class Environment {
     }
 
     public EnvironmentStatus getStatus() {
-        return EnvironmentStatus.from(this);
+        return EnvironmentStatus.of(this);
+    }
+
+    public EnvironmentResult setAmbientTemperature(int newTemp) {
+        if(thermostat == null) {
+            return new EnvironmentResult(false, "SET_ENVIRONMENT_AMBIENT_TEMPERATURE", NAME + " must have a thermostat before ambient temperature can be changed.");
+        }
+        thermostat.setAmbientTemperature(newTemp);
+        return new EnvironmentResult(true, "SET_ENVIRONMENT_AMBIENT_TEMPERATURE", NAME + " ambient temperature updated to " + newTemp + " Farenheit.");
     }
 
     @Override

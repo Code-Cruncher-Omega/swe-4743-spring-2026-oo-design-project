@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { deleteDevice, DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
 import { useRefresh } from './RefreshContext';
 
@@ -6,11 +7,13 @@ export function Light({ device }: { device: DeviceStatus }) {
 
   const { brightness, red, green, blue } = device.attributes;
 
+  const [brightnessDisplay, setBrightnessDisplay] = useState(Number(brightness));
+
   const isOn = device.state === 'ON';
   
   const togglePower = async () => {
-      await performDeviceAction(device.id, {action: 'TOGGLE_POWER', parameters: []});
-      await refreshDevices();
+    await performDeviceAction(device.id, {action: 'TOGGLE_POWER', parameters: []});
+    await refreshDevices();
   };
 
   const setBrightness = async (value: number) => {
@@ -31,25 +34,33 @@ export function Light({ device }: { device: DeviceStatus }) {
     }
   };
 
+  useEffect(() => {
+    setBrightnessDisplay(Number(brightness));
+  }, [brightness]);
+
   return (
     <div>
-      <button onClick={() => deleteDevice(device.id)} style={{ marginLeft: '10px' }}>
+      <button onClick={async () => {
+        await deleteDevice(device.id);
+        await refreshDevices();
+        }} style={{ marginLeft: '10px' }}>
         X
       </button>
       <h3>{device.name} - {isOn ? 'On' : 'Off'}</h3>
       <p>Light</p>
       <p>Power: <button onClick={togglePower}>{isOn ? 'Turn Off' : 'Turn On'}</button></p>
-      <p>Brightness: {brightness} 
-      <input
-        type="range"
-        min={10}
-        max={100}
-        value={Number(brightness)}
-        onChange={(event) => setBrightness(Number(event.target.value))}
-        onMouseUp={(event) => setBrightness(Number(event.currentTarget.value))}
-        onTouchEnd={(event) => setBrightness(Number(event.currentTarget.value))}
-        disabled={!isOn}
-      /></p>
+      <p>Brightness: {brightness + '%'} 
+        <input
+          type="range"
+          min={10}
+          max={100}
+          value={brightnessDisplay}
+          onChange={(event) => setBrightnessDisplay(Number(event.target.value))}
+          onMouseUp={async (event) => await setBrightness(Number(event.currentTarget.value))}
+          onTouchEnd={async (event) => await setBrightness(Number(event.currentTarget.value))}
+          disabled={!isOn}
+        />
+      </p>
       <p>Color: (R) {red}, (G) {green}, (B) {blue}
       <input
         type="number"
@@ -81,7 +92,6 @@ export function Light({ device }: { device: DeviceStatus }) {
         placeholder="B"
       />
       </p>
-      <p>ID: {device.id}</p>
     </div>
   );
 }

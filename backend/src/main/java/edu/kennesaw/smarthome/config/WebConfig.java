@@ -1,4 +1,4 @@
-package edu.kennesaw.config;
+package edu.kennesaw.smarthome.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

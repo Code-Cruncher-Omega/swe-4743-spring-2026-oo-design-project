@@ -2,7 +2,9 @@ package edu.kennesaw.smarthome.domain.device.light;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import edu.kennesaw.smarthome.service.creator.LightCreator;
 import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
 import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
@@ -10,25 +12,31 @@ import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 
 public class Light extends Device<Light, LightState, LightAction, LightStateType> {
 
-    private final LightState INITIAL_STATE;
-    private final int INITIAL_BRIGHTNESS;
-    private final int[] INITIAL_COLOR;
-
     private int brightness; // Brightness level (10-100)
     private int[] color; // RGB color values (0-255)
+
+    public Light(   UUID id,
+                    String name, 
+                    String location, 
+                    LightState initialState, 
+                    Map<String, LightState> states,
+
+                    int savedBrightness, 
+                    int[] savedColor) {
+        super(id, name, location, initialState, states);
+        
+        this.brightness = savedBrightness;
+        this.color = savedColor;
+    }
 
     public Light(   String name, 
                     String location, 
                     LightState initialState, 
-                    Map<LightStateType, LightState> states,
+                    Map<String, LightState> states,
 
                     int initialBrightness, 
                     int[] initialColor) {
         super(name, location, initialState, states);
-
-        this.INITIAL_STATE = initialState;
-        this.INITIAL_BRIGHTNESS = initialBrightness;
-        this.INITIAL_COLOR = initialColor;
         
         this.brightness = initialBrightness;
         this.color = initialColor;
@@ -49,11 +57,11 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
     }
 
     protected LightState getOnState() {
-        return STATES.get(LightStateType.ON);
+        return STATES.get(LightStateType.ON.toString());
     }
 
     protected LightState getOffState() {
-        return STATES.get(LightStateType.OFF);
+        return STATES.get(LightStateType.OFF.toString());
     }
 
     @Override
@@ -81,7 +89,7 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
                                     (int) action.parameters()[1],
                                     (int) action.parameters()[2]);
             default:
-                return new DeviceResult(false, action.action().toString(), "Action unavailable for " + getType().name());
+                return new DeviceResult(false, action.action().toString(), "Cannot perform " + action.action().toString() + " with " + getName());
         }
     }
 
@@ -110,10 +118,10 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
 
     @Override
     public DeviceResult reset() {
-        brightness = INITIAL_BRIGHTNESS; // Reset brightness to the initial level
-        color = INITIAL_COLOR; // Reset color to the initial RGB values
-        state = INITIAL_STATE; // Reset to the initial state
-        return new DeviceResult(true, "RESET_LIGHT", "Light reset to initial state, brightness, and color.");
+        brightness = LightCreator.initialBrightness(); // Reset brightness to the initial level
+        color = LightCreator.initialColor(); // Reset color to the initial RGB values
+        state = STATES.get(LightCreator.initialState()); // Reset to the initial state
+        return new DeviceResult(true, "RESET_LIGHT", getName() + " reset to initial state.");
     }
 
     public DeviceResult changeBrightness(int newBrightness) {

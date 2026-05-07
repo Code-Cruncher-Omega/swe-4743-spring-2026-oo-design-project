@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { DeviceFilterRequest, EnvironmentStatus, queryEnvironments, updateSimulation } from '../api/SmartHomeAPI';
 import { EnvironmentList } from './Environment';
 import RefreshContext from './RefreshContext';
@@ -6,38 +6,40 @@ import RefreshContext from './RefreshContext';
 type Parameters = {
   timeMultiplier: number;
   filter: DeviceFilterRequest;
+  onRefreshReady: (fn: () => Promise<void>) => void;
 };
 
-export function Simulation({timeMultiplier, filter}: Parameters) {
+export function Simulation({timeMultiplier, filter, onRefreshReady}: Parameters) {
 
 const [environmentStatuses, setEnvironmentStatuses] = useState<EnvironmentStatus[]>([]);
 
-  const refreshEnvironments = async () => {
+  const refreshEnvironments = useCallback(async () => {
     try {
       const data = await queryEnvironments(filter);
-      if (Array.isArray(data)) {
+      if(Array.isArray(data)) {
         setEnvironmentStatuses(data);
-      } else {
-        console.error("Unexpected response:", data);
       }
     } catch (error) {
-      console.error(error);
+        console.error(error);
     }
-  };
+  }, [filter]);
 
+  
   useEffect(() => {
-    refreshEnvironments();
+      onRefreshReady(refreshEnvironments);
+      refreshEnvironments();
 
-    const interval = setInterval(async () => {
-      try {
+      const interval = setInterval(async () => {
+        try {
           await updateSimulation(timeMultiplier);
           await refreshEnvironments();
         } catch (error) {
           console.error(error);
-      }
-    }, 5000); {/* Update every 5 seconds */}
-    return () => clearInterval(interval);
-  }, [filter, timeMultiplier]);
+        }
+      }, 5000);
+
+      return () => clearInterval(interval);
+  }, [filter, timeMultiplier, refreshEnvironments]);
 
   return (
     <RefreshContext.Provider value={refreshEnvironments}>

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import edu.kennesaw.smarthome.service.creator.DeviceCreator;
 import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
+import edu.kennesaw.smarthome.service.dto.DeviceSnapshot;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 
 @Component
@@ -30,5 +31,14 @@ public class DeviceFactory {
             throw new IllegalArgumentException("Unsupported device type: " + request.deviceType());
         }
         return creator.createDevice(request);
+    }
+
+    // Recreates device based on the given details and attributes.
+    public Device<?, ?, ?, ?> create(DeviceSnapshot snapshot) {
+        DeviceCreator<?, ?, ?, ?> creator = CREATORS.get(snapshot.deviceType().toLowerCase());   // Takes deviceType from request and makes it lowercase.
+        if(creator == null) {
+            throw new IllegalArgumentException("Unsupported device type: " + snapshot.deviceType());
+        }
+        return creator.createDevice(snapshot);
     }
 }

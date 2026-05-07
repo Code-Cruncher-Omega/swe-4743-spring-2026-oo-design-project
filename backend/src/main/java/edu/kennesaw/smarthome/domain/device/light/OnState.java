@@ -14,32 +14,32 @@ public class OnState implements LightState {
                 colorValues[0] < 0 || colorValues[0] > 255 || 
                 colorValues[1] < 0 || colorValues[1] > 255 || 
                 colorValues[2] < 0 || colorValues[2] > 255) {
-                return new DeviceResult(false, action.name(), "Invalid light color values. RGB values must be between 0 and 255.");
+                return new DeviceResult(false, action.toString(), "Invalid light color values. RGB values must be between 0 and 255.");
             }
             context.setColor(colorValues);
-            return new DeviceResult(true, "SET_LIGHT_COLOR", "Light color set to [" + colorValues[0] + ", " + colorValues[1] + ", " + colorValues[2] + "].");
+            return new DeviceResult(true, "SET_LIGHT_COLOR", context.getName() +  " color set to [" + colorValues[0] + ", " + colorValues[1] + ", " + colorValues[2] + "].");
         }
-        return new DeviceResult(false, action.name(), "Improper action for setting light color."); // Invalid action for this method
+        return new DeviceResult(false, action.toString(), "Improper action for setting " + context.getName() + " color."); // Invalid action for this method
     }
     @Override
     public DeviceResult execute(Light context, LightAction action, int brightnessLevel) {
         if (action == LightAction.SET_BRIGHTNESS) {
             if (brightnessLevel < 10 || brightnessLevel > 100) {
-                return new DeviceResult(false, action.name(), "Invalid light brightness level. Must be between 10 and 100.");
+                return new DeviceResult(false, action.toString(), "Invalid light brightness level. Must be between 10 and 100.");
             }
             context.setBrightness(brightnessLevel);
-            return new DeviceResult(true, "SET_LIGHT_BRIGHTNESS", "Light brightness set to " + brightnessLevel + "%.");
+            return new DeviceResult(true, "SET_LIGHT_BRIGHTNESS", context.getName() + " brightness set to " + brightnessLevel + "%.");
         }
-        return new DeviceResult(false, action.name(), "Improper action for setting light brightness."); // Invalid action for this method
+        return new DeviceResult(false, action.toString(), "Improper action for setting " + context.getName() + " brightness."); // Invalid action for this method
     }
     @Override
     public DeviceResult execute(Light context, LightAction action) {
         switch (action) {
             case TOGGLE_POWER:
                 context.setState(context.getOffState()); // Transition to the off state
-                return new DeviceResult(true, "TOGGLE_LIGHT_POWER", "Light turned off successfully.");
+                return new DeviceResult(true, "TOGGLE_LIGHT_POWER", context.getName() + " turned off successfully.");
             default:
-                return new DeviceResult(false, action.name(), "Action not valid for light in on state.");
+                return new DeviceResult(false, action.toString(), "Action not valid for " + context.getName() + " in on state.");
         }
     }
     @Override

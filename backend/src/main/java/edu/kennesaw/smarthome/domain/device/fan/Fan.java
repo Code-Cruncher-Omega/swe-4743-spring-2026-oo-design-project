@@ -2,7 +2,9 @@ package edu.kennesaw.smarthome.domain.device.fan;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import edu.kennesaw.smarthome.service.creator.FanCreator;
 import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
 import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
@@ -10,23 +12,36 @@ import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 
 public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
 
-    private final FanState INITIAL_STATE;
-    private final FanSpeed INITIAL_SPEED;
+    private final Map<String, FanSpeed> SPEEDS;
 
     private FanSpeed speed; // Speed enum values only.
+
+    public Fan( UUID id,
+                String name, 
+                String location, 
+                FanState savedState, 
+                Map<String, FanState> states,
+                
+                Map<String, FanSpeed> speeds,
+                FanSpeed savedSpeed
+                ) {
+        super(id, name, location, savedState, states);
+        
+        this.SPEEDS = speeds;
+        this.speed = savedSpeed;
+    }
 
     public Fan( String name, 
                 String location, 
                 FanState initialState, 
-                Map<FanStateType, FanState> states,
+                Map<String, FanState> states,
 
+                Map<String, FanSpeed> speeds,
                 FanSpeed initialSpeed
                 ) {
         super(name, location, initialState, states);
-
-        this.INITIAL_STATE = initialState;
-        this.INITIAL_SPEED = initialSpeed;
         
+        this.SPEEDS = speeds;
         this.speed = initialSpeed;
     }
 
@@ -37,11 +52,23 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
     }
 
     protected FanState getOnState() {
-        return STATES.get(FanStateType.ON);
+        return STATES.get(FanStateType.ON.toString());
     }
 
     protected FanState getOffState() {
-        return STATES.get(FanStateType.OFF);
+        return STATES.get(FanStateType.OFF.toString());
+    }
+
+    protected FanSpeed getLowSpeed() {
+        return SPEEDS.get(FanSpeed.LOW.toString());
+    }
+
+    protected FanSpeed getMediumSpeed() {
+        return SPEEDS.get(FanSpeed.MEDIUM.toString());
+    }
+
+    protected FanSpeed getHighSpeed() {
+        return SPEEDS.get(FanSpeed.HIGH.toString());
     }
     
     @Override
@@ -65,7 +92,7 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
             case "SET_SPEED_HIGH":  // FanAction.SET_SPEED_HIGH
                 return changeSpeedHigh();
             default:
-                return new DeviceResult(false, action.action().toString(), "Action unavailable for " + getType().name());
+                return new DeviceResult(false, action.action().toString(), "Cannot perform " + action.action().toString() + " with " + getName());
         }
     }
 
@@ -77,7 +104,7 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
     @Override
     public Map<String, String> getAttributes() {
         Map<String, String> attributes = new HashMap<>();
-        attributes.put("speed", speed.name());
+        attributes.put("speed", speed.toString());
         return attributes;
     }
 
@@ -87,9 +114,9 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
 
     @Override
     public DeviceResult reset() {
-        state = INITIAL_STATE; // Reset to the initial state
-        speed = INITIAL_SPEED; // Reset speed to the initial speed
-        return new DeviceResult(true, "RESET_FAN", "Fan reset to initial state.");
+        state = STATES.get(FanCreator.initialState()); // Reset to the initial state
+        speed = SPEEDS.get(FanCreator.initialFanSpeed()); // Reset speed to the initial speed
+        return new DeviceResult(true, "RESET_FAN", getName() + " reset to initial state.");
     }
 
     public DeviceResult togglePower() {

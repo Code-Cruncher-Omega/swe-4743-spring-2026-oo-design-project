@@ -68,4 +68,13 @@ public class EnvironmentService {
             environment.resetAllDevices();
         }
     }
+
+    public void setAmbientTemperature(String environmentName, int newTemp) {
+        for(Environment environment : ENVIRONMENTS.values()) {
+            if(environment.getName().equals(environmentName)) {
+                environment.setAmbientTemperature(newTemp);
+                return;
+            }
+        }
+    }
 }

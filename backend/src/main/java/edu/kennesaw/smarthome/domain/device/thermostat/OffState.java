@@ -9,16 +9,16 @@ import edu.kennesaw.smarthome.service.dto.DeviceResult;
 public class OffState implements ThermostatState {
     @Override
     public DeviceResult execute(Thermostat context, ThermostatAction action, int tickRate) {
-        return new DeviceResult(false, action.name(), "Cannot update ambient temperature while thermostat is off. Please turn on the thermostat first.");
+        return new DeviceResult(false, action.toString(), "Cannot update ambient temperature while " + context.getName() + " is off.");
     }
     @Override
     public DeviceResult execute(Thermostat context, ThermostatAction action) {
         switch (action) {
             case TOGGLE_POWER:
                 context.setState(context.getIdleState());
-                return new DeviceResult(true, "TOGGLE_THERMOSTAT_POWER", "Thermostat turned on and idling.");
+                return new DeviceResult(true, "TOGGLE_THERMOSTAT_POWER", context.getName() + " turned on and idling.");
             default:
-                return new DeviceResult(false, action.name(), "Action not valid for thermostat in off state.");
+                return new DeviceResult(false, action.toString(), "Action not valid for " + context.getName() + " in off state.");
         }
     }
     @Override

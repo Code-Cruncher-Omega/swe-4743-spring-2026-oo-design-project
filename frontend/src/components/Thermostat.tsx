@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { deleteDevice, DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
 import { useRefresh } from './RefreshContext';
 
@@ -5,11 +6,13 @@ export function Thermostat({ device }: { device: DeviceStatus }) {
   const refreshDevices = useRefresh();
   
   const { mode, desired, ambient } = device.attributes;
+
+  const [desiredDisplay, setDesiredDisplay] = useState(Number(desired));
     
   const togglePower = async () => {
-        await performDeviceAction(device.id, {action: 'TOGGLE_POWER', parameters: []});
-        await refreshDevices();
-    };
+    await performDeviceAction(device.id, {action: 'TOGGLE_POWER', parameters: []});
+    await refreshDevices();
+  };
 
   const setDesired = async (value: number) => {
     try {
@@ -25,9 +28,16 @@ export function Thermostat({ device }: { device: DeviceStatus }) {
     await refreshDevices();
   };
 
+  useEffect(() => {
+    setDesiredDisplay(Number(desired));
+  }, [desired]);
+
   return (
     <div>
-      <button onClick={() => deleteDevice(device.id)} style={{ marginLeft: '10px' }}>
+      <button onClick={async () => {
+        await deleteDevice(device.id);
+        await refreshDevices();
+        }} style={{ marginLeft: '10px' }}>
         X
       </button>
       <h3>{device.name} - { device.state === 'OFF' ? 'Off' 
@@ -37,31 +47,33 @@ export function Thermostat({ device }: { device: DeviceStatus }) {
                             : device.state}</h3>
       <p>Thermostat</p>
       <p>Power: <button onClick={togglePower}>{device.state !== 'OFF' ? 'Turn off' : 'Turn on'}</button></p>
-      <p>Target Temperature: {desired} Farenheit <input
-        type="range"
-        min={60}
-        max={80}
-        value={Number(ambient)}
-        onChange={(event) => setDesired(Number(event.target.value))}
-        onMouseUp={(event) => setDesired(Number(event.currentTarget.value))}
-        onTouchEnd={(event) => setDesired(Number(event.currentTarget.value))}
-        disabled={device.state === 'OFF'}
-      /> Farenheit</p>
+      <p>Target Temperature: {desired} Farenheit 
+        <input
+          type="range"
+          min={60}
+          max={80}
+          value={desiredDisplay}
+          onChange={(event) => setDesiredDisplay(Number(event.target.value))}
+          onMouseUp={async (event) => await setDesired(Number(event.currentTarget.value))}
+          onTouchEnd={async (event) => await setDesired(Number(event.currentTarget.value))}
+          disabled={device.state === 'OFF'}
+        />
+      </p>
       <p>Ambient Temperature: {ambient} Farenheit</p>
       <p>Mode: {mode}{['HEAT', 'COOL', 'AUTO'].map((technique) => (
-          <button
-            key={technique}
-            onClick={() => setMode(technique)}
-            disabled={device.state === 'OFF'}
-            style={{
-              fontWeight: mode === technique ? 'bold' : 'normal',
-              marginRight: '5px',
-            }}
-          >
-            {technique}
-          </button>
-        ))}</p>
-      <p>ID: {device.id}</p>
+        <button
+          key={technique}
+          onClick={() => setMode(technique)}
+          disabled={device.state === 'OFF'}
+          style={{
+            fontWeight: mode === technique ? 'bold' : 'normal',
+            marginRight: '5px',
+          }}
+        >
+          {technique}
+        </button>
+        ))}
+      </p>
     </div>
   );
 }

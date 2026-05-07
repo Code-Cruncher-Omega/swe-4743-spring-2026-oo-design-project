@@ -12,18 +12,18 @@ public class OnState implements FanState {
         switch (action) {
             case TOGGLE_POWER:
                 context.setState(context.getOffState());
-                return new DeviceResult(true, "TOGGLE_FAN_POWER", "Fan turned off.");
+                return new DeviceResult(true, "TOGGLE_FAN_POWER", context.getName() + " turned off.");
             case SET_SPEED_LOW:
-                context.setSpeed(FanSpeed.LOW);
-                return new DeviceResult(true, "SET_FAN_SPEED_LOW", "Fan speed set to low.");
+                context.setSpeed(context.getLowSpeed());
+                return new DeviceResult(true, "SET_FAN_SPEED_LOW", context.getName() + " set to low.");
             case SET_SPEED_MEDIUM:
-                context.setSpeed(FanSpeed.MEDIUM);
-                return new DeviceResult(true, "SET_FAN_SPEED_MEDIUM", "Fan speed set to medium.");
+                context.setSpeed(context.getMediumSpeed());
+                return new DeviceResult(true, "SET_FAN_SPEED_MEDIUM", context.getName() + " set to medium.");
             case SET_SPEED_HIGH:
-                context.setSpeed(FanSpeed.HIGH);
-                return new DeviceResult(true, "SET_FAN_SPEED_HIGH", "Fan speed set to high.");
+                context.setSpeed(context.getHighSpeed());
+                return new DeviceResult(true, "SET_FAN_SPEED_HIGH", context.getName() + " set to high.");
             default:
-                return new DeviceResult(false, action.name(), "Action not valid for fan in on state.");
+                return new DeviceResult(false, action.toString(), "Action not valid for " + context.getName() + " in on state.");
         }
     }
     @Override

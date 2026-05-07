@@ -12,9 +12,9 @@ public class OffState implements FanState {
         switch(action) {
             case TOGGLE_POWER:
                 context.setState(context.getOnState());
-                return new DeviceResult(true, "TOGGLE_FAN_POWER", "Fan turned on.");
+                return new DeviceResult(true, "TOGGLE_FAN_POWER", context.getName() + "turned on.");
             default:
-                return new DeviceResult(false, action.name(), "Action not valid for fan in off state.");
+                return new DeviceResult(false, action.toString(), "Action not valid for " + context.getName() + " in off state.");
         }
     }
     @Override

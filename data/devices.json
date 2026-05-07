@@ -1,0 +1,52 @@
+[ {
+  "id" : "88b70b2b-829b-461e-a1c2-8fe2376c2987",
+  "name" : "gooning light",
+  "location" : "goon cave",
+  "state" : "ON",
+  "deviceType" : "LIGHT",
+  "attributes" : {
+    "red" : "255",
+    "brightness" : "100",
+    "green" : "255",
+    "blue" : "255"
+  }
+}, {
+  "id" : "9c400d1a-f2a1-49d2-99fd-60d8c583fcd3",
+  "name" : "cum cooler",
+  "location" : "goon cave",
+  "state" : "COOLING",
+  "deviceType" : "THERMOSTAT",
+  "attributes" : {
+    "mode" : "AUTO",
+    "desired" : "78",
+    "ambient" : "108"
+  }
+}, {
+  "id" : "d66ec6f5-fcdf-4b66-b2d9-73456b7486e2",
+  "name" : "dreads",
+  "location" : "'jaden",
+  "state" : "OFF",
+  "deviceType" : "FAN",
+  "attributes" : {
+    "speed" : "MEDIUM"
+  }
+}, {
+  "id" : "5902cce2-4e24-45ae-aa4a-58cf10fafe64",
+  "name" : "cheeto lock",
+  "location" : "goony cave",
+  "state" : "LOCKED",
+  "deviceType" : "DOOR_LOCK",
+  "attributes" : { }
+}, {
+  "id" : "82f492d9-91ff-4adc-b445-9ca5fc20cd2c",
+  "name" : "asdf",
+  "location" : "goony cave",
+  "state" : "OFF",
+  "deviceType" : "LIGHT",
+  "attributes" : {
+    "red" : "255",
+    "brightness" : "100",
+    "green" : "255",
+    "blue" : "255"
+  }
+} ]

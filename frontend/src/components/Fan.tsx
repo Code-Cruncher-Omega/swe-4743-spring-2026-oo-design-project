@@ -19,7 +19,10 @@ export function Fan({ device }: { device: DeviceStatus }) {
 
   return (
     <div>
-      <button onClick={() => deleteDevice(device.id)} style={{ marginLeft: '10px' }}>
+      <button onClick={async () => {
+        await deleteDevice(device.id);
+        await refreshDevices();
+        }} style={{ marginLeft: '10px' }}>
         X
       </button>
       <h3>{device.name} - {isOn ? 'On' : 'Off'}</h3>
@@ -37,8 +40,8 @@ export function Fan({ device }: { device: DeviceStatus }) {
           >
             {level}
           </button>
-        ))}</p>
-      <p>ID: {device.id}</p>
+        ))}
+      </p>
     </div>
   );
 }

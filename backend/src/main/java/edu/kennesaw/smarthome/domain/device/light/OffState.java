@@ -9,19 +9,19 @@ import edu.kennesaw.smarthome.service.dto.DeviceResult;
 public class OffState implements LightState {
     @Override
     public DeviceResult execute(Light context, LightAction action, int brightnessLevel) {
-        return new DeviceResult(false, action.name(), "Cannot set brightness while light is off. Please turn on the light first.");}
+        return new DeviceResult(false, action.toString(), "Cannot set brightness while " + context.getName() + " is off.");}
     @Override
     public DeviceResult execute(Light context, LightAction action, int[] colorValues) {
-        return new DeviceResult(false, action.name(), "Cannot set color while light is off. Please turn on the light first.");
+        return new DeviceResult(false, action.toString(), "Cannot set color while " + context.getName() + " is off.");
     }
     @Override
     public DeviceResult execute(Light context, LightAction action) {
         switch(action) {
             case TOGGLE_POWER:
-                context.setState(context.getOnState()); // Transition to the on state
-                return new DeviceResult(true, "TOGGLE_LIGHT_POWER", "Light turned on successfully.");
+                context.setState(context.getOnState());
+                return new DeviceResult(true, "TOGGLE_LIGHT_POWER", context.getName() + " turned on.");
             default:
-                return new DeviceResult(false, action.name(), "Action not valid for light in off state.");
+                return new DeviceResult(false, action.toString(), "Action not valid for " + context.getName() + " in off state.");
         }
     }
     @Override

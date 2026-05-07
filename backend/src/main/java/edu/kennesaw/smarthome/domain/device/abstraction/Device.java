@@ -22,7 +22,7 @@ public abstract class Device<
 
     protected S state;
 
-    protected final Map<T, S> STATES;
+    protected final Map<String, S> STATES;
     
     public Device(  UUID id,
                     String name, 
@@ -30,7 +30,7 @@ public abstract class Device<
                     
                     S state, 
                     
-                    Map<T, S> states) {
+                    Map<String, S> states) {
         this.ID = id;
         this.NAME = name;
         this.LOCATION = location;
@@ -45,7 +45,7 @@ public abstract class Device<
                     
                     S state, 
                     
-                    Map<T, S> states) {
+                    Map<String, S> states) {
         this.ID = UUID.randomUUID();
         this.NAME = name;
         this.LOCATION = location;
@@ -75,7 +75,7 @@ public abstract class Device<
     // Other attributes are gathered by each Device's unique implementation of getAttrubutes, which DeviceStatus's from-method
     // already calls to gather such information.
     public DeviceStatus getStatus() {
-        return DeviceStatus.from(this);
+        return DeviceStatus.of(this);
     }
 
     // Abstract methods to be implemented by concrete device classes //

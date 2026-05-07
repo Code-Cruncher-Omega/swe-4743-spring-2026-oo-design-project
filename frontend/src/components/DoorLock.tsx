@@ -13,18 +13,21 @@ export function DoorLock({ device }: { device: DeviceStatus }) {
 
   return (
     <div>
-      <button onClick={() => deleteDevice(device.id)} style={{ marginLeft: '10px' }}>
+      <button onClick={async () => {
+        await deleteDevice(device.id);
+        await refreshDevices();
+        }} style={{ marginLeft: '10px' }}
+      >
         X
       </button>
       <h3>{device.name} - {isLocked ? 'Locked' : 'Unlocked'}</h3>
       <p>Door Lock</p>
 
       <p>Lock
-      <button onClick={handleClick}>
-        {isLocked ? 'Unlock' : 'Lock'}
-      </button>
+        <button onClick={handleClick}>
+          {isLocked ? 'Unlock' : 'Lock'}
+        </button>
       </p>
-      <p>ID: {device.id}</p>
     </div>
   );
 }

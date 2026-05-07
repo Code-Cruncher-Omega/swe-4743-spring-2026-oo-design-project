@@ -14,13 +14,14 @@ const deviceComponents: Record<string, React.FC<{ device: DeviceStatus }>> = {
 export function DeviceRenderer({ device }: { device: DeviceStatus }) {
   const Component = deviceComponents[device.type];
 
-  if (!Component) {
+  if(!Component) {
     return <div>Unknown device type: {device.type}</div>;
   }
 
   return (
   <div>
     <Component device={device} />
+    <br/>
   </div>
   );
 }
