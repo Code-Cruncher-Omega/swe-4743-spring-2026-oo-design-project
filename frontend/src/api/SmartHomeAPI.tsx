@@ -13,7 +13,10 @@ export async function createDevice(request: DeviceCreationRequest) {
     body: JSON.stringify(request)
   });
 
-  if (!response.ok) throw new Error('Failed to create device');
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Device creation failed: ${response.status} ${text}`);
+  }
 
   return response.headers.get('location'); // contains /api/smarthome/devices/{id}
 }
@@ -27,12 +30,23 @@ export async function performDeviceAction(id: string, request: DeviceActionReque
     body: JSON.stringify(request)
   });
 
-  return response.json(); // DeviceResult
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Device action failed: ${response.status} ${text}`);
+  }
+
+  return await response.json(); // DeviceResult
 }
 
 export async function getDeviceHistory(): Promise<AuditEntry[]> {
   const response = await fetch(apiPath('/smarthome/devices/history'));
-  return response.json();
+  
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to fetch device history: ${response.status} ${text}`);
+  }
+  
+  return await response.json();
 }
 
 export async function clearDeviceHistory(): Promise<void> {
@@ -56,7 +70,10 @@ export async function updateSimulation(tickRate: number) {
     body: JSON.stringify(tickRate)
   });
 
-  if (!response.ok) throw new Error('Update failed');
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to update simulation: ${response.status} ${text}`);
+  }
 }
 
 export async function queryEnvironments(request: DeviceFilterRequest): Promise<EnvironmentStatus[]> {
@@ -68,18 +85,34 @@ export async function queryEnvironments(request: DeviceFilterRequest): Promise<E
     body: JSON.stringify(request)
   });
 
-  return response.json(); // EnvironmentStatus[]
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to query environments: ${response.status} ${text}`);
+  }
+
+  return await response.json(); // EnvironmentStatus[]
 }
 
 export async function getEnvironmentNames(): Promise<string[]> {
     const response = await fetch(apiPath('/smarthome/environments'));
-    return response.json();
+    
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Failed to fetch environment names: ${response.status} ${text}`);
+    }
+    
+    return await response.json();
 }
 
 export async function getUpdateableDevices(): Promise<DeviceStatus[]> {
   const response = await fetch(apiPath('/smarthome/devices/updateable'));
-  if (!response.ok) throw new Error('Failed to fetch devices');
-  return response.json();
+  
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to fetch updateable devices: ${response.status} ${text}`);
+  }
+  
+  return await response.json();
 }
 
 export async function resetAllDevices(): Promise<void> {
@@ -108,13 +141,17 @@ export interface DeviceResult {
   message: string;
 }
 
+export type DeviceStateType = 'ON' | 'OFF' | 'LOCKED' | 'UNLOCKED' | 'IDLE' | 'HEATING' | 'COOLING';
+
+export type DeviceType = 'LIGHT' | 'FAN' | 'THERMOSTAT' | 'DOOR_LOCK';
+
 export interface DeviceStatus {
   id: string;
   name: string;
   location: string;
-  state: string;
-  type: string;
-  attributes: Record<string, string>;
+  state: DeviceStateType;
+  deviceType: DeviceType;
+  attributes: Record<string, object>;
 }
 
 export interface EnvironmentStatus {
@@ -128,14 +165,16 @@ export interface DeviceActionRequest {
   parameters: Object[];
 }
 
+export type StateActivity = 'ON' | 'OFF';
+
 export interface DeviceFilterRequest {
-  location: string;
-  activity: string;
-  type: string;
+  location: string | null;
+  activity: StateActivity | null;
+  deviceType: DeviceType | null;
 }
 
 export interface DeviceCreationRequest {
   name: string;
   location: string;
-  deviceType: string;
+  deviceType: DeviceType;
 }

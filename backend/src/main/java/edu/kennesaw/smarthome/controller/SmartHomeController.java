@@ -13,17 +13,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.kennesaw.smarthome.service.dto.AuditEntry;
-import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceFilterRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceResult;
-import edu.kennesaw.smarthome.service.dto.DeviceStatus;
-import edu.kennesaw.smarthome.service.dto.EnvironmentStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import edu.kennesaw.smarthome.dto.AuditEntry;
+import edu.kennesaw.smarthome.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.dto.DeviceCreationRequest;
+import edu.kennesaw.smarthome.dto.DeviceFilterRequest;
+import edu.kennesaw.smarthome.dto.DeviceResult;
+import edu.kennesaw.smarthome.dto.DeviceStatus;
+import edu.kennesaw.smarthome.dto.EnvironmentStatus;
 import edu.kennesaw.smarthome.service.AuditLog;
 import edu.kennesaw.smarthome.service.PersistenceService;
 import edu.kennesaw.smarthome.service.SmartHomeService;
@@ -50,7 +51,7 @@ public class SmartHomeController {
         @ApiResponse(responseCode = "400", description = "Invalid request body")
     })
     @PostMapping("/devices")
-    public ResponseEntity<Void> createDevice(@RequestBody DeviceCreationRequest request) {
+    public ResponseEntity<Void> createDevice(@Valid @RequestBody DeviceCreationRequest request) {
         String id = SMART_HOME_SERVICE.createAndAddDevice(request);
         PERSISTENCE_SERVICE.save();
         return ResponseEntity
@@ -64,13 +65,13 @@ public class SmartHomeController {
         @ApiResponse(responseCode = "404", description = "Device not found or action failed")
     })
     @PostMapping("/devices/{id}/actions")
-    public ResponseEntity<DeviceResult> performDeviceAction(@PathVariable String id, @RequestBody DeviceActionRequest request) {
+    public ResponseEntity<DeviceResult> performDeviceAction(@PathVariable String id, @Valid @RequestBody DeviceActionRequest request) {
         DeviceResult result = SMART_HOME_SERVICE.performDeviceAction(id, request);
         if(result.success()) {
             AUDIT_LOG.record(id, result.message());
         }
         if(!result.success()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body(result);
         }
         PERSISTENCE_SERVICE.save();
         return ResponseEntity.ok(result);
@@ -111,15 +112,13 @@ public class SmartHomeController {
     public ResponseEntity<Collection<EnvironmentStatus>> updateSimulation(@RequestBody int tickRate) {
         SMART_HOME_SERVICE.update(tickRate);
         PERSISTENCE_SERVICE.save();
-        return ResponseEntity
-                .ok()
-                        .build();
+        return ResponseEntity.ok(SMART_HOME_SERVICE.getEnvironmentStatus());
     }
 
     @Operation(summary = "Query environment statuses")
     @ApiResponse(responseCode = "200", description = "List of environment statuses")
     @PostMapping("/environments/status")
-    public ResponseEntity<Collection<EnvironmentStatus>> queryEnvironments(@RequestBody DeviceFilterRequest request) {
+    public ResponseEntity<Collection<EnvironmentStatus>> queryEnvironments(@Valid @RequestBody DeviceFilterRequest request) {
         return ResponseEntity.ok(SMART_HOME_SERVICE.queryEnvironmentStatus(request));
     }
 

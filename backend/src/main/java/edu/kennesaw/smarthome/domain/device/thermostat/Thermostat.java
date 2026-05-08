@@ -5,17 +5,17 @@ import java.util.Map;
 import java.util.UUID;
 
 import edu.kennesaw.smarthome.service.creator.ThermostatCreator;
-import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 import edu.kennesaw.smarthome.domain.device.abstraction.UpdateableDevice;
+import edu.kennesaw.smarthome.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.dto.DeviceResult;
 
 public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAction, ThermostatStateType> 
                         implements UpdateableDevice {
     
     // Concrete ThermostatMode class objects change AMBIENT_TEMPERATURE in their own unique way.
-    private final Map<String, ThermostatMode> MODES;
+    private final Map<ThermostatModeType, ThermostatMode> MODES;
 
     private ThermostatMode currentMode; // HEAT, COOL, AUTO.
     // Only the values of desired and ambient temperatures ever change, not the address (aka location) of the temperatures.
@@ -26,13 +26,13 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
                         String name, 
                         String location, 
                         ThermostatState savedState,
-                        Map<String, ThermostatState> states,
+                        Map<ThermostatStateType, ThermostatState> states,
 
                         ThermostatMode savedMode, 
                         Temperature savedDesiredTemperature,
                         Temperature savedAmbientTemperature, 
 
-                        Map<String, ThermostatMode> modes) {
+                        Map<ThermostatModeType, ThermostatMode> modes) {
         super(id, name, location, savedState, states);
 
         this.MODES = modes;
@@ -46,13 +46,13 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     public Thermostat(  String name, 
                         String location, 
                         ThermostatState initialState,
-                        Map<String, ThermostatState> states,
+                        Map<ThermostatStateType, ThermostatState> states,
 
                         ThermostatMode initialMode, 
                         Temperature initialDesiredTemperature,
                         Temperature ambientTemperature, 
 
-                        Map<String, ThermostatMode> modes) {
+                        Map<ThermostatModeType, ThermostatMode> modes) {
         super(name, location, initialState, states);
 
         this.MODES = modes;
@@ -70,19 +70,19 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     }
 
     protected ThermostatState getOffState() {
-        return STATES.get(ThermostatStateType.OFF.toString());
+        return STATES.get(ThermostatStateType.OFF);
     }
 
     protected ThermostatState getIdleState() {
-        return STATES.get(ThermostatStateType.IDLE.toString());
+        return STATES.get(ThermostatStateType.IDLE);
     }
 
     protected ThermostatState getHeatingState() {
-        return STATES.get(ThermostatStateType.HEATING.toString());
+        return STATES.get(ThermostatStateType.HEATING);
     }
 
     protected ThermostatState getCoolingState() {
-        return STATES.get(ThermostatStateType.COOLING.toString());
+        return STATES.get(ThermostatStateType.COOLING);
     }
 
     protected ThermostatMode getCurrentMode() {
@@ -96,21 +96,22 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
 
     @Override
     public DeviceResult performAction(DeviceActionRequest action) {
-        switch(action.action()) {
-            case "TOGGLE_POWER":    // ThermostatAction.TOGGLE_POWER
-                return togglePower();
-            case "SET_AMBIENCE":
-                return setAmbientTemperature((int) action.parameters()[0]);
-            case "SET_DESIRED":
-                return setDesiredTemperature((int) action.parameters()[0]);
-            case "SET_MODE_HEAT":
+        ThermostatAction thermostatAction = ThermostatAction.from(action.action());
+        switch (thermostatAction) {
+            case SET_DESIRED:
+                int newDesiredTemperature = (int) action.parameters()[0];
+                return setDesiredTemperature(newDesiredTemperature);
+            case SET_AMBIENCE:
+                int newAmbientTemperature = (int) action.parameters()[0];
+                return setAmbientTemperature(newAmbientTemperature);
+            case SET_MODE_HEAT:
                 return setModeHeat();
-            case "SET_MODE_COOL":
+            case SET_MODE_COOL:
                 return setModeCool();
-            case "SET_MODE_AUTO":
+            case SET_MODE_AUTO:
                 return setModeAuto();
             default:
-                return new DeviceResult(false, action.action().toString(), "Cannot perform " + action.action().toString() + " with " + getName());
+                return execute(thermostatAction);
         }
     }
 
@@ -120,11 +121,11 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     }
 
     @Override
-    public Map<String, String> getAttributes() {
-        Map<String, String> attributes = new HashMap<>();
-        attributes.put("mode", currentMode.getModeType().toString());
-        attributes.put("desired", DESIRED_TEMPERATURE.getValue() + "");
-        attributes.put("ambient", AMBIENT_TEMPERATURE.getValue() + "");
+    public Map<String, Object> getAttributes() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("mode", currentMode.getModeType());
+        attributes.put("desired", DESIRED_TEMPERATURE.getValue());
+        attributes.put("ambient", AMBIENT_TEMPERATURE.getValue());
         return attributes;
     }
 
@@ -137,18 +138,17 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     }
 
     @Override
-    public DeviceResult reset() {
+    public void reset() {
         state = STATES.get(ThermostatCreator.initialState()); // Reset to the initial state.
         currentMode = MODES.get(ThermostatCreator.initialMode()); // Reset mode to the initial mode.
         DESIRED_TEMPERATURE.setValue(ThermostatCreator.initialDesiredTemperature().getValue()); // Reset desired temperature to the initial value.
-        return new DeviceResult(true, "RESET_THERMOSTAT", getName() + " reset to initial state.");
     }
 
     @Override
     public DeviceResult update(int tickRate) {
         DeviceResult result = state.execute(this, ThermostatAction.UPDATE_STATE);
         // Checking for STILL prevents warming or cooling in the same update where thermostat changes state.
-        if(result.success() && result.action().contains("STILL")) {
+        if(result.success() && result.action().equals(ThermostatAction.STILL_IN_SAME_STATE)) {
             return state.execute(this, ThermostatAction.UPDATE_AMBIENCE, tickRate);
         }
         return result;
@@ -159,30 +159,30 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
     }
 
     public DeviceResult setModeHeat() {
-        currentMode = MODES.get(ThermostatModeType.HEAT.toString());
-        return new DeviceResult(true, "SET_MODE_HEAT", getName() + " mode set to heat.");
+        currentMode = MODES.get(ThermostatModeType.HEAT);
+        return new DeviceResult(true, ThermostatAction.SET_MODE_HEAT, getName() + " mode set to heat.");
     }
 
     public DeviceResult setModeCool() {
-        currentMode = MODES.get(ThermostatModeType.COOL.toString());
-        return new DeviceResult(true, "SET_MODE_COOL", getName() + " mode set to cool.");
+        currentMode = MODES.get(ThermostatModeType.COOL);
+        return new DeviceResult(true, ThermostatAction.SET_MODE_COOL, getName() + " mode set to cool.");
     }
 
     public DeviceResult setModeAuto() {
-        currentMode = MODES.get(ThermostatModeType.AUTO.toString());
-        return new DeviceResult(true, "SET_MODE_AUTO", getName() + " mode set to auto.");
+        currentMode = MODES.get(ThermostatModeType.AUTO);
+        return new DeviceResult(true, ThermostatAction.SET_MODE_AUTO, getName() + " mode set to auto.");
     }
     
     public DeviceResult setDesiredTemperature(int newTemperature) {
         if (newTemperature < 60 || newTemperature > 80) {
-            return new DeviceResult(false, "SET_DESIRED_TEMPERATURE", "Desired temperature must be between 60 and 80 degrees Farenheit.");
+            return new DeviceResult(false, ThermostatAction.SET_DESIRED, "Desired temperature must be between 60 and 80 degrees Farenheit.");
         }
         DESIRED_TEMPERATURE.setValue(newTemperature);
-        return new DeviceResult(true, "SET_DESIRED_TEMPERATURE", getName() + " desired temperature set to " + newTemperature + " degrees Farenheit.");
+        return new DeviceResult(true, ThermostatAction.SET_DESIRED, getName() + " desired temperature set to " + newTemperature + " degrees Farenheit.");
     }
 
     public DeviceResult setAmbientTemperature(int newTemperature) {
         AMBIENT_TEMPERATURE.setValue(newTemperature);
-        return new DeviceResult(true, "SET_AMBIENT_TEMPERATURE", getName() + "'s ambient temperature set to " + newTemperature + " degrees Farenheit.");
+        return new DeviceResult(true, ThermostatAction.SET_AMBIENCE, getName() + "'s ambient temperature set to " + newTemperature + " degrees Farenheit.");
     }
 }

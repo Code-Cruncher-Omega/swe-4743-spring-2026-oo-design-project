@@ -5,11 +5,11 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import edu.kennesaw.smarthome.dto.DeviceSnapshot;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
-
-import edu.kennesaw.smarthome.service.dto.DeviceSnapshot;
 
 @Service
 public class PersistenceService {

@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import edu.kennesaw.smarthome.service.creator.FanCreator;
-import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
+import edu.kennesaw.smarthome.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.dto.DeviceResult;
 
 public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
 
@@ -20,7 +20,7 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
                 String name, 
                 String location, 
                 FanState savedState, 
-                Map<String, FanState> states,
+                Map<FanStateType, FanState> states,
                 
                 Map<String, FanSpeed> speeds,
                 FanSpeed savedSpeed
@@ -34,7 +34,7 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
     public Fan( String name, 
                 String location, 
                 FanState initialState, 
-                Map<String, FanState> states,
+                Map<FanStateType, FanState> states,
 
                 Map<String, FanSpeed> speeds,
                 FanSpeed initialSpeed
@@ -52,11 +52,11 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
     }
 
     protected FanState getOnState() {
-        return STATES.get(FanStateType.ON.toString());
+        return STATES.get(FanStateType.ON);
     }
 
     protected FanState getOffState() {
-        return STATES.get(FanStateType.OFF.toString());
+        return STATES.get(FanStateType.OFF);
     }
 
     protected FanSpeed getLowSpeed() {
@@ -82,18 +82,7 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
 
     @Override
     public DeviceResult performAction(DeviceActionRequest action) {
-        switch(action.action()) {
-            case "TOGGLE_POWER":    // FanAction.TOGGLE_POWER
-                return togglePower();
-            case "SET_SPEED_LOW":    // FanAction.SET_SPEED_LOW
-                return changeSpeedLow();
-            case "SET_SPEED_MEDIUM":    // FanAction.SET_SPEED_MEDIUM
-                return changeSpeedMedium();
-            case "SET_SPEED_HIGH":  // FanAction.SET_SPEED_HIGH
-                return changeSpeedHigh();
-            default:
-                return new DeviceResult(false, action.action().toString(), "Cannot perform " + action.action().toString() + " with " + getName());
-        }
+        return execute(FanAction.from(action.action()));
     }
 
     @Override
@@ -102,9 +91,9 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
     }
 
     @Override
-    public Map<String, String> getAttributes() {
-        Map<String, String> attributes = new HashMap<>();
-        attributes.put("speed", speed.toString());
+    public Map<String, Object> getAttributes() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("speed", speed);
         return attributes;
     }
 
@@ -113,10 +102,9 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
     }
 
     @Override
-    public DeviceResult reset() {
+    public void reset() {
         state = STATES.get(FanCreator.initialState()); // Reset to the initial state
         speed = SPEEDS.get(FanCreator.initialFanSpeed()); // Reset speed to the initial speed
-        return new DeviceResult(true, "RESET_FAN", getName() + " reset to initial state.");
     }
 
     public DeviceResult togglePower() {

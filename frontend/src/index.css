@@ -1,0 +1,5 @@
+html, body, #root {
+  height: auto;
+  overflow: visible;
+  min-height: 100%;
+}

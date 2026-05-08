@@ -1,4 +1,7 @@
-import { DeviceStatus, deleteDevice, performDeviceAction } from "../api/SmartHomeAPI";
+import { Button } from 'primereact/button';
+import { Divider } from 'primereact/divider';
+
+import { DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
 import { useRefresh } from './RefreshContext';
 
 export function DoorLock({ device }: { device: DeviceStatus }) {
@@ -12,22 +15,19 @@ export function DoorLock({ device }: { device: DeviceStatus }) {
   };
 
   return (
-    <div>
-      <button onClick={async () => {
-        await deleteDevice(device.id);
-        await refreshDevices();
-        }} style={{ marginLeft: '10px' }}
-      >
-        X
-      </button>
-      <h3>{device.name} - {isLocked ? 'Locked' : 'Unlocked'}</h3>
-      <p>Door Lock</p>
-
-      <p>Lock
-        <button onClick={handleClick}>
-          {isLocked ? 'Unlock' : 'Lock'}
-        </button>
-      </p>
+    <div className="flex flex-column gap-2">
+      <Divider className="my-1" />
+      <div className="flex align-items-center justify-content-between">
+        <span className="font-semibold">
+          Lock
+        </span>
+        <Button
+          label={isLocked ? 'Unlock' : 'Lock'}
+          icon={isLocked ? 'pi pi-lock-open' : 'pi pi-lock'}
+          severity={isLocked ? 'warning' : 'success'}
+          onClick={handleClick}
+        />
+      </div>
     </div>
   );
 }

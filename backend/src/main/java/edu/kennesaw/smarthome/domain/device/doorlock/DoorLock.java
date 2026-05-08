@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import edu.kennesaw.smarthome.service.creator.DoorLockCreator;
-import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
+import edu.kennesaw.smarthome.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.dto.DeviceResult;
 
 public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, DoorLockStateType> {
 
@@ -16,14 +16,14 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, Do
                     String name, 
                     String location, 
                     DoorLockState savedState, 
-                    Map<String, DoorLockState> states) {
+                    Map<DoorLockStateType, DoorLockState> states) {
         super(id, name, location, savedState, states);
     }
 
     public DoorLock(String name, 
                     String location, 
                     DoorLockState initialState, 
-                    Map<String, DoorLockState> states) {
+                    Map<DoorLockStateType, DoorLockState> states) {
         super(name, location, initialState, states);
     }
 
@@ -34,11 +34,11 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, Do
     }
 
     protected DoorLockState getLockedState() {
-        return STATES.get(DoorLockStateType.LOCKED.toString());
+        return STATES.get(DoorLockStateType.LOCKED);
     }
 
     protected DoorLockState getUnlockedState() {
-        return STATES.get(DoorLockStateType.UNLOCKED.toString());
+        return STATES.get(DoorLockStateType.UNLOCKED);
     }
 
     @Override
@@ -48,12 +48,7 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, Do
 
     @Override
     public DeviceResult performAction(DeviceActionRequest action) {
-        switch(action.action()) {
-            case "TOGGLE_LOCK": // DoorLockAction.TOGGLE_LOCK
-                return toggleLock();
-            default:
-                return new DeviceResult(false, action.action().toString(), "Cannot perform " + action.action().toString() + " with " + getName());
-        }
+        return execute(DoorLockAction.from(action.action()));
     }
     
     @Override
@@ -62,14 +57,13 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, Do
     }
 
     @Override
-    public Map<String, String> getAttributes() {
+    public Map<String, Object> getAttributes() {
         return new HashMap<>(); // No attributes, so return an empty HashMap.
     }
 
     @Override
-    public DeviceResult reset() {
+    public void reset() {
         state = STATES.get(DoorLockCreator.initialState()); // Reset to the initial state
-        return new DeviceResult(true, "RESET_DOOR_LOCK", getName() + " reset to initial state.");
     }
 
     // Convenience methods for common actions, which internally call the execute method with the appropriate action.

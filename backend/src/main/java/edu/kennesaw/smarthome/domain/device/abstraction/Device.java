@@ -3,9 +3,9 @@ package edu.kennesaw.smarthome.domain.device.abstraction;
 import java.util.Map;
 import java.util.UUID;
 
-import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceResult;
-import edu.kennesaw.smarthome.service.dto.DeviceStatus;
+import edu.kennesaw.smarthome.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.dto.DeviceResult;
+import edu.kennesaw.smarthome.dto.DeviceStatus;
 
 // All concrete Devices store all these methods and variables, while also needing to implement the mentioned abstract methods.
 public abstract class Device<
@@ -22,7 +22,7 @@ public abstract class Device<
 
     protected S state;
 
-    protected final Map<String, S> STATES;
+    protected final Map<T, S> STATES;
     
     public Device(  UUID id,
                     String name, 
@@ -30,7 +30,7 @@ public abstract class Device<
                     
                     S state, 
                     
-                    Map<String, S> states) {
+                    Map<T, S> states) {
         this.ID = id;
         this.NAME = name;
         this.LOCATION = location;
@@ -45,7 +45,7 @@ public abstract class Device<
                     
                     S state, 
                     
-                    Map<String, S> states) {
+                    Map<T, S> states) {
         this.ID = UUID.randomUUID();
         this.NAME = name;
         this.LOCATION = location;
@@ -94,10 +94,10 @@ public abstract class Device<
 
     // A getter that assists getStatus report all aspects of the Device. It should return a Map of attributes not listed in DeviceStatus, such as modes and device specific variables.
     // The key String should be lowercase.
-    public abstract Map<String, String> getAttributes();
+    public abstract Map<String, Object> getAttributes();
 
     // The reset method will be implemented by each concrete device class to define how the device should reset itself to a default state.
-    public abstract DeviceResult reset();
+    public abstract void reset();
 
     @Override
     public String toString() {

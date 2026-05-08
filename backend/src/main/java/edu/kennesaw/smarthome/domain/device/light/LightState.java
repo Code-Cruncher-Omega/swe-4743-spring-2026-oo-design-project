@@ -1,7 +1,7 @@
 package edu.kennesaw.smarthome.domain.device.light;
 
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceState;
-import edu.kennesaw.smarthome.service.dto.DeviceResult;
+import edu.kennesaw.smarthome.dto.DeviceResult;
 
 public interface LightState extends DeviceState<Light, LightAction, LightStateType> {
     // Different attributes for a Light object can be changed only during specific states, so methods dedicated to 

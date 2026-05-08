@@ -1,4 +1,4 @@
-package edu.kennesaw.smarthome.service.dto;
+package edu.kennesaw.smarthome.dto;
 
 import java.util.List;
 
@@ -8,10 +8,16 @@ import edu.kennesaw.smarthome.domain.Environment;
 
 @Schema(description = "Status snapshot of an environment and all its devices")
 public record EnvironmentStatus(
-    @Schema(description = "Name of the environment", example = "Living Room")
+
+    @Schema(
+        description = "Name of the environment", 
+        example = "Living Room"
+    )
     String name,
+
     @Schema(description = "Number of devices in this environment")
     int deviceCount,
+    
     @Schema(description = "List of device statuses within this environment")
     List<DeviceStatus> devices
 ) {

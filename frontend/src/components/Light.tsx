@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { deleteDevice, DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
+
+import { Button } from 'primereact/button';
+import { Divider } from 'primereact/divider';
+import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
+import { Slider, SliderChangeEvent, SliderSlideEndEvent } from 'primereact/slider';
+
+import { DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
 import { useRefresh } from './RefreshContext';
 
 export function Light({ device }: { device: DeviceStatus }) {
@@ -8,6 +14,10 @@ export function Light({ device }: { device: DeviceStatus }) {
   const { brightness, red, green, blue } = device.attributes;
 
   const [brightnessDisplay, setBrightnessDisplay] = useState(Number(brightness));
+  const [redDisplay, setRedDisplay] = useState(Number(red));
+  const [greenDisplay, setGreenDisplay] = useState(Number(green));
+  const [blueDisplay, setBlueDisplay] = useState(Number(blue));
+  const colorPreview = `rgb(${redDisplay}, ${greenDisplay}, ${blueDisplay})`;
 
   const isOn = device.state === 'ON';
   
@@ -36,62 +46,73 @@ export function Light({ device }: { device: DeviceStatus }) {
 
   useEffect(() => {
     setBrightnessDisplay(Number(brightness));
-  }, [brightness]);
+    setRedDisplay(Number(red));
+    setGreenDisplay(Number(green));
+    setBlueDisplay(Number(blue));
+  }, [brightness, red, green, blue]);
 
   return (
-    <div>
-      <button onClick={async () => {
-        await deleteDevice(device.id);
-        await refreshDevices();
-        }} style={{ marginLeft: '10px' }}>
-        X
-      </button>
-      <h3>{device.name} - {isOn ? 'On' : 'Off'}</h3>
-      <p>Light</p>
-      <p>Power: <button onClick={togglePower}>{isOn ? 'Turn Off' : 'Turn On'}</button></p>
-      <p>Brightness: {brightness + '%'} 
-        <input
-          type="range"
+    <div className="flex flex-column gap-2">
+      <Divider className="my-1" />
+      <div className="flex align-items-center justify-content-between">
+        <span className="font-semibold">Power</span>
+        <Button
+          label={isOn ? 'Turn Off' : 'Turn On'}
+          icon="pi pi-power-off"
+          severity={isOn ? 'danger' : 'success'}
+          onClick={togglePower}
+        />
+      </div>
+
+      <Divider className="my-1" />
+      <div className="flex flex-column gap-2">
+        <div className="flex align-items-center justify-content-between">
+          <span className="font-semibold">Brightness</span>
+          <span className="text-color-secondary">{brightness.toString()}%</span>
+        </div>
+        <Slider
           min={10}
           max={100}
           value={brightnessDisplay}
-          onChange={(event) => setBrightnessDisplay(Number(event.target.value))}
-          onMouseUp={async (event) => await setBrightness(Number(event.currentTarget.value))}
-          onTouchEnd={async (event) => await setBrightness(Number(event.currentTarget.value))}
+          onChange={(event: SliderChangeEvent) => setBrightnessDisplay(Number(event.value))}
+          onSlideEnd={async (event: SliderSlideEndEvent) => await setBrightness(Number(event.value))}
           disabled={!isOn}
         />
-      </p>
-      <p>Color: (R) {red}, (G) {green}, (B) {blue}
-      <input
-        type="number"
-        min={0}
-        max={255}
-        value={Number(red)}
-        onChange={(event) => setColor(Number(event.target.value), Number(green), Number(blue))}
-        disabled={!isOn}
-        placeholder="R"
-      />
+      </div>
 
-      <input
-        type="number"
-        min={0}
-        max={255}
-        value={Number(green)}
-        onChange={(event) => setColor(Number(red), Number(event.target.value), Number(blue))}
-        disabled={!isOn}
-        placeholder="G"
-      />
-
-      <input
-        type="number"
-        min={0}
-        max={255}
-        value={Number(blue)}
-        onChange={(event) => setColor(Number(red), Number(green), Number(event.target.value))}
-        disabled={!isOn}
-        placeholder="B"
-      />
-      </p>
+      <Divider className="my-1" />
+      <div className="flex flex-column gap-2">
+        <div className="flex align-items-center justify-content-between">
+          <span className="font-semibold">Color</span>
+          <div style={{
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            backgroundColor: isOn ? colorPreview : '#6b7280',
+            border: '1px solid #ccc'
+          }} />
+        </div>
+        <div className="flex gap-2">
+          {[
+            { label: 'R', value: redDisplay, setter: setRedDisplay },
+            { label: 'G', value: greenDisplay, setter: setGreenDisplay },
+            { label: 'B', value: blueDisplay, setter: setBlueDisplay }
+          ].map(({ label, value, setter }) => (
+            <div key={label} className="flex flex-column align-items-center gap-1" style={{ flex: 1 }}>
+              <span className="text-sm text-color-secondary">{label}</span>
+              <InputNumber
+                min={0}
+                max={255}
+                value={value}
+                onValueChange={(event: InputNumberValueChangeEvent) => setter(Number(event.value))}
+                onBlur={async () => await setColor(redDisplay, greenDisplay, blueDisplay)}
+                disabled={!isOn}
+                inputStyle={{ width: '100%' }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

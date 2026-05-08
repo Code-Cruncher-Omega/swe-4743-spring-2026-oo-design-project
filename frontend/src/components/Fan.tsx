@@ -1,4 +1,7 @@
-import { deleteDevice, DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
+import { Button } from 'primereact/button';
+import { Divider } from 'primereact/divider';
+
+import { DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
 import { useRefresh } from './RefreshContext';
 
 export function Fan({ device }: { device: DeviceStatus }) {
@@ -18,30 +21,41 @@ export function Fan({ device }: { device: DeviceStatus }) {
   };
 
   return (
-    <div>
-      <button onClick={async () => {
-        await deleteDevice(device.id);
-        await refreshDevices();
-        }} style={{ marginLeft: '10px' }}>
-        X
-      </button>
-      <h3>{device.name} - {isOn ? 'On' : 'Off'}</h3>
-      <p>Fan</p>
-      <p>Power: <button onClick={togglePower}>{isOn ? 'Turn Off' : 'Turn On'}</button></p>
-      <p>Speed: {['LOW', 'MEDIUM', 'HIGH'].map((level) => (
-          <button
-            key={level}
-            onClick={() => setSpeed(level)}
-            disabled={!isOn}
-            style={{
-              fontWeight: speed === level ? 'bold' : 'normal',
-              marginRight: '5px',
-            }}
-          >
-            {level}
-          </button>
-        ))}
-      </p>
+    <div className="flex flex-column gap-2">
+      <Divider className="my-1" />
+
+      <div className="flex align-items-center justify-content-between">
+        <span className="font-semibold">Power</span>
+        <Button
+          label={isOn ? 'Turn Off' : 'Turn On'}
+          icon={isOn ? 'pi pi-power-off' : 'pi pi-power-off'}
+          severity={isOn ? 'danger' : 'success'}
+          onClick={togglePower}
+        />
+      </div>
+
+      <Divider className="my-1" />
+
+      <div className="flex flex-column gap-2">
+        <span className="font-semibold">Speed</span>
+        <div className="flex gap-2">
+          {['LOW', 'MEDIUM', 'HIGH'].map((level) => (
+            <Button
+              key={level}
+              label={level.charAt(0) + level.slice(1).toLowerCase()}
+              severity={speed.toString() === level ? undefined : 'secondary'}
+              disabled={!isOn}
+              onClick={() => setSpeed(level)}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                whiteSpace: 'nowrap'
+              }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

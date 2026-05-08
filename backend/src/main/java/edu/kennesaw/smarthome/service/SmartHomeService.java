@@ -7,16 +7,16 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceFilterRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceResult;
-import edu.kennesaw.smarthome.service.dto.DeviceSnapshot;
-import edu.kennesaw.smarthome.service.dto.DeviceStatus;
-import edu.kennesaw.smarthome.service.dto.EnvironmentStatus;
 import edu.kennesaw.smarthome.domain.Environment;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.UpdateableDevice;
+import edu.kennesaw.smarthome.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.dto.DeviceCreationRequest;
+import edu.kennesaw.smarthome.dto.DeviceFilterRequest;
+import edu.kennesaw.smarthome.dto.DeviceResult;
+import edu.kennesaw.smarthome.dto.DeviceSnapshot;
+import edu.kennesaw.smarthome.dto.DeviceStatus;
+import edu.kennesaw.smarthome.dto.EnvironmentStatus;
 
 @Service
 public class SmartHomeService {
@@ -40,7 +40,8 @@ public class SmartHomeService {
         if(device != null) {
             return device.performAction(request);
         }
-        return new DeviceResult(false, request.action().toString(), "Could not find device with ID " + id);
+        // Action is unknown at this point, since it is parsed into an action by the device, so it is null here.
+        return new DeviceResult(false, null, "Could not find device with ID " + id);
     }
 
     public String createAndAddDevice(DeviceCreationRequest request) {
@@ -71,6 +72,13 @@ public class SmartHomeService {
                                 .toList();
     }
 
+    public Collection<EnvironmentStatus> getEnvironmentStatus() {
+        return ENVIRONMENT_SERVICE.getAllEnvironments()
+                .stream()
+                        .map(Environment::getStatus)
+                                .toList();
+    }
+
     public Collection<String> getEnvironmentNames() {
         return ENVIRONMENT_SERVICE.getAllEnvironments()
                 .stream()
@@ -87,7 +95,7 @@ public class SmartHomeService {
                     device.getName(),
                     device.getLocation(),
                     device.getState().getStateType().toString(),
-                    device.getType().toString(),
+                    device.getType(),
                     device.getAttributes()
                 ));
             }

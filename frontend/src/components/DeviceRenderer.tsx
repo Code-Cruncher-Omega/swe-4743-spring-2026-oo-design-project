@@ -1,27 +1,26 @@
-import { DeviceStatus } from "../api/SmartHomeAPI";
+import { DeviceStatus, DeviceType } from "../api/SmartHomeAPI";
 import { Light } from "./Light";
 import { Fan } from "./Fan";
 import { Thermostat } from "./Thermostat";
 import { DoorLock } from "./DoorLock";
 
-const deviceComponents: Record<string, React.FC<{ device: DeviceStatus }>> = {
-    LIGHT: Light,
-    FAN: Fan,
-    THERMOSTAT: Thermostat,
-    DOOR_LOCK: DoorLock
+type DeviceRendererProps = {
+  device: DeviceStatus;
 };
 
-export function DeviceRenderer({ device }: { device: DeviceStatus }) {
-  const Component = deviceComponents[device.type];
+const deviceComponents: Partial<Record<DeviceType, React.ComponentType<DeviceRendererProps>>> = {
+  LIGHT: Light,
+  FAN: Fan,
+  THERMOSTAT: Thermostat,
+  DOOR_LOCK: DoorLock,
+};
 
-  if(!Component) {
-    return <div>Unknown device type: {device.type}</div>;
+export function DeviceRenderer({ device }: DeviceRendererProps) {
+  const Component = deviceComponents[device.deviceType];
+
+  if (!Component) {
+    return <div>Unknown device type: {device.deviceType.toString()}</div>;
   }
 
-  return (
-  <div>
-    <Component device={device} />
-    <br/>
-  </div>
-  );
+  return <Component device={device}/>;
 }

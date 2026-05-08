@@ -8,24 +8,24 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceSnapshot;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 import edu.kennesaw.smarthome.domain.device.light.Light;
 import edu.kennesaw.smarthome.domain.device.light.LightAction;
 import edu.kennesaw.smarthome.domain.device.light.LightState;
 import edu.kennesaw.smarthome.domain.device.light.LightStateType;
+import edu.kennesaw.smarthome.dto.DeviceCreationRequest;
+import edu.kennesaw.smarthome.dto.DeviceSnapshot;
 
 @Component
 public class LightCreator implements DeviceCreator<Light, LightState, LightAction, LightStateType> {
     
-    private final Map<String, LightState> STATES;
+    private final Map<LightStateType, LightState> STATES;
 
     // Spring provides a List containing an instance from each concrete LightState.
     public LightCreator(List<LightState> stateList) {
         this.STATES = stateList.stream()
-                .collect(Collectors.toMap(state -> {return state.getStateType().toString();}, Function.identity()));
+                .collect(Collectors.toMap(LightState::getStateType, Function.identity()));
     }
     
     @Override
@@ -43,13 +43,13 @@ public class LightCreator implements DeviceCreator<Light, LightState, LightActio
         return new Light(   UUID.fromString(snapshot.id()),
                             snapshot.name(), 
                             snapshot.location(), 
-                            STATES.get(snapshot.state()),
+                            STATES.get(LightStateType.valueOf(snapshot.state())),
                             STATES,
-                            Integer.parseInt(snapshot.attributes().get("brightness")),
+                            (int) snapshot.attributes().get("brightness"),
                             new int[] {
-                                Integer.parseInt(snapshot.attributes().get("red")),
-                                Integer.parseInt(snapshot.attributes().get("green")),
-                                Integer.parseInt(snapshot.attributes().get("blue"))
+                                (int) snapshot.attributes().get("red"),
+                                (int) snapshot.attributes().get("green"),
+                                (int) snapshot.attributes().get("blue")
                             });
     }
     
@@ -58,8 +58,8 @@ public class LightCreator implements DeviceCreator<Light, LightState, LightActio
         return DeviceType.LIGHT;
     }
 
-    public static String initialState() {
-        return LightStateType.OFF.toString();
+    public static LightStateType initialState() {
+        return LightStateType.OFF;
     }
 
     // Initial brightness for all Light instances is defined here.

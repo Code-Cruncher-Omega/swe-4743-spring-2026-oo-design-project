@@ -1,9 +1,12 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import 'primereact/resources/themes/lara-dark-indigo/theme.css'
+import './index.css';
+
+import 'primereact/resources/themes/lara-dark-teal/theme.css'
 import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
+import 'primeflex/primeflex.css';
 
 import App from './App.tsx';
 

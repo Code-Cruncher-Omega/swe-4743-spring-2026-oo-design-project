@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
-import { deleteDevice, DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
+
+import { Button } from 'primereact/button';
+import { Divider } from 'primereact/divider';
+import { Slider, SliderChangeEvent, SliderSlideEndEvent } from 'primereact/slider';
+
+import { DeviceStatus, performDeviceAction } from "../api/SmartHomeAPI";
 import { useRefresh } from './RefreshContext';
 
 export function Thermostat({ device }: { device: DeviceStatus }) {
+  
   const refreshDevices = useRefresh();
   
   const { mode, desired, ambient } = device.attributes;
 
   const [desiredDisplay, setDesiredDisplay] = useState(Number(desired));
+
+  const isNotOff = device.state !== 'OFF';
     
   const togglePower = async () => {
     await performDeviceAction(device.id, {action: 'TOGGLE_POWER', parameters: []});
@@ -33,47 +41,66 @@ export function Thermostat({ device }: { device: DeviceStatus }) {
   }, [desired]);
 
   return (
-    <div>
-      <button onClick={async () => {
-        await deleteDevice(device.id);
-        await refreshDevices();
-        }} style={{ marginLeft: '10px' }}>
-        X
-      </button>
-      <h3>{device.name} - { device.state === 'OFF' ? 'Off' 
-                            : device.state === 'IDLE' ? 'Idle'
-                            : device.state === 'HEATING' ? 'Heating' 
-                            : device.state === 'COOLING' ? 'Cooling' 
-                            : device.state}</h3>
-      <p>Thermostat</p>
-      <p>Power: <button onClick={togglePower}>{device.state !== 'OFF' ? 'Turn off' : 'Turn on'}</button></p>
-      <p>Target Temperature: {desired} Farenheit 
-        <input
-          type="range"
+    <div className="flex flex-column gap-2">
+      <Divider className="my-1" />
+
+      {/* Power */}
+      <div className="flex align-items-center justify-content-between">
+        <span className="font-semibold">Power</span>
+        <Button
+          label={isNotOff ? 'Turn Off' : 'Turn On' }
+          icon="pi pi-power-off"
+          severity={isNotOff ? 'danger' : 'success' }
+          onClick={togglePower}
+        />
+      </div>
+
+      <Divider className="my-1" />
+      <div className="flex flex-column gap-2">
+        <div className="flex align-items-center justify-content-between">
+          <span className="font-semibold">Target Temperature</span>
+          <span className="text-color-secondary">{desiredDisplay}°F</span>
+        </div>
+        <Slider
           min={60}
           max={80}
           value={desiredDisplay}
-          onChange={(event) => setDesiredDisplay(Number(event.target.value))}
-          onMouseUp={async (event) => await setDesired(Number(event.currentTarget.value))}
-          onTouchEnd={async (event) => await setDesired(Number(event.currentTarget.value))}
-          disabled={device.state === 'OFF'}
+          onChange={(event: SliderChangeEvent) => setDesiredDisplay(Number(event.value))}
+          onSlideEnd={async (event: SliderSlideEndEvent) => await setDesired(Number(event.value))}
+          disabled={!isNotOff}
         />
-      </p>
-      <p>Ambient Temperature: {ambient} Farenheit</p>
-      <p>Mode: {mode}{['HEAT', 'COOL', 'AUTO'].map((technique) => (
-        <button
-          key={technique}
-          onClick={() => setMode(technique)}
-          disabled={device.state === 'OFF'}
-          style={{
-            fontWeight: mode === technique ? 'bold' : 'normal',
-            marginRight: '5px',
-          }}
-        >
-          {technique}
-        </button>
-        ))}
-      </p>
+        <div className="flex align-items-center justify-content-between">
+          <span className="font-semibold">Ambient Temperature</span>
+          <span className="text-color-secondary">{ambient.toString()}°F</span>
+        </div>
+      </div>
+
+      <Divider className="my-1" />
+      <div className="flex flex-column gap-2">
+        <span className="font-semibold">Mode</span>
+        <div className="flex gap-2">
+          {['HEAT', 'COOL', 'AUTO'].map((technique) => (
+            <Button
+              key={technique}
+              label={technique.charAt(0) + technique.slice(1).toLowerCase()}
+              icon={
+                technique === 'HEAT' ? 'pi pi-sun' :
+                technique === 'COOL' ? 'pi pi-cloud' :
+                'pi pi-refresh'
+              }
+              severity={mode.toString() === technique ? undefined : 'secondary'}
+              disabled={!isNotOff}
+              onClick={() => setMode(technique)}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                whiteSpace: 'nowrap'
+              }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

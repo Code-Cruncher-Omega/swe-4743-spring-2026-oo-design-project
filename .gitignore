@@ -89,3 +89,5 @@ nb-configuration.xml
 ##############################
 *.log
 audit-log.json
+data/devices.json
+backend/data/devices.json

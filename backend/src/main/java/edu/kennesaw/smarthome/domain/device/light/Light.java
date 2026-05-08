@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import edu.kennesaw.smarthome.service.creator.LightCreator;
-import edu.kennesaw.smarthome.service.dto.DeviceActionRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceResult;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
+import edu.kennesaw.smarthome.dto.DeviceActionRequest;
+import edu.kennesaw.smarthome.dto.DeviceResult;
 
 public class Light extends Device<Light, LightState, LightAction, LightStateType> {
 
@@ -19,7 +19,7 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
                     String name, 
                     String location, 
                     LightState initialState, 
-                    Map<String, LightState> states,
+                    Map<LightStateType, LightState> states,
 
                     int savedBrightness, 
                     int[] savedColor) {
@@ -32,7 +32,7 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
     public Light(   String name, 
                     String location, 
                     LightState initialState, 
-                    Map<String, LightState> states,
+                    Map<LightStateType, LightState> states,
 
                     int initialBrightness, 
                     int[] initialColor) {
@@ -57,11 +57,11 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
     }
 
     protected LightState getOnState() {
-        return STATES.get(LightStateType.ON.toString());
+        return STATES.get(LightStateType.ON);
     }
 
     protected LightState getOffState() {
-        return STATES.get(LightStateType.OFF.toString());
+        return STATES.get(LightStateType.OFF);
     }
 
     @Override
@@ -79,18 +79,17 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
 
     @Override
     public DeviceResult performAction(DeviceActionRequest action) {
-        switch(action.action()) {
-            case "TOGGLE_POWER":    // LightAction.TOGGLE_POWER
-                return togglePower();
-            case "SET_BRIGHTNESS":  // LightAction.SET_BRIGHTNESS
-                return changeBrightness((int) action.parameters()[0]);
-            case "SET_COLOR":   // LightAction.SET_COLOR
-                return changeColor( (int) action.parameters()[0],
-                                    (int) action.parameters()[1],
-                                    (int) action.parameters()[2]);
-            default:
-                return new DeviceResult(false, action.action().toString(), "Cannot perform " + action.action().toString() + " with " + getName());
+        LightAction lightAction = LightAction.from(action.action());
+        if(action.parameters().length == 0) {
+            return execute(lightAction);
         }
+        if(action.parameters().length == 1) {
+            return execute(lightAction, (int) action.parameters()[0]);
+        }
+        return execute(lightAction, 
+            new int[] {(int) action.parameters()[0], 
+                        (int) action.parameters()[1], 
+                        (int) action.parameters()[2]});
     }
 
     public int getBrightness() {
@@ -107,21 +106,20 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
     }
 
     @Override
-    public Map<String, String> getAttributes() {
-        Map<String, String> attributes = new HashMap<>();
-        attributes.put("brightness", brightness + "");
-        attributes.put("red", color[0] + "");
-        attributes.put("green", color[1] + "");
-        attributes.put("blue", color[2] + "");
+    public Map<String, Object> getAttributes() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("brightness", brightness);
+        attributes.put("red", color[0]);
+        attributes.put("green", color[1]);
+        attributes.put("blue", color[2]);
         return attributes;
     }
 
     @Override
-    public DeviceResult reset() {
+    public void reset() {
         brightness = LightCreator.initialBrightness(); // Reset brightness to the initial level
         color = LightCreator.initialColor(); // Reset color to the initial RGB values
         state = STATES.get(LightCreator.initialState()); // Reset to the initial state
-        return new DeviceResult(true, "RESET_LIGHT", getName() + " reset to initial state.");
     }
 
     public DeviceResult changeBrightness(int newBrightness) {

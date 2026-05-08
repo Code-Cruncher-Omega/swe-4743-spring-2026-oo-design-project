@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import edu.kennesaw.smarthome.service.dto.DeviceCreationRequest;
-import edu.kennesaw.smarthome.service.dto.DeviceSnapshot;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 import edu.kennesaw.smarthome.domain.device.thermostat.Temperature;
@@ -19,20 +17,22 @@ import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatMode;
 import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatModeType;
 import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatState;
 import edu.kennesaw.smarthome.domain.device.thermostat.ThermostatStateType;
+import edu.kennesaw.smarthome.dto.DeviceCreationRequest;
+import edu.kennesaw.smarthome.dto.DeviceSnapshot;
 
 @Component
 public class ThermostatCreator implements DeviceCreator<Thermostat, ThermostatState, ThermostatAction, ThermostatStateType> {
         
-    private final Map<String, ThermostatState> STATES;
-    private final Map<String, ThermostatMode> MODES;
+    private final Map<ThermostatStateType, ThermostatState> STATES;
+    private final Map<ThermostatModeType, ThermostatMode> MODES;
 
     // Spring provides a List containing an instance from each concrete ThermostatState.
     // Spring also provides a List containing an instance from each concrete ThermostatMode.
     public ThermostatCreator(List<ThermostatState> stateList, List<ThermostatMode> modeList) {
         this.STATES = stateList.stream()
-                .collect(Collectors.toMap(state -> {return state.getStateType().toString();}, Function.identity()));
+                .collect(Collectors.toMap(ThermostatState::getStateType, Function.identity()));
         this.MODES = modeList.stream()
-                .collect(Collectors.toMap(mode -> {return mode.getModeType().toString();}, Function.identity()));
+                .collect(Collectors.toMap(ThermostatMode::getModeType, Function.identity()));
     }
     
     @Override
@@ -52,11 +52,11 @@ public class ThermostatCreator implements DeviceCreator<Thermostat, ThermostatSt
         return new Thermostat(  UUID.fromString(snapshot.id()),
                                 snapshot.name(), 
                                 snapshot.location(), 
-                                STATES.get(snapshot.state()), 
+                                STATES.get(ThermostatStateType.from(snapshot.state())), 
                                 STATES,
-                                MODES.get(snapshot.attributes().get("mode")),
-                                new Temperature(Integer.parseInt(snapshot.attributes().get("desired"))),
-                                new Temperature(Integer.parseInt(snapshot.attributes().get("ambient"))),
+                                MODES.get(ThermostatModeType.from(snapshot.attributes().get("mode").toString())),
+                                new Temperature((int) snapshot.attributes().get("desired")),
+                                new Temperature((int) snapshot.attributes().get("ambient")),
                                 MODES);
     }
     
@@ -65,13 +65,13 @@ public class ThermostatCreator implements DeviceCreator<Thermostat, ThermostatSt
         return DeviceType.THERMOSTAT;
     }
 
-    public static String initialState() {
-        return ThermostatStateType.OFF.toString();
+    public static ThermostatStateType initialState() {
+        return ThermostatStateType.OFF;
     }
 
     // Initial mode for all Thermostat instances is defined here.
-    public static String initialMode() {
-        return ThermostatModeType.AUTO.toString();
+    public static ThermostatModeType initialMode() {
+        return ThermostatModeType.AUTO;
     }
 
     // Temperature mainly serves as a values class, so managing it through Spring

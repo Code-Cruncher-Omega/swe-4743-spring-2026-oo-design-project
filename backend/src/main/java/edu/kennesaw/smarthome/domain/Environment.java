@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import edu.kennesaw.smarthome.service.dto.EnvironmentResult;
-import edu.kennesaw.smarthome.service.dto.EnvironmentStatus;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
 import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
 import edu.kennesaw.smarthome.domain.device.abstraction.UpdateableDevice;
 import edu.kennesaw.smarthome.domain.device.thermostat.Thermostat;
+import edu.kennesaw.smarthome.dto.EnvironmentResult;
+import edu.kennesaw.smarthome.dto.EnvironmentStatus;
 
 public class Environment {
 
@@ -73,9 +73,7 @@ public class Environment {
 
     public EnvironmentResult resetAllDevices() {
         for(Device<?, ?, ?, ?> device : devices.values()) {
-            if(!device.reset().success()) {
-                return new EnvironmentResult(false, "RESET_ALL_DEVICES_IN_" + NAME.toUpperCase(), device + " could not be reset. Halting the reset process for " + NAME);
-            }
+            device.reset();
         }
         return new EnvironmentResult(true, "RESET_ALL_DEVICES_IN_" + NAME.toUpperCase(), "Successfully resetted all devices in " + NAME);
     }
@@ -106,11 +104,11 @@ public class Environment {
     }
 
     public EnvironmentResult setAmbientTemperature(int newTemp) {
-        if(thermostat == null) {
-            return new EnvironmentResult(false, "SET_ENVIRONMENT_AMBIENT_TEMPERATURE", NAME + " must have a thermostat before ambient temperature can be changed.");
+        if(thermostat != null) {
+            thermostat.setAmbientTemperature(newTemp);
+            return new EnvironmentResult(true, "SET_ENVIRONMENT_AMBIENT_TEMPERATURE", NAME + " ambient temperature updated to " + newTemp + " Farenheit.");
         }
-        thermostat.setAmbientTemperature(newTemp);
-        return new EnvironmentResult(true, "SET_ENVIRONMENT_AMBIENT_TEMPERATURE", NAME + " ambient temperature updated to " + newTemp + " Farenheit.");
+        return new EnvironmentResult(false, "SET_ENVIRONMENT_AMBIENT_TEMPERATURE", NAME + " must have a thermostat before ambient temperature can be changed.");
     }
 
     @Override

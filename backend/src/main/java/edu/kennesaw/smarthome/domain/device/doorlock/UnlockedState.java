@@ -3,7 +3,7 @@ package edu.kennesaw.smarthome.domain.device.doorlock;
 import org.springframework.stereotype.Component;
 
 import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
-import edu.kennesaw.smarthome.service.dto.DeviceResult;
+import edu.kennesaw.smarthome.dto.DeviceResult;
 
 @Component("doorLockUnlockedState")
 public class UnlockedState implements DoorLockState {
@@ -12,9 +12,9 @@ public class UnlockedState implements DoorLockState {
         switch (action) {
             case TOGGLE_LOCK:
                 context.setState(context.getLockedState());
-                return new DeviceResult(true, "TOGGLE_DOOR_LOCK", context.getName() + " toggled to locked state.");
+                return new DeviceResult(true, action, context.getName() + " toggled to locked state.");
             default:
-                return new DeviceResult(false, action.name(), "Action not valid for " + context.getName() + " in unlocked state.");
+                return new DeviceResult(false, action, "Action not valid for " + context.getName() + " in unlocked state.");
         }
     }
     @Override

@@ -8,9 +8,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import edu.kennesaw.smarthome.service.dto.DeviceFilterRequest;
 import edu.kennesaw.smarthome.domain.Environment;
 import edu.kennesaw.smarthome.domain.device.abstraction.Device;
+import edu.kennesaw.smarthome.domain.device.abstraction.DeviceType;
+import edu.kennesaw.smarthome.domain.device.abstraction.StateActivity;
+import edu.kennesaw.smarthome.dto.DeviceFilterRequest;
 
 @Service
 public class DeviceFilterService {
@@ -27,7 +29,7 @@ public class DeviceFilterService {
 
                         filteredDevices = filterByLocation(filteredDevices, request.location());
                         filteredDevices = filterByActivity(filteredDevices, request.activity());
-                        filteredDevices = filterByType(filteredDevices, request.type());
+                        filteredDevices = filterByType(filteredDevices, request.deviceType());
 
                         Map<UUID, Device<?, ?, ?, ?>> devices = filteredDevices.stream().collect(Collectors.toMap(Device::getId, Function.identity()));
                         
@@ -48,24 +50,24 @@ public class DeviceFilterService {
     }
 
     // Makes activity and a device's state activity lowercase before making any comparisons.
-    private Collection<Device<?, ?, ?, ?>> filterByActivity(Collection<Device<?, ?, ?, ?>> devices, String activity) {
-        if(activity == null || activity.isEmpty()) {
+    private Collection<Device<?, ?, ?, ?>> filterByActivity(Collection<Device<?, ?, ?, ?>> devices, StateActivity activity) {
+        if(activity == null) {
             return devices;
         }
         
         return devices.stream()
-                .filter(device -> device.getState().getStateActivity().toString().toLowerCase().equals(activity.toLowerCase()))
+                .filter(device -> device.getState().getStateActivity().equals(activity))
                         .toList();        
     }
 
     // Makes deviceType and a device's device type lowercase before making any comparisons.
-    private Collection<Device<?, ?, ?, ?>> filterByType(Collection<Device<?, ?, ?, ?>> devices, String deviceType) {
-        if(deviceType == null || deviceType.isEmpty()) {
+    private Collection<Device<?, ?, ?, ?>> filterByType(Collection<Device<?, ?, ?, ?>> devices, DeviceType deviceType) {
+        if(deviceType == null) {
             return devices;
         }
         
         return devices.stream()
-                .filter(device -> device.getType().toString().toLowerCase().equals(deviceType.toLowerCase()))
+                .filter(device -> device.getType().equals(deviceType))
                         .toList();  
     }
 }

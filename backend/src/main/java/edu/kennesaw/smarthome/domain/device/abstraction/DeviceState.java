@@ -1,6 +1,6 @@
 package edu.kennesaw.smarthome.domain.device.abstraction;
 
-import edu.kennesaw.smarthome.service.dto.DeviceResult;
+import edu.kennesaw.smarthome.dto.DeviceResult;
 
 // All devices have some kind of state, so each device needs a base-interface that their state-interface will
 // derived from.
