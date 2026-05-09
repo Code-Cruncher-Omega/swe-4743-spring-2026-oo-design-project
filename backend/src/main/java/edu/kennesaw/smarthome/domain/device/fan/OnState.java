@@ -23,7 +23,7 @@ public class OnState implements FanState {
                 context.setSpeed(context.getHighSpeed());
                 return new DeviceResult(true, action, context.getName() + " set to high.");
             default:
-                return new DeviceResult(false, action, "Action not valid for " + context.getName() + " in on state.");
+                throw new IllegalStateException("Action not valid for " + context.getName() + " in on state.");
         }
     }
     @Override

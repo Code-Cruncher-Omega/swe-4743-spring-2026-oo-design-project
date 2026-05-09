@@ -52,7 +52,7 @@ public class EnvironmentService {
                 return device;
             }
         }
-        return null;
+        throw new IllegalArgumentException("No device found with ID: " + id);
     }
 
     public Environment getOrCreateEnvironment(String location) {

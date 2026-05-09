@@ -37,11 +37,7 @@ public class SmartHomeService {
     public DeviceResult performDeviceAction(String id, DeviceActionRequest request) {
         UUID parsedId = UUID.fromString(id);
         Device<?, ?, ?, ?> device = ENVIRONMENT_SERVICE.getDevice(parsedId);
-        if(device != null) {
-            return device.performAction(request);
-        }
-        // Action is unknown at this point, since it is parsed into an action by the device, so it is null here.
-        return new DeviceResult(false, null, "Could not find device with ID " + id);
+        return device.performAction(request);
     }
 
     public String createAndAddDevice(DeviceCreationRequest request) {

@@ -14,7 +14,7 @@ public class UnlockedState implements DoorLockState {
                 context.setState(context.getLockedState());
                 return new DeviceResult(true, action, context.getName() + " toggled to locked state.");
             default:
-                return new DeviceResult(false, action, "Action not valid for " + context.getName() + " in unlocked state.");
+                throw new IllegalStateException("Action not valid for " + context.getName() + " in unlocked state.");
         }
     }
     @Override

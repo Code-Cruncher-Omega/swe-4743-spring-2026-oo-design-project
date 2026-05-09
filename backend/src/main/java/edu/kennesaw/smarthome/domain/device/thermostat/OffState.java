@@ -9,7 +9,7 @@ import edu.kennesaw.smarthome.dto.DeviceResult;
 public class OffState implements ThermostatState {
     @Override
     public DeviceResult execute(Thermostat context, ThermostatAction action, int tickRate) {
-        return new DeviceResult(false, action, "Cannot update ambient temperature while " + context.getName() + " is off.");
+        throw new IllegalStateException("Action not valid for " + context.getName() + " in off state with tick rate."); // Invalid action for this method
     }
     @Override
     public DeviceResult execute(Thermostat context, ThermostatAction action) {
@@ -18,7 +18,7 @@ public class OffState implements ThermostatState {
                 context.setState(context.getIdleState());
                 return new DeviceResult(true, action, context.getName() + " turned on and idling.");
             default:
-                return new DeviceResult(false, action, "Action not valid for " + context.getName() + " in off state.");
+                throw new IllegalStateException("Action not valid for " + context.getName() + " in off state.");
         }
     }
     @Override

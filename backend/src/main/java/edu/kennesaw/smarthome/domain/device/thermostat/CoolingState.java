@@ -20,7 +20,7 @@ public class CoolingState implements ThermostatState {
             return new DeviceResult(true, action, "Ambient temperature has cooled down from "
                     + previousTemp + " to " + context.getAmbientTemperature().getValue() + " Farenheit.");
         }
-        return new DeviceResult(false, action, "Improper action for cooling ambience."); // Invalid action for this method
+        throw new IllegalStateException("Action not valid for " + context.getName() + " in cooling state with tick rate."); // Invalid action for this method
     }
     @Override
     public DeviceResult execute(Thermostat context, ThermostatAction action) {
@@ -41,7 +41,7 @@ public class CoolingState implements ThermostatState {
                     .getValue() + " Farenheit)");
                 }
             default:
-                return new DeviceResult(false, action, "Action not valid for " + context.getName() + " in idle state.");
+                throw new IllegalStateException("Action not valid for " + context.getName() + " in heating state."); // Invalid action for this method
         }
     }
     @Override

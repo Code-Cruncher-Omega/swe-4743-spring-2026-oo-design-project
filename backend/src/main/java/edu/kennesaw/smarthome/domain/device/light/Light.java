@@ -65,7 +65,7 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
     }
 
     @Override
-    protected void setState(LightState newState) {
+    public void setState(LightState newState) {
         state = newState;
     }
 

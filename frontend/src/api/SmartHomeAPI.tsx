@@ -1,7 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL ?? '';
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
 
 function apiPath(path: string) {
-  return `${API_URL}/api${path}`;
+  console.log(import.meta.env.VITE_API_BASE_URL);
+  return `${API_BASE}/api${path}`;
 }
 
 export async function createDevice(request: DeviceCreationRequest) {

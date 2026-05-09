@@ -19,7 +19,7 @@ public class OnState implements LightState {
             context.setColor(colorValues);
             return new DeviceResult(true, action, context.getName() +  " color set to [" + colorValues[0] + ", " + colorValues[1] + ", " + colorValues[2] + "].");
         }
-        return new DeviceResult(false, action, "Improper action for setting " + context.getName() + " color."); // Invalid action for this method
+        throw new IllegalStateException("Action not valid for " + context.getName() + " in on state with color values."); // Invalid action for this method
     }
     @Override
     public DeviceResult execute(Light context, LightAction action, int brightnessLevel) {
@@ -30,7 +30,7 @@ public class OnState implements LightState {
             context.setBrightness(brightnessLevel);
             return new DeviceResult(true, action, context.getName() + " brightness set to " + brightnessLevel + "%.");
         }
-        return new DeviceResult(false, action, "Improper action for setting " + context.getName() + " brightness."); // Invalid action for this method
+        throw new IllegalStateException("Action not valid for " + context.getName() + " in on state with brightness level."); // Invalid action for this method
     }
     @Override
     public DeviceResult execute(Light context, LightAction action) {
@@ -39,7 +39,7 @@ public class OnState implements LightState {
                 context.setState(context.getOffState()); // Transition to the off state
                 return new DeviceResult(true, action, context.getName() + " turned off successfully.");
             default:
-                return new DeviceResult(false, action, "Action not valid for " + context.getName() + " in on state.");
+                throw new IllegalStateException("Action not valid for " + context.getName() + " in on state.");
         }
     }
     @Override

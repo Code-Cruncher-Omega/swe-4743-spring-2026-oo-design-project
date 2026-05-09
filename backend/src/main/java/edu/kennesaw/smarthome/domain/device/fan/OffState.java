@@ -14,7 +14,7 @@ public class OffState implements FanState {
                 context.setState(context.getOnState());
                 return new DeviceResult(true, action, context.getName() + " turned on.");
             default:
-                return new DeviceResult(false, action, "Action not valid for " + context.getName() + " in off state.");
+                throw new IllegalStateException("Action not valid for " + context.getName() + " in off state.");
         }
     }
     @Override

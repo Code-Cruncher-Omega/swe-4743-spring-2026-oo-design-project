@@ -67,12 +67,7 @@ public class SmartHomeController {
     @PostMapping("/devices/{id}/actions")
     public ResponseEntity<DeviceResult> performDeviceAction(@PathVariable String id, @Valid @RequestBody DeviceActionRequest request) {
         DeviceResult result = SMART_HOME_SERVICE.performDeviceAction(id, request);
-        if(result.success()) {
-            AUDIT_LOG.record(id, result.message());
-        }
-        if(!result.success()) {
-            return ResponseEntity.badRequest().body(result);
-        }
+        AUDIT_LOG.record(id, result.message());
         PERSISTENCE_SERVICE.save();
         return ResponseEntity.ok(result);
     }
