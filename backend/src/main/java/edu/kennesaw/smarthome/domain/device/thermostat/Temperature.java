@@ -35,7 +35,7 @@ public class Temperature {
         this.unit = unit;
     }
 
-    protected void setValue(int value) {
+    public void setValue(int value) {
         this.value = value;
     }
 

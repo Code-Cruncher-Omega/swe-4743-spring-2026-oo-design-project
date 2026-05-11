@@ -90,7 +90,7 @@ export function Light({ device }: { device: DeviceStatus }) {
             borderRadius: '50%',
             backgroundColor: isOn ? colorPreview : '#6b7280',
             border: '1px solid #ccc'
-          }} />
+          }} data-testid="color-preview" />
         </div>
         <div className="flex gap-2">
           {[

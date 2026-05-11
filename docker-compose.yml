@@ -3,7 +3,6 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    container_name: smarthome-backend
     ports:
       - "8080:8080"
 
@@ -11,8 +10,25 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: smarthome-frontend
     ports:
       - "3000:80"
+    depends_on:
+      - backend
+
+  backend-test:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: build
+    command: mvn clean test -pl backend -am
+    depends_on:
+      - backend
+
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: build
+    command: npm run test
     depends_on:
       - backend

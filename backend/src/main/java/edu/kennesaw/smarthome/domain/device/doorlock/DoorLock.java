@@ -42,7 +42,7 @@ public class DoorLock extends Device<DoorLock, DoorLockState, DoorLockAction, Do
     }
 
     @Override
-    protected void setState(DoorLockState newState) {
+    public void setState(DoorLockState newState) {
         this.state = newState;
     }
 

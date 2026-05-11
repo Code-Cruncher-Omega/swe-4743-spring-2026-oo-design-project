@@ -69,11 +69,11 @@ public class Light extends Device<Light, LightState, LightAction, LightStateType
         state = newState;
     }
 
-    protected void setBrightness(int newBrightness) {
+    public void setBrightness(int newBrightness) {
         brightness = newBrightness;
     }
 
-    protected void setColor(int[] newColor) {
+    public void setColor(int[] newColor) {
         color = newColor;
     }
 

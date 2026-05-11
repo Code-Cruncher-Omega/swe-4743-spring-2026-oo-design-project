@@ -85,12 +85,12 @@ public class Thermostat extends Device<Thermostat, ThermostatState, ThermostatAc
         return STATES.get(ThermostatStateType.COOLING);
     }
 
-    protected ThermostatMode getCurrentMode() {
+    public ThermostatMode getCurrentMode() {
         return currentMode;
     }
 
     @Override
-    protected void setState(ThermostatState newState) {
+    public void setState(ThermostatState newState) {
         state = newState;
     }
 

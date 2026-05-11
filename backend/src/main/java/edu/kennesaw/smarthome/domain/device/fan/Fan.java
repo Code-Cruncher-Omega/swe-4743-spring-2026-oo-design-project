@@ -72,11 +72,11 @@ public class Fan extends Device<Fan, FanState, FanAction, FanStateType> {
     }
     
     @Override
-    protected void setState(FanState newState) {
+    public void setState(FanState newState) {
         state = newState;
     }
 
-    protected void setSpeed(FanSpeed newSpeed) {
+    public void setSpeed(FanSpeed newSpeed) {
         speed = newSpeed;
     }
 
