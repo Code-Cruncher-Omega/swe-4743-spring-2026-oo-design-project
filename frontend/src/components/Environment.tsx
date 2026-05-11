@@ -1,4 +1,5 @@
 import { confirmDialog } from 'primereact/confirmdialog';
+import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Divider } from 'primereact/divider';
 
@@ -45,9 +46,11 @@ export function EnvironmentList({ environmentStatuses }: { environmentStatuses: 
                           {deviceStatus.state.toLowerCase().replace(/_/g, ' ')
                             .replace(/^\w/, (initial) => initial.toUpperCase())}
                         </span>
-                        <i
-                          className="pi pi-times"
-                          style={{ color: '#ef4444', cursor: 'pointer', fontSize: '24px' }}
+                        <Button
+                          icon="pi pi-times"
+                          severity="danger"
+                          text
+                          aria-label={`Delete ${deviceStatus.name}`}
                           onClick={() => confirmDialog({
                             message: `Are you sure you want to delete ${deviceStatus.name}?`,
                             header: 'Delete Device',

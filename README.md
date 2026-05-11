@@ -3,8 +3,19 @@ Project for Professor Jeff Adkisson's Object-Oriented Design course.
 
 Application allows users to create devices, change their states and attributes, delete them, view devices based on their qualities (device type, activity, location), changes home simulation settings, view action history, etc.
 
-To run, clone repo then in the root of the project run:<br/>
+To run the application, clone the repo and run from the project root:
+
 `docker compose up`
+
+This starts the app services only; tests are not executed automatically by `docker compose up`.
+
+To run tests manually, use the dedicated compose test services:
+
+`docker compose run --rm backend-test`
+
+`docker compose run --rm frontend-test`
+
+These commands build the test containers and execute the backend or frontend test suites on demand.
 
 UI walk through:
 https://www.loom.com/share/05477690806845e4920da3f42022cb1f

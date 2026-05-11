@@ -7,11 +7,17 @@ type Parameters = {
   timeMultiplier: number;
   filter: DeviceFilterRequest;
   onRefreshReady: (fn: () => Promise<void>) => void;
+  updateIntervalMs?: number;
 };
 
-export function Simulation({timeMultiplier, filter, onRefreshReady}: Parameters) {
+export function Simulation({
+  timeMultiplier,
+  filter,
+  onRefreshReady,
+  updateIntervalMs = 5000,
+}: Parameters) {
 
-const [environmentStatuses, setEnvironmentStatuses] = useState<EnvironmentStatus[]>([]);
+  const [environmentStatuses, setEnvironmentStatuses] = useState<EnvironmentStatus[]>([]);
 
   const refreshEnvironments = useCallback(async () => {
     try {
@@ -36,10 +42,10 @@ const [environmentStatuses, setEnvironmentStatuses] = useState<EnvironmentStatus
         } catch (error) {
           console.error(error);
         }
-      }, 5000);
+      }, updateIntervalMs);
 
       return () => clearInterval(interval);
-  }, [filter, timeMultiplier, refreshEnvironments]);
+  }, [filter, timeMultiplier, refreshEnvironments, updateIntervalMs]);
 
   return (
     <RefreshContext.Provider value={refreshEnvironments}>

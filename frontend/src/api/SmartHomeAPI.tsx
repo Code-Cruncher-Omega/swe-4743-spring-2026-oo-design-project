@@ -1,8 +1,20 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
+function getApiBase() {
+  const globalBase = (globalThis as any).VITE_API_BASE_URL;
+  if (globalBase) {
+    return globalBase;
+  }
+
+  const importMetaBase = import.meta.env.VITE_API_BASE_URL;
+  if (importMetaBase) {
+    return importMetaBase;
+  }
+
+  return '';
+}
 
 function apiPath(path: string) {
-  console.log(import.meta.env.VITE_API_BASE_URL);
-  return `${API_BASE}/api${path}`;
+  const baseUrl = getApiBase();
+  return `${baseUrl}/api${path}`;
 }
 
 export async function createDevice(request: DeviceCreationRequest) {
@@ -123,7 +135,8 @@ export async function resetAllDevices(): Promise<void> {
 }
 
 export async function setAmbientTemperature(environmentName: string, temperature: number): Promise<void> {
-    await fetch(apiPath(`/smarthome/environments/${environmentName}/ambient`), {
+    const encodedEnvironmentName = encodeURIComponent(environmentName);
+    await fetch(apiPath(`/smarthome/environments/${encodedEnvironmentName}/ambient`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(temperature)
