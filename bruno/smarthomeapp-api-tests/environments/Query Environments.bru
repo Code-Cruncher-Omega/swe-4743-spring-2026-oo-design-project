@@ -1,0 +1,32 @@
+meta {
+  name: Query Environments
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{api_base}}/environments/status
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "location": null,
+    "activity": null,
+    "deviceType": null
+  }
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response is array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

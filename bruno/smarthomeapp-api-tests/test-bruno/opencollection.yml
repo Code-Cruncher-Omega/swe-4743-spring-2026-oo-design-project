@@ -1,0 +1,8 @@
+opencollection: 1.0.0
+
+info:
+  name: Test Collection
+  description: Test collection
+  version: 1.0.0
+
+bundled: false

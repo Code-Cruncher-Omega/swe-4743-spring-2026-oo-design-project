@@ -1,0 +1,14 @@
+meta {
+  name: Simple Test
+  seq: 1
+}
+
+get {
+  url: http://localhost:8080
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}

@@ -1,0 +1,32 @@
+meta {
+  name: Create Device
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{api_base}}/devices
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Living Room Light",
+    "location": "Living Room",
+    "deviceType": "LIGHT"
+  }
+}
+
+tests {
+  test("Status code is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Location header present", function() {
+    expect(res.getHeader("location")).to.exist;
+  });
+}
