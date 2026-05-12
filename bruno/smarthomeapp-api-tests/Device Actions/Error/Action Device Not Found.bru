@@ -1,0 +1,27 @@
+meta {
+  name: Perform Device Action - Not Found
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{api_base}}/devices/nonexistent-device/actions
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "action": "TOGGLE_POWER",
+    "parameters": []
+  }
+}
+
+tests {
+  test("Status code is 404", function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

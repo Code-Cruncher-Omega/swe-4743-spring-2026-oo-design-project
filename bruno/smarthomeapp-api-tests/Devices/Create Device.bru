@@ -26,7 +26,17 @@ tests {
     expect(res.getStatus()).to.equal(201);
   });
   
+  const location = res.getHeader("location");
   test("Location header present", function() {
-    expect(res.getHeader("location")).to.exist;
+    expect(location).to.exist;
+  });
+
+  if (location) {
+    const deviceId = location.split('/').pop();
+    bru.setEnvVar("createdDeviceId", deviceId);
+  }
+
+  test("Created device ID stored", function() {
+    expect(bru.getEnvVar("createdDeviceId")).to.exist;
   });
 }

@@ -1,0 +1,26 @@
+meta {
+  name: Update Simulation - Invalid Request Body
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{api_base}}/simulation/update
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "tickRate": "fast"
+  }
+}
+
+tests {
+  test("Status code is 400", function() {
+    expect(res.getStatus()).to.equal(400);
+  });
+}

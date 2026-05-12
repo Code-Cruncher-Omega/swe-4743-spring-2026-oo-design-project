@@ -9,7 +9,7 @@ The collection is organized into the following categories:
 ### Devices
 - **Create Device** - POST `/api/smarthome/devices` - Create a new smart home device
 - **Delete Device** - DELETE `/api/smarthome/devices/{id}` - Delete a device by ID
-- **Get Updateable Devices** - GET `/api/smarthome/devices` - Get list of devices that can be updated
+- **Get Updateable Devices** - GET `/api/smarthome/devices/updateable` - Get list of devices that can be updated
 
 ### Device Actions
 - **Toggle Light Power** - POST `/api/smarthome/devices/{id}/actions` - Toggle device power state
@@ -27,6 +27,13 @@ The collection is organized into the following categories:
 ### Simulation
 - **Update Simulation** - POST `/api/smarthome/simulation/update` - Update simulation tick rate
 - **Reset All Devices** - POST `/api/smarthome/devices/reset` - Reset all devices to initial state
+
+### Error Cases
+- **Create Device - Invalid Body** - POST `/api/smarthome/devices` - Returns `400` for invalid creation data
+- **Delete Device - Not Found** - DELETE `/api/smarthome/devices/nonexistent-device` - Returns `404` for missing device
+- **Perform Device Action - Not Found** - POST `/api/smarthome/devices/nonexistent-device/actions` - Returns `404` for missing device
+- **Set Ambient Temperature - Environment Not Found** - POST `/api/smarthome/environments/Unknown/ambient` - Returns `404` for unknown environment
+- **Update Simulation - Invalid Request Body** - POST `/api/smarthome/simulation/update` - Returns `400` for malformed tick rate
 
 ## Environment Variables
 

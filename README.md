@@ -17,6 +17,9 @@ To run tests manually, use the dedicated compose test services:
 
 These commands build the test containers and execute the backend or frontend test suites on demand.
 
+The API for the app can be tested via Bruno. The Bruno collection is located at the root of the project in `bruno/smarthomeapp-api-tets`.
+
+
 UI walk through:
 https://www.loom.com/share/05477690806845e4920da3f42022cb1f
 
