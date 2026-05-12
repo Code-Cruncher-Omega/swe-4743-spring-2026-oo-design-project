@@ -1,0 +1,24 @@
+meta {
+  name: Set Ambient Temperature
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{api_base}}/environments/Living Room/ambient
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  75
+}
+
+tests {
+  test("Status code is 204", function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

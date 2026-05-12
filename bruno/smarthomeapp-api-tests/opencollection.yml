@@ -1,8 +1,18 @@
 opencollection: 1.0.0
 
 info:
-  name: smarthomeapp-api-tests
+  name: Smart Home API Tests
+  description: API testing collection for Smart Home application
+  version: 1.0.0
+
+environments:
+  - name: local
+    variables:
+      base_url: http://localhost:8080
+      api_base: http://localhost:8080/api/smarthome
+
 bundled: false
+
 extensions:
   bruno:
     ignore:
