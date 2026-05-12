@@ -7,7 +7,7 @@ To run the application, clone the repo and run from the project root:
 
 `docker compose up`
 
-This starts the app services only; tests are not executed automatically by `docker compose up`.
+This starts the app services only; tests are not executed automatically by `docker compose up`
 
 To run tests manually, use the dedicated compose test services:
 
