@@ -99,7 +99,7 @@ The Swagger UI can be accessed at `http://localhost:8080/swagger` when the backe
  
 ## Bruno
  
-The API can be tested via Bruno. The Bruno collection is located at the project root under `bruno/smarthomeapp-api-tets`.
+The Bruno collection is located at the project root under `bruno/smarthomeapp-api-tets`.
  
 ## Walkthroughs
  
